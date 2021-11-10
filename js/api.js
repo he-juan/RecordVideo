@@ -1,0 +1,406 @@
+
+
+
+Record.prototype.openAudio = function(data){
+    let This = this
+    console.info("share audio: " + JSON.stringify(data, null, '    '))
+    if (!data || !data.type) {
+        console.warn('share audio: invalid parameters! ')
+        data && data.callback && data.callback({codeType: This.CODE_TYPE.PARAMETER_ERROR})
+        return
+    }
+
+    let type = 'audio'
+
+    let stream = This.getStream(type, true)
+    let audioRefreshResult = function (event){
+        console.info('audio refresh result: ' + JSON.stringify(event, null, '    '))
+        if(event.codeType === 999){
+            console.info('shareAudio result success')
+
+        }else {
+            console.warn('shareAudio result failed')
+        }
+        data.callback && data.callback({ codeType: event.codeType , stream:stream})
+    }
+
+    let getMediaCallBack = async function (args) {
+        if (args.stream) {
+            stream = args.stream
+            console.info('get stream: ' + stream ? stream.id : null)
+            // This.processAddStream(stream, session.pc, type)
+            This.setStream(args.stream, type, true)
+            audioRefreshResult({codeType: This.CODE_TYPE.ACTION_SUCCESS})
+        } else if (args.error) {
+            console.warn('Get audio stream failed: ' + args.error)
+            audioRefreshResult({codeType: This.prototype.getGumErrorCode('audio', args.error.name)})
+        }
+    }
+
+    if (stream) {
+        This.streamMuteSwitch({stream: stream, type: type, mute: false})
+        audioRefreshResult({codeType: This.CODE_TYPE.ACTION_SUCCESS})
+    } else {
+        console.info('getting new stream')
+        This.getStreamFromDevice({ streamType: 'audio', constraints: data.constraints, callback: getMediaCallBack })
+    }
+}
+
+
+Record.prototype.stopAudio = function (data) {
+    let This = this
+    console.info("stopShareAudio: " + JSON.stringify(data, null, '    '))
+    if (!data ) {
+        console.warn('stopShareAudio: invalid parameters! ')
+        data && data.callback && data.callback({codeType: This.CODE_TYPE.PARAMETER_ERROR})
+        return
+    }
+
+    let stopShareAudioCallBack = function(event){
+        console.info('stop share audio data: ' + JSON.stringify(event, null, '    '))
+        if(event.codeType === 999){
+            console.info('stop share audio success')
+        }else {
+            console.warn('stop share audio failed')
+        }
+        data.callback && data.callback({ codeType: event.codeType })
+    }
+
+    let stream = This.getStream('audio', true)
+    if (stream) {
+        This.streamMuteSwitch({stream: stream, type: 'audio', mute: true})
+        stopShareAudioCallBack({codeType: This.CODE_TYPE.ACTION_SUCCESS})
+    } else {
+        console.warn('audio stream is null')
+        stopShareAudioCallBack({codeType: This.CODE_TYPE.FAILED_TO_MUTE_MIC})
+    }
+}
+
+
+
+Record.prototype.openVideo = function (data) {
+    let This = this
+    console.info('open local video camera: ' + JSON.stringify(data, null, '    '))
+    if (!data ||!data.callback) {
+        console.warn('shareVideo: invalid parameters')
+        data && data.callback && data.callback({codeType: This.CODE_TYPE.PARAMETER_ERROR})
+        return
+    }
+
+    let type = 'main'
+    let getStreamCount = 0
+    let videoStream
+
+    function videoOnResult(event){
+        console.info('video on result, isLocalVideoOn' /*+ session.isLocalVideoOn*/)
+        if(event.codeType === 999 /*&& session.isLocalVideoOn || (session.isGDS && session.isGDSVideoReqSucceeded)*/){
+            console.info('video on success')
+            This.videoUpResolution = data.constraints.video
+        }else {
+            event.codeType = /*session.errorCode ||*/ This.CODE_TYPE.FAILED_TO_VIDEO_ON
+            console.warn('video on failed, code ' + event.codeType)
+            let stream = This.getStream(type, true)
+            // session.processRemoveStream(stream, session.pc, type)
+            This.closeStream(stream)
+            // session.errorCode = null
+            // session.isLocalVideoOn = false
+        }
+        data && data.callback({ codeType: event.codeType, stream: videoStream, type:type})
+        // session.removeInviteAction({action: session.action})
+        // session.actionCallback = null
+        // session.action = null
+    }
+
+    function getMediaCallBack(event) {
+        if (event.stream) {
+            console.info('get stream success ' + event.stream.id)
+            videoStream = event.stream
+            let video = document.createElement('video')
+            video.srcObject = videoStream
+            video.onloadedmetadata = async function(){
+                console.info("video: "+ video.videoWidth + " * " + video.videoHeight)
+                let constraints ={
+                    video:{
+                        width:video.videoWidth,
+                        height:video.videoHeight
+                    }
+                }
+                let previousStream = This.getStream(type, true)
+                if (previousStream) {
+                    console.info('clear previous stream')
+                    // session.processRemoveStream(previousStream, pc, type)
+                    This.closeStream(previousStream)
+                }
+                This.setVideoUpResolution(constraints)
+                // session.deviceId = data.deviceId // save deviceId
+
+                This.setStream(videoStream, type, true)
+                This.action = 'shareVideo'
+                videoOnResult({codeType: 999, stream: videoStream})
+                // data.actionCallback = videoOnResult
+                // session.sendInviteQueue.push({action: session.action, sdp: null, callback: videoOnResult})
+                // session.doOffer(pc,session.callType)
+            }
+        } else {
+            console.info('get stream failed')
+            parameters.error = event.error
+            parameters.isFirefox = Record.prototype.getBrowserDetail().browser === 'firefox'
+            getStreamCount++
+            if(event.constraints && (event.error.name === 'OverconstrainedError' || event.error.name === 'ConstraintNotSatisfiedError' ) && getStreamCount < 2){
+                let constraints = This.setConstraintsOfGetStream(parameters, event.constraints)
+                This.getMedia(parameters, constraints)
+            }else{
+                data.callback && data.callback({
+                    codeType: Record.prototype.getGumErrorCode('video', event.error.name)
+                })
+            }
+        }
+    }
+
+    let parameters = {
+        streamType: 'video',
+        constraints: data.constraints,
+        callback: getMediaCallBack
+    }
+
+    This.getStreamFromDevice(parameters)
+}
+
+
+Record.prototype.stopVideo = function (data) {
+    let This = this
+    console.info('stop share Local video: ' + JSON.stringify(data, null, '    '))
+    if(!data ){
+        console.info('invalid parameters!')
+        data && data.callback && data.callback({codeType: This.CODE_TYPE.PARAMETER_ERROR})
+        return
+    }
+
+
+    let stopVideoCallback = function(event){
+        console.info('video off result data: ' + JSON.stringify(event, null, '    '))
+        if(event.codeType === 999){
+            console.info('video off success')
+        }else {
+            console.warn('video off failed, code ' + event.codeType)
+
+        }
+
+        data.callback && data.callback({ codeType: event.codeType })
+    }
+
+    let type = 'main'
+    This.action = 'stopVideo'
+    // session.actionCallback = stopVideoCallback
+    // session.sendInviteQueue.push({action: session.action, sdp: null, callback: session.actionCallback})
+
+    let stream = This.getStream(type, true)
+    if (stream) {
+        This.closeStream(stream)
+        This.setStream(null, type, true)
+        stopVideoCallback({codeType: 999})
+    } else {
+        console.warn('stopShareVideo: video stream is null ')
+    }
+}
+
+
+
+Record.prototype.openShare = function (data) {
+    let This = this
+    console.info('share screen')
+    if(!data || !data.constraints || !data.constraints.video){
+        console.info('invalid parameters to screen share: ' + JSON.stringify(data, null, '    '))
+        data && data.callback && data.callback({codeType: This.CODE_TYPE.PARAMETER_ERROR})
+        return
+    }
+
+    let type = 'slides'
+    function getMediaCallBack(event) {
+        if (event.stream) {
+            console.info('get stream success, ' + event.stream.id)
+            let stream = event.stream
+            let mixStream
+            if (This.getBrowserDetail().browser === 'firefox') {
+                let tracks = stream.getVideoTracks();
+                tracks[0].onended = function () {
+                    This.closeStream(stream )
+                }
+            }else {
+                stream.oninactive = function () {
+                    console.warn('user clicks the bottom share bar to stop sharing')
+                    // This.closeStream(stream )
+                    toggleShareButton()
+                }
+            }
+
+            let localAudioStream = This.getStream('audio', true)
+            if (localAudioStream && stream.getAudioTracks().length > 0) {
+                mixStream = This.mixingStream(stream, localAudioStream)
+                // session.processAddStream(mixStream, pc, 'audio')
+            }
+            This.setStream(stream, type, true)
+            // session.processAddStream(stream, pc, type)
+
+            console.info('share screen success')
+            data.callback && data.callback({ codeType: This.CODE_TYPE.ACTION_SUCCESS , stream: stream , type: type})
+            // session.setEncodingParameters('main')
+        } else {
+            console.warn('Get present stream failed: ' + event.error)
+            // session.actionCallback = null
+            let codeType = Record.prototype.getGumErrorCode('slides', event.error.name)
+            data.callback && data.callback({ codeType: codeType })
+        }
+    }
+
+    if(data.stream){
+        getMediaCallBack({stream: data.stream})
+    }else{
+        This.getStreamFromDevice({ streamType: 'screenShare', constraints: data.constraints, callback: getMediaCallBack })
+    }
+}
+
+
+
+Record.prototype.stopShare = function (data) {
+    let This = this
+    console.info('stop share screen')
+    if(!data ){
+        console.info('invalid parameters to stop screen share')
+        data && data.callback && data.callback({codeType: This.CODE_TYPE.PARAMETER_ERROR})
+        return
+    }
+
+
+    let stopScreenCallback = function(event){
+        console.info('stop present callback data: ' + JSON.stringify(event, null, '    '))
+        if( This.mixStreamContext){
+            This.mixStreamContext.close()
+            This.mixStreamContext = null
+            let audioStream = This.getStream('audio', true)
+            // session.processAddStream(audioStream, pc, 'audio')
+        }
+        if(event.codeType === 999){
+            console.info('stop present success')
+            // session.setEncodingParameters('main')
+        }else {
+            console.warn('stop present failed')
+        }
+        data.callback && data.callback({ codeType: event.codeType })
+    }
+
+    let type = 'slides'
+    let stream = This.getStream(type, true)
+    if (stream) {
+        console.info('clear previous stream')
+        // session.processRemoveStream(stream, pc, type)
+        This.closeStream(stream)
+        This.setStream(null, type, true)
+        stopScreenCallback({codeType: This.CODE_TYPE.ACTION_SUCCESS})
+    }else {
+        console.warn('stop share screen: no present stream')
+        stopScreenCallback({codeType: This.CODE_TYPE.FAILED_TO_STOP_SCREEN_SHARE})
+    }
+}
+
+
+
+Record.prototype.recording = function(data){
+    console.info('recording video camera: ' + JSON.stringify(data, null, '    '))
+    if (!data && !data.stream) {
+        console.warn('shareVideo: invalid parameters')
+        data && data.callback && data.callback({codeType: This.CODE_TYPE.PARAMETER_ERROR})
+        return
+    }
+    let This = this
+    let options = {
+        mimeType: 'video/webm;codecs=vp9',
+        audioBitsPerSecond : 128000,  // 音频码率
+        videoBitsPerSecond : 500000,  // 视频码率
+        ignoreMutedMedia: true
+    };
+
+    // MediaRecorder.isTypeSupported 判断是否支持设置的视频格式
+    if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+        console.error(`${options.mimeType} is not supported!`)
+        return
+    }
+
+    function recordingCallback(event){
+        if(event.codeType === 999){
+            console.info('recording video success')
+        }else {
+            console.warn('recording video filed ' + event.codeType)
+        }
+        data.callback && data.callback({ codeType: event.codeType, stream: This.mediaRecorder})
+    }
+
+    try{
+        This.mediaRecorder = new MediaRecorder(data.stream, options)
+        This.mediaRecorder.recordedBlobs = []
+    }catch(e){
+        console.log('Unable to create MediaRecorder with options Object: ', e);
+    }
+
+    This.mediaRecorder.start(10); // collect 10ms of data
+    console.log('MediaRecorder started', This.mediaRecorder);
+    This.mediaRecorder.ondataavailable = handleDataAvailable;
+    if(This.mediaRecorder){
+        recordingCallback({codeType: 999, stream: This.mediaRecorder})
+    }else{
+        recordingCallback({codeType: 201, stream: This.mediaRecorder})
+    }
+
+    function handleDataAvailable(event){
+        if (event.data && event.data.size > 0) {
+            This.mediaRecorder.recordedBlobs.push(event.data);
+        }
+    }
+
+}
+
+Record.prototype.stopRecording = function(data){
+    console.log('Recorder stopped: ', data);
+    let This = this
+    This.mediaRecorder.onstop = function(){
+        /**录制返回播放**/
+        // let blob = new Blob(This.mediaRecorder.recordedBlobs, {'type': 'video/webm'});
+        // let url = window.URL.createObjectURL(blob);
+        // if (data.type === 'video' || data.type === 'shareScreen') {
+        //     recordVideo.srcObject = null;
+        // }
+        // recordVideo.src = url;
+        console.warn("********************")
+    }
+
+    This.mediaRecorder.addEventListener('dataavailable', function(event) {
+        if (event.data && event.data.size > 0) {
+            This.mediaRecorder.recordedBlobs.push(event.data);
+        }
+    })
+
+    data.callback && data.callback({ codeType: 999, Blobs: This.mediaRecorder.recordedBlobs,})
+}
+
+Record.prototype.download = function(data){
+    let This = this
+    var blob = new Blob(This.mediaRecorder.recordedBlobs, {type: 'video/webm'});
+    var url = window.URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.target = "_blank";
+    a.style.display = 'none';
+    a.href = url;
+    a.download = 'test.webm';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function() {
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+    }, 100);
+
+    data.callback && data.callback({ codeType: 999, file: a})
+}
+
+Record.prototype.restartRecord = function(){
+
+}

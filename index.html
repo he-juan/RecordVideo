@@ -1,0 +1,117 @@
+<!DOCTYPE>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>屏幕录制</title>
+    <!--内部部样式表-->
+      <!--<style type="text/css"></style>-->
+    <!--外部样式表-->
+    <link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+<body>
+
+    <h1 class="title"> 音频 视频 屏幕共享进行录制</h1>
+    <hr/>
+
+    <div id="tip" >
+        <!--录制视频选择相关内容.....-->
+        <div class="tip_top">
+            <h2>录制视频片段</h2>
+            <div class="closePopUp"><div class="close" onclick="closePopUp()">X</div></div>
+            <hr/>
+        </div>
+
+        <div id="tip_middle">
+            <div class ="middle_start">
+                <!--<video id="recordVideo" disable></video>-->
+                <div class="videoContrainer">
+                    <video id="video"></video>
+                    <video id="shareScreen" autoplay ></video>
+                </div>
+                <div class="wrapper">
+                    <ul>
+                        <li><button class="videoAction">关闭视频</button></li>
+                        <li><button class="isMute">非静音</button></li>
+                        <li><button class="getDeviced">设置</button></li>
+                    </ul>
+                </div>
+                <!--<div class="setDeviced">-->
+                    <!--<div class="setArea">-->
+                        <!--<button class="camera">摄像头-->
+                            <!--&lt;!&ndash;<span> > <span> &ndash;&gt;-->
+                        <!--</button>-->
+                        <!--<button class="mic">麦克风-->
+                            <!--&lt;!&ndash;<span> > <span> &ndash;&gt;-->
+                        <!--</button>-->
+
+                        <!--<button class="speaker">扬声器-->
+                            <!--&lt;!&ndash;<span> > <span> &ndash;&gt;-->
+                        <!--</button>-->
+                    <!--</div>-->
+                <!--</div>-->
+
+
+                <!--<select class="audioinput"></select>-->
+                <!--<select class="audioOutput"></select>-->
+                <!--<select class="cameraDeviced"></select>-->
+            </div>
+
+        </div>
+
+
+        <div class="tip_bottom">
+            <hr/>
+            <div class="record">
+                <button class="share" >屏幕共享</button>
+                <button class="recording" onclick = "beginRecord({type: 'record'})">开始记录</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="contrainer">
+        <div id="contrainer_start">
+            <button class="audioRecording" > 录制音频</button>
+            <button class="videoRecodering" onclick=" getArea({type: 'video'})"> 录制视频</button>
+        </div>
+    </div>
+
+
+
+    <div id="record" disabled>
+        <!--录制视频选择相关内容.....-->
+        <div class="tip_top">
+            <h2>开始录制</h2>
+            <!--<div class="restartRecord">重新录制</div>-->
+            <div class="closePopUp">
+                <div class="close" onclick="closeButton()">X</div>
+                <span class="restartRecord" onclick="restartRecord()">重新录制</span>
+            </div>
+
+        </div>
+
+        <div id="record_middle">
+            <div class ="middle_start" >
+            <video id="recordVideo"></video>
+        </div>
+
+    </div>
+
+    <div class="tip_bottom">
+        <div class="record">
+            <button class="recorded" onclick="stopRecord({type:'video'})">停止记录</button>
+            <button>已完成</button>
+            <button class="download" onclick ="download({})">下载</button>
+        </div>
+    </div>
+
+    </div>
+
+
+<script type = "text/javascript"  src="js/index.js"></script>
+<script type = "text/javascript"  src="js/record.js"></script>
+<script type = "text/javascript"  src="js/api.js"></script>
+<script type = "text/javascript"  src="js/stream.js"></script>
+<script type = "text/javascript"  src="js/common.js"></script>
+</body>
+</html>
