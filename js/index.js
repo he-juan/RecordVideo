@@ -36,10 +36,13 @@ let context = canvas.getContext('2d')
 let isOpenVideo = false
 let isOpenShareScreen = false
 let isMute = false
+let isRecord = false
 
+/** 绘制canvas定时器**/
 let  switchTimeOut
 let  shareTimeOut
 
+/** 像素匹配位置**/
 let setX
 let setY
 let setWidth
@@ -54,6 +57,7 @@ let localStream ={
 videoButton.addEventListener("click",toggleVideoButton)
 screenButton.addEventListener("click",toggleShareButton)
 getDeviced.addEventListener("click",setDeviced)
+recordButton.addEventListener("click", stopRecord)
 // cameraSelect.addEventListener("click",displayAudioInput)
 
 function getVideoType(data){
@@ -257,8 +261,8 @@ function openVideo(data){
         data.constraints = {
             audio: true,
             video: {
-                width: 1920,   // 必须
-                height: 1080,  // 必须
+                width: 720,   // 必须
+                height: 360,  // 必须
                 frameRate: 15,  // 可缺省，默认15fps
             }
         }
@@ -291,6 +295,25 @@ function openVideo(data){
         }
         window.record.openVideo(data)
     }
+}
+
+function stopVideo(){
+    let data = {}
+    data.callback = callback
+    function callback(event){
+        if(event.codeType === 999){
+            isOpenVideo = false
+            window.record.closeStream(localStream.main)
+            localStream.main = null
+            videoButton.textContent = '开启视频'
+
+            window.cancelAnimationFrame(switchTimeOut)
+            context.clearRect(setX, setY, setWidth, setHeight)
+            draw()
+
+        }
+    }
+    window.record.stopVideo(data)
 }
 
 
@@ -328,9 +351,27 @@ function openShare(data){
     }
 }
 
+function stopShare(){
+    let data = {}
+    data.callback= callback
+    function callback(event){
+        if(event.codeType === 999){
+            isOpenShareScreen = false
+            window.record.closeStream(localStream.slides)
+            localStream.slides = null
+            screenButton.textContent = '屏幕共享'
+
+            window.cancelAnimationFrame(shareTimeOut)
+            context.clearRect(setX, setY, setWidth, setHeight)
+            draw()
+        }
+    }
+    window.record.stopShare(data)
+}
+
 
 function toggleVideoButton(){
-    let data = {}
+
     if(videoButton.textContent === '开启视频'){
         if(localStream && localStream.main){
             console.warn("存在视频流")
@@ -338,27 +379,12 @@ function toggleVideoButton(){
             openVideo({type: 'video'})
         }
     }else{
-        data.callback = callback
-        function callback(event){
-            if(event.codeType === 999){
-                isOpenVideo = false
-                window.record.closeStream(localStream.main)
-                localStream.main = null
-                videoButton.textContent = '开启视频'
-
-                window.cancelAnimationFrame(switchTimeOut)
-                context.clearRect(setX, setY, setWidth, setHeight)
-                draw()
-
-            }
-        }
-        window.record.stopVideo(data)
+        stopVideo()
     }
 }
 
 
 function toggleShareButton(){
-    let data = {}
     if(screenButton.textContent === '屏幕共享'){
        if(localStream && localStream.slides){
            console.warn("存在演示流")
@@ -366,20 +392,7 @@ function toggleShareButton(){
            openShare({type: 'shareScreen'})
        }
     }else{
-        data.callback= callback
-        function callback(event){
-            if(event.codeType === 999){
-                isOpenShareScreen = false
-                window.record.closeStream(localStream.slides)
-                localStream.slides = null
-                screenButton.textContent = '屏幕共享'
-
-                window.cancelAnimationFrame(shareTimeOut)
-                context.clearRect(setX, setY, setWidth, setHeight)
-                draw()
-            }
-        }
-        window.record.stopShare(data)
+        stopShare()
     }
 }
 
@@ -434,7 +447,6 @@ function beginRecord(data){
     tip.style.display = "none";
     contrainer.style.opacity = "0.2";
     recordContrainer.style.display = 'block'
-    // recordContrainer.disabled = false
 
     data.stream = canvas.captureStream()
     data.callback = callback
@@ -456,35 +468,47 @@ function beginRecord(data){
 }
 
 function stopRecord(data){
-    data.callback = callback
-    function callback(event){
-        console.warn("event:",event)
-        if(event.codeType === 999){
-            buffer = event.recordedBlobs
-            recordButton.disabled = true
-            recordButton.style.backgroundColor = '#A2A2A2'
+    if(!isRecord){
+        // let data = {}
+        data.callback = callback
+        function callback(event){
+            console.warn("event:",event)
+            isRecord = true
+            if(event.codeType === 999){
+                buffer = event.recordedBlobs
+                recordButton.disabled = true
+                recordButton.style.backgroundColor = '#A2A2A2'
 
-            /**停止录制后需要关闭流**/
-            let tracks = recordVideo.srcObject.getTracks();
-            tracks.forEach(track => track.stop());
-            // video.srcObject.getTracks().forEach(track => track.stop())
-            // shareVideo.srcObject.getTracks().forEach(track => track.stop())
+                /**停止录制后需要关闭流**/
+                let tracks = recordVideo.srcObject.getTracks();
+                tracks.forEach(track => track.stop());
+                stopVideo()
+                stopShare()
+                Object.keys(localStream).forEach(function (key) {
+                    console.warn("key:",key )
+                    let stream = localStream[key]
+                    if (stream) {
+                        window.record.closeStream(stream)
+                        localStream[key] = null
+                    }
+                })
 
-            /***录制内容返回播放***/
-            let blob = new Blob(event.Blobs, {'type': 'video/webm'});
-            let url = window.URL.createObjectURL(blob);
-            if (data.type === 'video' || data.type === 'shareScreen') {
-                recordVideo.srcObject = null;
+                /***录制内容返回播放***/
+                let blob = new Blob(event.Blobs, {'type': 'video/webm'});
+                let url = window.URL.createObjectURL(blob);
+                if (data.type === 'video' || data.type === 'shareScreen') {
+                    recordVideo.srcObject = null;
+                }
+                recordVideo.src = url;
+                recordVideo.controls = true
+                recordVideo.play();
+                console.warn("停止录制成功")
+            }else{
+                console.warn("停止录制失败")
             }
-            recordVideo.src = url;
-            recordVideo.controls = true
-            recordVideo.play();
-            console.warn("停止录制成功")
-        }else{
-            console.warn("停止录制失败")
         }
+        window.record.stopRecording(data)
     }
-    window.record.stopRecording(data)
 
 }
 
@@ -503,8 +527,13 @@ function download(data){
 function restartRecord(){
    tip.style.display = 'block'
    recordContrainer.style.display = 'none'
-   recordButton.style.disabled = false
-   recordButton.style.backgroundColor = "orangered "
+   if(isRecord){
+       isRecord = false
+       recordButton.style.disabled = false
+       recordButton.style.backgroundColor = "orangered "
+   }
+
+   recordVideo.srcObject = null
 
 }
 
