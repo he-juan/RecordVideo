@@ -1,7 +1,6 @@
 
 
-// let audioButton = document.getElementsByClassName("audioRecording")
-// let videoButton = document.getElementsByClassName("videoRecording")
+
 let stream
 let buffer
 let tip = document.getElementById("tip")
@@ -16,8 +15,8 @@ let recordButton = document.getElementsByClassName("recorded")[0]
 let videoButton = document.getElementsByClassName('videoAction')[0]
 let screenButton = document.getElementsByClassName('share')[0]
 let isMuteButton = document.getElementsByClassName('isMute')[0]
-let getDeviced = document.getElementsByClassName("getDeviced")[0]
-let setDeviceds = document.getElementsByClassName('setDeviced')[0]
+let setDeviceButton = document.getElementsByClassName("setDeviceButton")[0]
+let selectDevice = document.getElementsByClassName('selectDevice')[0]
 
 let audioinput = document.getElementsByClassName("audioinput")[0]
 let audioOutput = document.getElementsByClassName("audioOutput")[0]
@@ -33,6 +32,7 @@ window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequest
 let canvas = document.getElementById("canvas")
 let context = canvas.getContext('2d')
 
+/**开启/关闭视频**/
 let isOpenVideo = false
 let isOpenShareScreen = false
 let isMute = false
@@ -54,9 +54,41 @@ let localStream ={
     slides: null,
 }
 
-videoButton.addEventListener("click",toggleVideoButton)
-screenButton.addEventListener("click",toggleShareButton)
-getDeviced.addEventListener("click",setDeviced)
+let devices = {
+    cameras: null,
+    microphones:null,
+    speakers:null
+}
+
+/**关于获取***/
+let isGetMic = false
+let isGetSpeaker = false
+let isGetCamera = false
+
+// videoButton.addEventListener("click",toggleVideoButton)
+// screenButton.addEventListener("click",toggleShareButton)
+// setDeviceButton.addEventListener("click",setDeviced)
+
+cameraSelect.addEventListener("mousemove", handleCamera)
+micSelect.addEventListener("mousemove", handleMic)
+speakerSelect.addEventListener("mousemove", handleSpeaker)
+
+cameraSelect.addEventListener("mouseout", function(){
+    audioOutput.style.display = "none"
+    audioinput.style.display = "none"
+})
+micSelect.addEventListener("mouseleave", function(){
+    cameraDeviced.style.display = "none"
+    audioinput.style.display = "none"
+})
+speakerSelect.addEventListener("mouseout", function(){
+    cameraDeviced.style.display = "none"
+    audioOutput.style.display = "none"
+    // audioinput.style.display = "none"
+})
+
+
+
 recordButton.addEventListener("click", stopRecord)
 // cameraSelect.addEventListener("click",displayAudioInput)
 
@@ -90,7 +122,6 @@ function getVideoType(data){
     }
     return videoType
 }
-
 
 function draw(data){
     /*处理canvas绘制video像素模糊问题*/
@@ -130,7 +161,6 @@ function draw(data){
         console.warn("两者皆有openVideoOpenShare")
         console.warn("video.videoWidth:",video.videoWidth)
         console.warn("video.videoHeight:",video.videoHeight)
-
 
 
         shareToCanvas(videoType, shareVideo,0, 0, 0, 0, 0, 0, canvas.width, canvas.height)
@@ -212,14 +242,11 @@ function switchToCanvas(type, video, sx, sy, swidth, sheight, x, y, width, heigh
 
 }
 
-
-
 function getArea(data){
     tip.style.display = "block";
     contrainer.style.opacity = "0.2";
     if(videoButton.textContent === '关闭视频'){
         openVideo(data)
-        // getMedia(data)
     }
     // else if(screenButton.textContent === '屏幕共享'){
     //     openShare(data)
@@ -242,7 +269,6 @@ function closePopUp () {
 
 }
 
-
 function closeButton(){
     recordContrainer.style.display = 'none';
     contrainer.style.opacity = "1";
@@ -255,7 +281,6 @@ function closeButton(){
     })
 }
 
-
 function openVideo(data){
     if(data.type === 'video'){
         data.constraints = {
@@ -264,6 +289,7 @@ function openVideo(data){
                 width: 720,   // 必须
                 height: 360,  // 必须
                 frameRate: 15,  // 可缺省，默认15fps
+                deviceId: data.deviceId  || ' '
             }
         }
 
@@ -315,7 +341,6 @@ function stopVideo(){
     }
     window.record.stopVideo(data)
 }
-
 
 function openShare(data){
     if(data.type === 'shareScreen'){
@@ -369,7 +394,6 @@ function stopShare(){
     window.record.stopShare(data)
 }
 
-
 function toggleVideoButton(){
 
     if(videoButton.textContent === '开启视频'){
@@ -383,7 +407,6 @@ function toggleVideoButton(){
     }
 }
 
-
 function toggleShareButton(){
     if(screenButton.textContent === '屏幕共享'){
        if(localStream && localStream.slides){
@@ -396,51 +419,151 @@ function toggleShareButton(){
     }
 }
 
+
 function setDeviced(){
-    setDeviceds.style.display = 'block'
-    let data = {}
-    data.callback = callback
-    function callback(event){
-        console.warn("event:",event)
-        // debugger
-        if(event.cameras){
-            for(let i=0; i< event.cameras.length;i++){
+    selectDevice.style.display = 'block'
+    // isGetCamera = false
+    // isGetMic = false
+    // isGetSpeaker = false
+}
+function handleCamera(){
+
+    if(!isGetCamera){
+        if(devices && devices.cameras){
+            for(let i=0; i< devices.cameras.length;i++){
                 let option = document.createElement('option')
-                let deviced = event.cameras[i]
-                option.text = deviced.label || ''
-                // cameraDeviced = event.cameras
-                option.value = deviced.deviceId
+                let camera = devices.cameras[i]
+                option.text = camera.label || ''
+                option.value = camera.deviceId
                 cameraDeviced.appendChild(option)
             }
         }
-        if(event.microphones){
-            for(let i=0; i< event.microphones.length;i++){
-                let deviced = event.microphones[i]
-                if(deviced.deviceId !== 'default' && deviced.deviceId !== 'communications'){
+        isGetCamera = true
+    }
+    cameraDeviced.style.display = 'block'
+    audioOutput.style.display = "none"
+    audioinput.style.display = "none"
+}
+
+function handleMic(){
+    if(!isGetMic){
+        if(devices && devices.microphones){
+            for(let i=0; i< devices.microphones.length;i++){
+                let microphone = devices.microphones[i]
+                if(microphone.deviceId !== 'default' && microphone.deviceId !== 'communications'){
                     let option = document.createElement('option')
-                    option.text = deviced.label || ''
-                    // audioOutput = event.microphones
-                    option.value = deviced.deviceId
+                    option.text = microphone.label || ''
+                    option.value = microphone.deviceId
                     audioOutput.appendChild(option)
                 }
             }
         }
-        if(event.speakers){
-            for(let i=0; i< event.speakers.length;i++){
-                let deviced = event.speakers[i]
-                if(deviced.deviceId !== 'default' && deviced.deviceId !== 'communications'){
+        isGetMic = true
+    }
+    audioOutput.style.display = "block"
+    cameraDeviced.style.display = 'none'
+    audioinput.style.display = "none"
+
+
+}
+
+function handleSpeaker(){
+    if(!isGetSpeaker){
+        if(devices && devices.speakers){
+            for(let i=0; i < devices.speakers.length;i++){
+                let speaker = devices.speakers[i]
+                if(speaker.deviceId !== 'default' && speaker.deviceId !== 'communications'){
                     let option = document.createElement('option')
-                    option.text = deviced.label || ''
-                    // audioinput = event.speakers
-                    option.value = deviced.deviceId
+                    option.text = speaker.label || ''
+                    option.value = speaker.deviceId
                     audioinput.appendChild(option)
                 }
             }
-        }else{
-            console.log('Some other kind of source/device: ', event);
         }
+        isGetSpeaker = true
     }
-    window.record.enumDevices(data)
+    audioinput.style.display = 'block'
+    cameraDeviced.style.display = "none"
+    audioOutput.style.display = "none"
+
+
+}
+
+function handleDeviceds(){
+    if(devices){
+        if(devices && devices.cameras){
+            for(let i=0; i< devices.cameras.length;i++){
+                let option = document.createElement('option')
+                let camera = devices.cameras[i]
+                option.text = camera.label || ''
+                // cameraDeviced = event.cameras
+                option.value = camera.deviceId
+                cameraDeviced.appendChild(option)
+                cameraDeviced.style.display = 'block'
+            }
+        }
+
+        if(devices && devices.microphones){
+            for(let i=0; i< devices.microphones.length;i++){
+                let microphone = devices.microphones[i]
+                if(microphone.deviceId !== 'default' && microphone.deviceId !== 'communications'){
+                    let option = document.createElement('option')
+                    option.text = microphone.label || ''
+                    // audioOutput = event.microphones
+                    option.value = microphone.deviceId
+                    audioOutput.appendChild(option)
+                    audioOutput.style.display = 'block'
+                }
+            }
+        }
+        if(devices && devices.speakers){
+            for(let i=0; i < devices.speakers.length;i++){
+                let speaker = devices.speakers[i]
+                if(speaker.deviceId !== 'default' && speaker.deviceId !== 'communications'){
+                    let option = document.createElement('option')
+                    option.text = speaker.label || ''
+                    // audioinput = event.speakers
+                    option.value = speaker.deviceId
+                    audioinput.appendChild(option)
+                    audioinput.style.display = 'block'
+                }
+            }
+        }
+
+    }else{
+        console.warn("获取设备失败")
+    }
+}
+
+function getAudioInput(){
+    let option =  audioinput.options
+    console.warn("option:",option)
+    audioinput.value = option[audioinput.selectedIndex].value  // selectedIndex代表的是你所选中项的index
+    console.warn("value:", audioinput.value)
+    selectDevice.style.display = 'none'
+    audioinput.style.display = "none"
+
+}
+
+function getAudioOutput(){
+    let option = audioOutput.options
+    console.warn("option:",option)
+    audioOutput.value = option[audioOutput.selectedIndex].value  // selectedIndex代表的是你所选中项的index
+    console.warn("value:",audioOutput.value)
+    selectDevice.style.display = 'none'
+    audioOutput.style.display = "none"
+}
+
+function getCamera(){
+    let option = cameraDeviced.options
+    console.warn("option:",option)
+    cameraDeviced.value = option[cameraDeviced.selectedIndex].value  // selectedIndex代表的是你所选中项的index
+    console.warn("value:",cameraDeviced.value)
+    selectDevice.style.display = 'none'
+    cameraDeviced.style.display = "none"
+
+    let data = {type: 'video', deviceId: cameraDeviced.value}
+    openVideo(data)
 }
 
 function beginRecord(data){
@@ -538,8 +661,28 @@ function restartRecord(){
 }
 
 
+function devicedsInfo(){
+    window.record.enumDevices({callback:function(event){
+         if(event){
+             console.warn("成功获取设备")
+             if(event.cameras){
+                 devices.cameras = event.cameras
+             }
+             if(event.microphones){
+                 devices.microphones = event.microphones
+             }
+             if(event.speakers){
+                 devices.speakers = event.speakers
+             }
+         }else{
+             console.warn("获取设备失败")
+         }
+    }})
+}
+
 window.addEventListener('load', function () {
     if (Record) {
         Record.prototype.preInit()
     }
+    devicedsInfo()
 })

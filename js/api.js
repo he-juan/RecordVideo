@@ -100,15 +100,10 @@ Record.prototype.openVideo = function (data) {
             event.codeType = /*session.errorCode ||*/ This.CODE_TYPE.FAILED_TO_VIDEO_ON
             console.warn('video on failed, code ' + event.codeType)
             let stream = This.getStream(type, true)
-            // session.processRemoveStream(stream, session.pc, type)
             This.closeStream(stream)
-            // session.errorCode = null
-            // session.isLocalVideoOn = false
         }
         data && data.callback({ codeType: event.codeType, stream: videoStream, type:type})
-        // session.removeInviteAction({action: session.action})
-        // session.actionCallback = null
-        // session.action = null
+
     }
 
     function getMediaCallBack(event) {
@@ -128,18 +123,13 @@ Record.prototype.openVideo = function (data) {
                 let previousStream = This.getStream(type, true)
                 if (previousStream) {
                     console.info('clear previous stream')
-                    // session.processRemoveStream(previousStream, pc, type)
                     This.closeStream(previousStream)
                 }
                 This.setVideoUpResolution(constraints)
-                // session.deviceId = data.deviceId // save deviceId
 
                 This.setStream(videoStream, type, true)
                 This.action = 'shareVideo'
                 videoOnResult({codeType: 999, stream: videoStream})
-                // data.actionCallback = videoOnResult
-                // session.sendInviteQueue.push({action: session.action, sdp: null, callback: videoOnResult})
-                // session.doOffer(pc,session.callType)
             }
         } else {
             console.info('get stream failed')
@@ -191,8 +181,6 @@ Record.prototype.stopVideo = function (data) {
 
     let type = 'main'
     This.action = 'stopVideo'
-    // session.actionCallback = stopVideoCallback
-    // session.sendInviteQueue.push({action: session.action, sdp: null, callback: session.actionCallback})
 
     let stream = This.getStream(type, true)
     if (stream) {

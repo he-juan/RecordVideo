@@ -31,16 +31,17 @@
                 </div>
                 <div class="wrapper">
                     <ul>
-                        <li><button class="videoAction">关闭视频</button></li>
+                        <li><button class="videoAction" onclick="toggleVideoButton()">关闭视频</button></li>
                         <li><button class="isMute">非静音</button></li>
-                        <li><button class="getDeviced">设置</button></li>
+                        <li><button class="setDeviceButton" onclick="setDeviced()">设置</button></li>
                     </ul>
                 </div>
-                <div class="setDeviced">
+                <div class="selectDevice" >
                     <div class="setArea">
                         <button class="camera">摄像头
                             <!--<span> > <span> -->
                         </button>
+
                         <button class="mic">麦克风
                             <!--<span> > <span> -->
                         </button>
@@ -48,13 +49,14 @@
                         <button class="speaker">扬声器
                             <!--<span> > <span> -->
                         </button>
+
                     </div>
                 </div>
 
 
-                <select class="audioinput"></select>
-                <select class="audioOutput"></select>
-                <select class="cameraDeviced"></select>
+                <select class="audioinput" onchange="getAudioInput()"></select>
+                <select class="audioOutput" onchange="getAudioOutput()"></select>
+                <select class="cameraDeviced" onchange="getCamera()"></select>
             </div>
 
         </div>
@@ -63,7 +65,7 @@
         <div class="tip_bottom">
             <hr/>
             <div class="record">
-                <button class="share" >屏幕共享</button>
+                <button class="share" onclick="toggleShareButton()">屏幕共享</button>
                 <button class="recording" onclick = "beginRecord({type: 'record'})">开始记录</button>
             </div>
         </div>

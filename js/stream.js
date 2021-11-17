@@ -237,14 +237,6 @@ Record.prototype.getStreamFromDevice = function (data){
                 video: false
             }
 
-            if(data.constraints.audio.rnnNoiseSuppression === true || data.constraints.audio.rnnNoiseSuppression === 'true'){
-                if(typeof constraints.audio !== 'object'){
-                    constraints.audio = {}
-                }
-                constraints.audio.noiseSuppression = { exact: true }
-                constraints.audio.rnnNoiseSuppression = { exact: true }
-                console.info('rnnNoise is enabled for get audio stream.')
-            }
             break
         case 'video':
             constraints = {
@@ -252,7 +244,7 @@ Record.prototype.getStreamFromDevice = function (data){
                 video: {
                     width: { exact: data.constraints.video.width ? data.constraints.video.width : 640 },
                     height: { exact: data.constraints.video.height ? data.constraints.video.height : 360 },
-                    // deviceId: data.constraints.video.deviceId ? { exact: data.constraints.video.deviceId } : ''
+                    deviceId: data.constraints.video.deviceId ? { exact: data.constraints.video.deviceId } : ''
                 }
             }
             if(Record.prototype.getBrowserDetail().browser !== 'firefox'){
@@ -366,7 +358,7 @@ Record.prototype.setConstraintsOfGetStream = function(data,constraints) {
                         width: {ideal: constraints.video.width.exact},
                         height: {ideal: constraints.video.height.exact},
                         frameRate: {exact: constraints.video.frameRate && constraints.video.frameRate.exact || ' '},
-                        // deviceId: {exact: constraints.video.deviceId && constraints.video.deviceId.exact || ' '}
+                        deviceId: {exact: constraints.video.deviceId && constraints.video.deviceId.exact || ' '}
                     },
                 }
             } else if (data.action === 'adjustResolution') {
