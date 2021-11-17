@@ -40,6 +40,11 @@ let isMute = false
 let  switchTimeOut
 let  shareTimeOut
 
+let setX
+let setY
+let setWidth
+let setHeight
+
 let localStream ={
     audio: null,
     main: null,
@@ -94,6 +99,12 @@ function draw(data){
     canvas.height = rangeH;
     canvas.width  = rangeW;
 
+    setX = rangeW * 3/4;
+    setY = rangeH * 3/4;
+    setWidth = rangeW * 1/4;
+    setHeight = rangeH * 1/4
+
+
     let videoType = getVideoType(data)
     if(videoType === 'openVideoStopShare'){
         window.cancelAnimationFrame(switchTimeOut)
@@ -119,9 +130,7 @@ function draw(data){
 
 
         shareToCanvas(videoType, shareVideo,0, 0, 0, 0, 0, 0, canvas.width, canvas.height)
-
-        switchToCanvas(videoType, video, 0, 0, video.videoWidth, video.videoHeight, 520, 260, 200, 100)
-
+        switchToCanvas(videoType, video, 0, 0, video.videoWidth, video.videoHeight, setX, setY, setWidth, setHeight)
     }
 
     if(videoType === 'openShareOpenVideo'){
@@ -135,7 +144,7 @@ function draw(data){
 
         shareToCanvas(videoType, shareVideo,0, 0, 0, 0, 0, 0, canvas.width, canvas.height)
 
-        switchToCanvas(videoType, video, 0, 0, video.videoWidth, video.videoHeight, 520, 260, 200, 100)
+        switchToCanvas(videoType, video, 0, 0, video.videoWidth, video.videoHeight, setX, setY, setWidth, setHeight)
 
     }
 
@@ -218,11 +227,28 @@ function getArea(data){
 function closePopUp () {
     tip.style.display = "none";
     contrainer.style.opacity = "1";
+    Object.keys(localStream).forEach(function (key) {
+        console.warn("key:",key )
+        let stream = localStream[key]
+        if (stream) {
+            window.record.closeStream(stream)
+            localStream[key] = null
+        }
+    })
+
 }
+
 
 function closeButton(){
     recordContrainer.style.display = 'none';
     contrainer.style.opacity = "1";
+    Object.keys(localStream).forEach(function (key) {
+        let stream = localStream[key]
+        if (stream) {
+            window.record.closeStream(stream)
+            localStream[key] = null
+        }
+    })
 }
 
 
@@ -231,8 +257,8 @@ function openVideo(data){
         data.constraints = {
             audio: true,
             video: {
-                width: 720,   // 必须
-                height: 360,  // 必须
+                width: 1920,   // 必须
+                height: 1080,  // 必须
                 frameRate: 15,  // 可缺省，默认15fps
             }
         }
@@ -321,7 +347,7 @@ function toggleVideoButton(){
                 videoButton.textContent = '开启视频'
 
                 window.cancelAnimationFrame(switchTimeOut)
-                context.clearRect(520, 260, 200, 100)
+                context.clearRect(setX, setY, setWidth, setHeight)
                 draw()
 
             }
@@ -349,7 +375,7 @@ function toggleShareButton(){
                 screenButton.textContent = '屏幕共享'
 
                 window.cancelAnimationFrame(shareTimeOut)
-                context.clearRect(520, 260, 200, 100)
+                context.clearRect(setX, setY, setWidth, setHeight)
                 draw()
             }
         }
@@ -483,19 +509,8 @@ function restartRecord(){
 }
 
 
-// window.addEventListener("onload", function(){
-//     console.warn("window onload...")
-//     window.record = new Record()
-// })
-
 window.addEventListener('load', function () {
-    let oReadyStateTimer = setInterval(function () {
-            if (document.readyState === 'complete') {
-                if (Record) {
-                    clearInterval(oReadyStateTimer)
-                    Record.prototype.preInit()
-                }
-            }
-        },
-        500)
+    if (Record) {
+        Record.prototype.preInit()
+    }
 })
