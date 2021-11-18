@@ -26,11 +26,10 @@ Record.prototype.openAudio = function(data){
 
     let getMediaCallBack = async function (args) {
         if (args.stream) {
-            stream = args.stream
-            console.info('get stream: ' + stream ? stream.id : null)
+            console.info('get stream: ' + args.stream ? args.stream.id : null)
             // This.processAddStream(stream, session.pc, type)
             This.setStream(args.stream, type, true)
-            audioRefreshResult({codeType: This.CODE_TYPE.ACTION_SUCCESS})
+            audioRefreshResult({codeType: This.CODE_TYPE.ACTION_SUCCESS, stream: args.stream})
         } else if (args.error) {
             console.warn('Get audio stream failed: ' + args.error)
             audioRefreshResult({codeType: This.prototype.getGumErrorCode('audio', args.error.name)})
@@ -302,7 +301,7 @@ Record.prototype.recording = function(data){
     }
     let This = this
     let options = {
-        mimeType: 'video/webm;codecs=vp9',
+        mimeType: 'video/webm;codecs=vp9;opus',
         audioBitsPerSecond : 128000,  // 音频码率
         videoBitsPerSecond : 500000,  // 视频码率
         ignoreMutedMedia: true
@@ -387,8 +386,4 @@ Record.prototype.download = function(data){
     }, 100);
 
     data.callback && data.callback({ codeType: 999, file: a})
-}
-
-Record.prototype.restartRecord = function(){
-
 }

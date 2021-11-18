@@ -240,7 +240,7 @@ Record.prototype.getStreamFromDevice = function (data){
             break
         case 'video':
             constraints = {
-                audio: false,
+                audio: data.constraints.audio ? (data.constraints.audio.deviceId ? {deviceId: { exact: data.constraints.audio.deviceId }} : data.constraints.audio) :data.constraints.audio,
                 video: {
                     width: { exact: data.constraints.video.width ? data.constraints.video.width : 640 },
                     height: { exact: data.constraints.video.height ? data.constraints.video.height : 360 },
@@ -353,7 +353,7 @@ Record.prototype.setConstraintsOfGetStream = function(data,constraints) {
             if (!data.action) {
                 console.info('get stream constraints: ' + JSON.stringify(constraints, null, '   '))
                 setConstraints = {
-                    audio: false,
+                    audio: data.constraints.audio ? (data.constraints.audio.deviceId ? {deviceId: { exact: data.constraints.audio.deviceId }} : data.constraints.audio) :data.constraints.audio,
                     video: {
                         width: {ideal: constraints.video.width.exact},
                         height: {ideal: constraints.video.height.exact},

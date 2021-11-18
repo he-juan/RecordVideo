@@ -1,9 +1,10 @@
 
 
 
-let stream
 let buffer
 let tip = document.getElementById("tip")
+let audioTip = document.getElementById("audioTip")
+let audio = document.getElementById("audio")
 let contrainer = document.getElementById("contrainer")
 let recordContrainer = document.getElementById("record")
 let video = document.getElementById("video")
@@ -12,6 +13,7 @@ let recordVideo = document.getElementById("recordVideo")
 let recording = document.getElementsByClassName("recording")[0]
 let recordButton = document.getElementsByClassName("recorded")[0]
 
+let audioButton = document.getElementsByClassName("audioButton")[0]
 let videoButton = document.getElementsByClassName('videoAction')[0]
 let screenButton = document.getElementsByClassName('share')[0]
 let isMuteButton = document.getElementsByClassName('isMute')[0]
@@ -60,10 +62,18 @@ let devices = {
     speakers:null
 }
 
-/**关于获取***/
+/**关于获取是否成功***/
 let isGetMic = false
 let isGetSpeaker = false
 let isGetCamera = false
+
+/**关于音频录制处理**/
+let AudioContext = window.AudioContext || window.webkitAudioContext || window.mozAudioContext;  // 实例化音频对象
+let audioCtx = new AudioContext()
+/**左声道和右声道**/
+let leftDataList = [],
+    rightDataList = [];
+
 
 // videoButton.addEventListener("click",toggleVideoButton)
 // screenButton.addEventListener("click",toggleShareButton)
@@ -84,23 +94,22 @@ micSelect.addEventListener("mouseleave", function(){
 speakerSelect.addEventListener("mouseout", function(){
     cameraDeviced.style.display = "none"
     audioOutput.style.display = "none"
-    // audioinput.style.display = "none"
 })
 
 
-
 recordButton.addEventListener("click", stopRecord)
-// cameraSelect.addEventListener("click",displayAudioInput)
+
+isMuteButton.addEventListener("click",isHandleMute)
 
 function getVideoType(data){
     let videoType = null
     if(isOpenVideo ){
         if(isOpenShareScreen){
-           if(data && data.openShare){
-               videoType = 'openShareOpenVideo'
-           }else{
-               videoType = 'openVideoOpenShare'
-           }
+            if(data && data.openShare){
+                videoType = 'openShareOpenVideo'
+            }else{
+                videoType = 'openVideoOpenShare'
+            }
         }else{
             videoType = 'openVideoStopShare'
         }
@@ -129,8 +138,8 @@ function draw(data){
     let videoWidth = video.videoWidth || shareVideo.videoWidth;
     let offsetWidth = video.offsetWidth ||shareVideo.offsetWidth
     let offsetHeight = video.offsetHeight ||shareVideo.offsetHeight
-    let rangeW = videoWidth * (700 / (offsetWidth -2));   //offsetWidth包括border、padding
-    let rangeH = videoHeight * (350 / (offsetHeight -2));
+    let rangeW = videoWidth * (720 / (offsetWidth -2));   //offsetWidth包括border、padding
+    let rangeH = videoHeight * (360 / (offsetHeight -2));
     canvas.height = rangeH;
     canvas.width  = rangeW;
 
@@ -243,23 +252,28 @@ function switchToCanvas(type, video, sx, sy, swidth, sheight, x, y, width, heigh
 }
 
 function getArea(data){
-    tip.style.display = "block";
-    contrainer.style.opacity = "0.2";
-    if(videoButton.textContent === '关闭视频'){
-        openVideo(data)
+    if(data.type === 'video'){
+        tip.style.display = "block";
+        contrainer.style.opacity = "0.2";
+        if(videoButton.textContent === '开启视频'){
+            openVideo(data)
+        }
+        // else if(screenButton.textContent === '屏幕共享'){
+        //     openShare(data)
+        // }else if(isMuteButton.textContent === '非静音'){
+        //
+        // }
+    }else{
+        audioTip.style.display = 'block'
+        contrainer.style.opacity = "0.2";
+        openAudio(data)
     }
-    // else if(screenButton.textContent === '屏幕共享'){
-    //     openShare(data)
-    // }else if(isMuteButton.textContent === '非静音'){
-    //
-    // }
 }
 
 function closePopUp () {
     tip.style.display = "none";
     contrainer.style.opacity = "1";
     Object.keys(localStream).forEach(function (key) {
-        console.warn("key:",key )
         let stream = localStream[key]
         if (stream) {
             window.record.closeStream(stream)
@@ -281,10 +295,46 @@ function closeButton(){
     })
 }
 
+function openAudio(){
+    let data = {}
+    data.type = 'audio'
+    data.constraints = {
+        audio: data.audio || true,
+        video: {
+            width: 720,   // 必须
+            height: 360,  // 必须
+            frameRate: 15,  // 可缺省，默认15fps
+            deviceId: data.deviceId  || ' '
+        }
+    }
+    data.callback = callback
+    function callback(event){
+        if(event.codeType === 999){
+            localStream.audio = event.stream
+            // audio.srcObject = localStream.audio
+            // audio.onloadedmetadata =function(){
+            //     audio.play()
+            // }
+            // audio.style.display ="block"
+            //   audio.style.border = "red"
+            /**处理audioStream**/
+            handleOnAudioProcess()
+        }else{
+            console.warn("获取音频失败")
+        }
+    }
+    window.record.openAudio(data)
+}
+
+function stopAudio(){
+    let data={}
+    window.record.stopAudio(data)
+}
+
 function openVideo(data){
     if(data.type === 'video'){
         data.constraints = {
-            audio: true,
+            audio: data.audio || true,
             video: {
                 width: 720,   // 必须
                 height: 360,  // 必须
@@ -409,11 +459,11 @@ function toggleVideoButton(){
 
 function toggleShareButton(){
     if(screenButton.textContent === '屏幕共享'){
-       if(localStream && localStream.slides){
-           console.warn("存在演示流")
-       }else{
-           openShare({type: 'shareScreen'})
-       }
+        if(localStream && localStream.slides){
+            console.warn("存在演示流")
+        }else{
+            openShare({type: 'shareScreen'})
+        }
     }else{
         stopShare()
     }
@@ -542,7 +592,8 @@ function getAudioInput(){
     console.warn("value:", audioinput.value)
     selectDevice.style.display = 'none'
     audioinput.style.display = "none"
-
+    let data = {type: 'video', audio: audioinput.value, deviceId: cameraDeviced.value}
+    openVideo(data)
 }
 
 function getAudioOutput(){
@@ -566,12 +617,158 @@ function getCamera(){
     openVideo(data)
 }
 
+function isHandleMute(){
+    if(isMuteButton.textContent === '非静音'){
+
+    }
+}
+
+function handleOnAudioProcess(){
+    let source = audioCtx.createMediaStreamSource(localStream.audio);
+    console.warn("source：",source)
+    // source.connect(audioCtx.destination)
+    // 创建一个jsNode
+    let jsNode = createJSNode(audioCtx);
+    // 需要连到扬声器消费掉outputBuffer，process回调才能触发
+    // 并且由于不给outputBuffer设置内容，所以扬声器不会播放出声音
+    jsNode.connect(audioCtx.destination);
+    jsNode.onaudioprocess = onAudioProcess;
+    // 把mediaNode连接到jsNode
+    source.connect(jsNode);
+
+    audio.style.display = "block"
+    // let scriptProcessor = audioCtx.createScriptProcessor(4096, 1, 1);
+    // source.connect(scriptProcessor);
+    // scriptProcessor.connect(audioCtx.destination);
+    // scriptProcessor.addEventListener("audioprocess", function (audioEvent) {
+    //     let buffer = audioEvent.inputBuffer.getChannelData(0);
+    //     instant = Math.max(...buffer)
+    // });
+}
+
+function createJSNode(audioCtx){
+    const BUFFER_SIZE = 4096;
+    const INPUT_CHANNEL_COUNT = 2;
+    const OUTPUT_CHANNEL_COUNT = 2;
+    // createJavaScriptNode已被废弃
+    let creator = audioCtx.createScriptProcessor || audioCtx.createJavaScriptNode;
+    creator = creator.bind(audioCtx);
+    return creator(BUFFER_SIZE,
+        INPUT_CHANNEL_COUNT, OUTPUT_CHANNEL_COUNT);
+}
+
+function onAudioProcess (event) {
+    // console.log(event.inputBuffer);
+    let audioBuffer = event.inputBuffer;
+    let leftChannelData = audioBuffer.getChannelData(0),
+        rightChannelData = audioBuffer.getChannelData(1);
+    // 需要克隆一下
+    leftDataList.push(leftChannelData.slice(0));
+    rightDataList.push(rightChannelData.slice(0));
+}
+
+function mergeArray (list) {
+    let length = list.length * list[0].length;
+    let data = new Float32Array(length),
+        offset = 0;
+    for (let i = 0; i < list.length; i++) {
+        data.set(list[i], offset);
+        offset += list[i].length;
+    }
+    return data;
+}
+function playRecord (arrayBuffer) {
+    let blob = new Blob([new Uint8Array(arrayBuffer)]);
+    let blobUrl = URL.createObjectURL(blob);
+    // document.querySelector('.audio-node').src = blobUrl;
+    audio.src = blobUrl
+}
+
+// 交叉合并左右声道的数据
+function interleaveLeftAndRight (left, right) {
+    let totalLength = left.length + right.length;
+    let data = new Float32Array(totalLength);
+    for (let i = 0; i < left.length; i++) {
+        let k = i * 2;
+        data[k] = left[i];
+        data[k + 1] = right[i];
+    }
+    return data;
+}
+
+function createWavFile (audioData) {
+    const WAV_HEAD_SIZE = 44;
+    let buffer = new ArrayBuffer(audioData.length * 2 + WAV_HEAD_SIZE),
+        // 需要用一个view来操控buffer
+        view = new DataView(buffer);
+    // 写入wav头部信息
+    // RIFF chunk descriptor/identifier
+    writeUTFBytes(view, 0, 'RIFF');
+    // RIFF chunk length
+    view.setUint32(4, 44 + audioData.length * 2, true);
+    // RIFF type
+    writeUTFBytes(view, 8, 'WAVE');
+    // format chunk identifier
+    // FMT sub-chunk
+    writeUTFBytes(view, 12, 'fmt ');
+    // format chunk length
+    view.setUint32(16, 16, true);
+    // sample format (raw)
+    view.setUint16(20, 1, true);
+    // stereo (2 channels)
+    view.setUint16(22, 2, true);
+    // sample rate
+    view.setUint32(24, 44100, true);
+    // byte rate (sample rate * block align)
+    view.setUint32(28, 44100 * 2, true);
+    // block align (channel count * bytes per sample)
+    view.setUint16(32, 2 * 2, true);
+    // bits per sample
+    view.setUint16(34, 16, true);
+    // data sub-chunk
+    // data chunk identifier
+    writeUTFBytes(view, 36, 'data');
+    // data chunk length
+    view.setUint32(40, audioData.length * 2, true);
+}
+function writeUTFBytes (view, offset, string) {
+    var lng = string.length;
+    for (var i = 0; i < lng; i++) {
+        view.setUint8(offset + i, string.charCodeAt(i));
+    }
+}
+
+// function createWavFile (audioData) {
+//     // 写入wav头部，代码同上
+//     // 写入PCM数据
+//     let length = audioData.length;
+//     let index = 44;
+//     let volume = 1;
+//     for (let i = 0; i < length; i++) {
+//         view.setInt16(index, audioData[i] * (0x7FFF * volume), true);
+//         index += 2;
+//     }
+//     return buffer;
+// }
+function stopRecord () {
+    // 停止录音
+    let leftData = mergeArray(leftDataList),
+        rightData = mergeArray(rightDataList);
+    let allData = interleaveLeftAndRight(leftData, rightData);
+    let wavBuffer = createWavFile(allData);
+    playRecord(wavBuffer);
+}
+
 function beginRecord(data){
     tip.style.display = "none";
     contrainer.style.opacity = "0.2";
     recordContrainer.style.display = 'block'
 
-    data.stream = canvas.captureStream()
+    data.stream = canvas.captureStream(60)
+    // let  audioCtx = new AudioContext();
+    // let source = audioCtx.createBufferSource()
+    // let track = audioCtx.createMediaStreamDestination()
+    // data.stream = stream.addTrack(track.stream.getAudioTracks()[0])
     data.callback = callback
     function callback(event){
         console.warn("beginRecord:",event)
@@ -648,36 +845,36 @@ function download(data){
 }
 
 function restartRecord(){
-   tip.style.display = 'block'
-   recordContrainer.style.display = 'none'
-   if(isRecord){
-       isRecord = false
-       recordButton.style.disabled = false
-       recordButton.style.backgroundColor = "orangered "
-   }
+    tip.style.display = 'block'
+    recordContrainer.style.display = 'none'
+    if(isRecord){
+        isRecord = false
+        recordButton.style.disabled = false
+        recordButton.style.backgroundColor = "orangered "
+    }
 
-   recordVideo.srcObject = null
+    recordVideo.srcObject = null
 
 }
 
 
 function devicedsInfo(){
     window.record.enumDevices({callback:function(event){
-         if(event){
-             console.warn("成功获取设备")
-             if(event.cameras){
-                 devices.cameras = event.cameras
-             }
-             if(event.microphones){
-                 devices.microphones = event.microphones
-             }
-             if(event.speakers){
-                 devices.speakers = event.speakers
-             }
-         }else{
-             console.warn("获取设备失败")
-         }
-    }})
+            if(event){
+                console.warn("成功获取设备")
+                if(event.cameras){
+                    devices.cameras = event.cameras
+                }
+                if(event.microphones){
+                    devices.microphones = event.microphones
+                }
+                if(event.speakers){
+                    devices.speakers = event.speakers
+                }
+            }else{
+                console.warn("获取设备失败")
+            }
+        }})
 }
 
 window.addEventListener('load', function () {

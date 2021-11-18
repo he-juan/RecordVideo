@@ -33,9 +33,12 @@ body{
     width:800px;
 }
 #recordVideo{
-    height: 400px;
-    width:800px;
-    margin-left: -50px;
+    height:360px;
+    width: 720px;
+    line-height:360px;
+    border: 2px solid #cbcbcb;
+    border-radius: 10px;
+
 }
 
 .tip_bottom{
@@ -81,31 +84,31 @@ body{
     /*justify-content:center;*/
 }
 .videoContrainer{
-    width: 700px;
-    height: 350px;
+    width: 720px;
+    height: 360px;
     overflow: hidden;
     border: 2px solid #F0EFDA;
     border-radius: 5px;
 }
 
- video, canvas{
-     width: 700px;
-     height: 350px;
-     border-radius: 2px;
-     position: absolute;
-     left: 0px;
-     top: 0px;
-     border: 1px solid #F0EFDA;
+video, canvas{
+    width: 720px;
+    height: 360px;
+    border-radius: 2px;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    border: 1px solid #F0EFDA;
 }
- #video， #shareScreen{
-     display:none;
-     /*z-index:-1;*/
- }
+#video， #shareScreen{
+    display:none;
+    /*z-index:-1;*/
+}
 
 
 #shareScreen{
-    width: 700px;
-    height: 350px;
+    width: 720px;
+    height: 360px;
     border-radius: 2px;
     position: absolute;
     left: 0px;
@@ -116,8 +119,8 @@ body{
 }
 
 #canvas {
-    width: 700px;
-    height: 350px;
+    width: 720px;
+    height: 360px;
     border-radius: 2px;
     position: absolute;
     left: 0px;
@@ -214,8 +217,8 @@ body{
 }
 
 /*.setArea button span{*/
-    /*border-weight:10px;*/
-    /*magrin-right: 0px;*/
+/*border-weight:10px;*/
+/*magrin-right: 0px;*/
 /*}*/
 
 .camera, .mic, .speaker{
