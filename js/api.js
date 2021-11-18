@@ -21,7 +21,7 @@ Record.prototype.openAudio = function(data){
         }else {
             console.warn('shareAudio result failed')
         }
-        data.callback && data.callback({ codeType: event.codeType , stream:stream})
+        data.callback && data.callback({ codeType: event.codeType , stream: event.stream})
     }
 
     let getMediaCallBack = async function (args) {

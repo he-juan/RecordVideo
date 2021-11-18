@@ -13,6 +13,22 @@
     <h1 class="title"> 音频 视频 屏幕共享进行录制</h1>
     <hr/>
 
+    <div id="contrainer">
+        <div id="contrainer_start">
+            <button class="audioRecording"onclick="getArea({type: 'audio'})"> 录制音频</button>
+            <button class="videoRecodering" onclick=" getArea({type: 'video'})"> 录制视频</button>
+        </div>
+    </div>
+
+
+    <div id="audioTip">
+        <div id="flex">
+            <button class="audioButton">开始</button>
+            <audio class="audio" controls></audio>
+        </div>
+    </div>
+
+
     <div id="tip" >
         <!--获取视频流相关内容.....-->
         <div class="tip_top">
@@ -70,13 +86,6 @@
             </div>
         </div>
 
-    </div>
-
-    <div id="contrainer">
-        <div id="contrainer_start">
-            <button class="audioRecording" > 录制音频</button>
-            <button class="videoRecodering" onclick=" getArea({type: 'video'})"> 录制视频</button>
-        </div>
     </div>
 
 

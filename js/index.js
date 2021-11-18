@@ -4,7 +4,7 @@
 let buffer
 let tip = document.getElementById("tip")
 let audioTip = document.getElementById("audioTip")
-let audio = document.getElementById("audio")
+let audio = document.getElementsByClassName("audio")[0]
 let contrainer = document.getElementById("contrainer")
 let recordContrainer = document.getElementById("record")
 let video = document.getElementById("video")
@@ -96,6 +96,7 @@ speakerSelect.addEventListener("mouseout", function(){
     audioOutput.style.display = "none"
 })
 
+audioButton.addEventListener("click",stopAudioRecord)
 
 recordButton.addEventListener("click", stopRecord)
 
@@ -266,7 +267,7 @@ function getArea(data){
     }else{
         audioTip.style.display = 'block'
         contrainer.style.opacity = "0.2";
-        openAudio(data)
+        // openAudio(data)
     }
 }
 
@@ -311,6 +312,7 @@ function openAudio(){
     function callback(event){
         if(event.codeType === 999){
             localStream.audio = event.stream
+            audioButton.textContent = "停止"
             // audio.srcObject = localStream.audio
             // audio.onloadedmetadata =function(){
             //     audio.play()
@@ -679,9 +681,15 @@ function mergeArray (list) {
 }
 function playRecord (arrayBuffer) {
     let blob = new Blob([new Uint8Array(arrayBuffer)]);
+    console.warn("blob：", blob)
     let blobUrl = URL.createObjectURL(blob);
     // document.querySelector('.audio-node').src = blobUrl;
     audio.src = blobUrl
+    audio.onloadedmetadata = function(e){
+        audio.play()
+        audioButton.textContent = "开始"
+    };
+
 }
 
 // 交叉合并左右声道的数据
@@ -696,41 +704,41 @@ function interleaveLeftAndRight (left, right) {
     return data;
 }
 
-function createWavFile (audioData) {
-    const WAV_HEAD_SIZE = 44;
-    let buffer = new ArrayBuffer(audioData.length * 2 + WAV_HEAD_SIZE),
-        // 需要用一个view来操控buffer
-        view = new DataView(buffer);
-    // 写入wav头部信息
-    // RIFF chunk descriptor/identifier
-    writeUTFBytes(view, 0, 'RIFF');
-    // RIFF chunk length
-    view.setUint32(4, 44 + audioData.length * 2, true);
-    // RIFF type
-    writeUTFBytes(view, 8, 'WAVE');
-    // format chunk identifier
-    // FMT sub-chunk
-    writeUTFBytes(view, 12, 'fmt ');
-    // format chunk length
-    view.setUint32(16, 16, true);
-    // sample format (raw)
-    view.setUint16(20, 1, true);
-    // stereo (2 channels)
-    view.setUint16(22, 2, true);
-    // sample rate
-    view.setUint32(24, 44100, true);
-    // byte rate (sample rate * block align)
-    view.setUint32(28, 44100 * 2, true);
-    // block align (channel count * bytes per sample)
-    view.setUint16(32, 2 * 2, true);
-    // bits per sample
-    view.setUint16(34, 16, true);
-    // data sub-chunk
-    // data chunk identifier
-    writeUTFBytes(view, 36, 'data');
-    // data chunk length
-    view.setUint32(40, audioData.length * 2, true);
-}
+// function createWavFile (audioData) {
+//     const WAV_HEAD_SIZE = 44;
+//     let buffer = new ArrayBuffer(audioData.length * 2 + WAV_HEAD_SIZE),
+//         // 需要用一个view来操控buffer
+//         view = new DataView(buffer);
+//     // 写入wav头部信息
+//     // RIFF chunk descriptor/identifier
+//     writeUTFBytes(view, 0, 'RIFF');
+//     // RIFF chunk length
+//     view.setUint32(4, 44 + audioData.length * 2, true);
+//     // RIFF type
+//     writeUTFBytes(view, 8, 'WAVE');
+//     // format chunk identifier
+//     // FMT sub-chunk
+//     writeUTFBytes(view, 12, 'fmt ');
+//     // format chunk length
+//     view.setUint32(16, 16, true);
+//     // sample format (raw)
+//     view.setUint16(20, 1, true);
+//     // stereo (2 channels)
+//     view.setUint16(22, 2, true);
+//     // sample rate
+//     view.setUint32(24, 44100, true);
+//     // byte rate (sample rate * block align)
+//     view.setUint32(28, 44100 * 2, true);
+//     // block align (channel count * bytes per sample)
+//     view.setUint16(32, 2 * 2, true);
+//     // bits per sample
+//     view.setUint16(34, 16, true);
+//     // data sub-chunk
+//     // data chunk identifier
+//     writeUTFBytes(view, 36, 'data');
+//     // data chunk length
+//     view.setUint32(40, audioData.length * 2, true);
+// }
 function writeUTFBytes (view, offset, string) {
     var lng = string.length;
     for (var i = 0; i < lng; i++) {
@@ -738,25 +746,32 @@ function writeUTFBytes (view, offset, string) {
     }
 }
 
-// function createWavFile (audioData) {
-//     // 写入wav头部，代码同上
-//     // 写入PCM数据
-//     let length = audioData.length;
-//     let index = 44;
-//     let volume = 1;
-//     for (let i = 0; i < length; i++) {
-//         view.setInt16(index, audioData[i] * (0x7FFF * volume), true);
-//         index += 2;
-//     }
-//     return buffer;
-// }
-function stopRecord () {
+function createWavFile (audioData) {
+    // 写入wav头部，代码同上
+    // 写入PCM数据
+    let length = audioData.length;
+    let index = 44;
+    let volume = 1;
+    let buffer = new ArrayBuffer(audioData.length * 2 + index);
+//         // 需要用一个view来操控buffer
+    let view = new DataView(buffer);
+    for (let i = 0; i < length; i++) {
+        view.setInt16(index, audioData[i] * (0x7FFF * volume), true);
+        index += 2;
+    }
+    return buffer;
+}
+function stopAudioRecord () {
     // 停止录音
-    let leftData = mergeArray(leftDataList),
-        rightData = mergeArray(rightDataList);
-    let allData = interleaveLeftAndRight(leftData, rightData);
-    let wavBuffer = createWavFile(allData);
-    playRecord(wavBuffer);
+    if(audioButton.textContent === '停止'){
+        let leftData = mergeArray(leftDataList),
+            rightData = mergeArray(rightDataList);
+        let allData = interleaveLeftAndRight(leftData, rightData);
+        let wavBuffer = createWavFile(allData);
+        playRecord(wavBuffer);
+    }else{
+        openAudio({type: 'audio'})
+    }
 }
 
 function beginRecord(data){
