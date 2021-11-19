@@ -23,7 +23,17 @@
 
     <div id="audioTip">
         <div id="flex">
-            <button class="audioButton">开始</button>
+            <!--    设备选择部分    -->
+            <div class="select">
+                <label for="audioInSource">Audio input source: </label><select id="audioInSource"></select>
+            </div>
+
+            <div class="select">
+                <label for="audioOutSource">Audio output destination: </label><select id="audioOutSource"></select>
+            </div>
+            <hr />
+
+            <div><button class="audioButton">开始录制</button></div>
             <audio class="audio" controls></audio>
         </div>
     </div>
@@ -52,6 +62,8 @@
                         <li><button class="setDeviceButton" onclick="setDeviced()">设置</button></li>
                     </ul>
                 </div>
+
+                <!--                     设备选择                             -->
                 <div class="selectDevice" >
                     <div class="setArea">
                         <button class="camera">摄像头
@@ -69,10 +81,11 @@
                     </div>
                 </div>
 
-
                 <select class="audioinput" onchange="getAudioInput()"></select>
                 <select class="audioOutput" onchange="getAudioOutput()"></select>
                 <select class="cameraDeviced" onchange="getCamera()"></select>
+
+
             </div>
 
         </div>
@@ -111,9 +124,9 @@
 
     <div class="tip_bottom">
         <div class="record">
-            <button class="recorded" onclick="stopRecord({type:'video'})">停止记录</button>
+            <button class="recorded" onclick="stopVideoRecord({type:'video'})">停止记录</button>
             <button>已完成</button>
-            <button class="download" onclick ="download({})">下载</button>
+            <button class="download" onclick ="download({type: 'video'})">下载</button>
         </div>
     </div>
 

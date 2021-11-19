@@ -96,9 +96,9 @@ speakerSelect.addEventListener("mouseout", function(){
     audioOutput.style.display = "none"
 })
 
-audioButton.addEventListener("click",stopAudioRecord)
+audioButton.addEventListener("click",handleAudioRecord)
 
-recordButton.addEventListener("click", stopRecord)
+recordButton.addEventListener("click", stopVideoRecord)
 
 isMuteButton.addEventListener("click",isHandleMute)
 
@@ -268,6 +268,7 @@ function getArea(data){
         audioTip.style.display = 'block'
         contrainer.style.opacity = "0.2";
         // openAudio(data)
+        handleAudioRecord()
     }
 }
 
@@ -301,26 +302,15 @@ function openAudio(){
     data.type = 'audio'
     data.constraints = {
         audio: data.audio || true,
-        video: {
-            width: 720,   // 必须
-            height: 360,  // 必须
-            frameRate: 15,  // 可缺省，默认15fps
-            deviceId: data.deviceId  || ' '
-        }
     }
     data.callback = callback
     function callback(event){
         if(event.codeType === 999){
             localStream.audio = event.stream
-            audioButton.textContent = "停止"
-            // audio.srcObject = localStream.audio
-            // audio.onloadedmetadata =function(){
-            //     audio.play()
-            // }
-            // audio.style.display ="block"
-            //   audio.style.border = "red"
+
             /**处理audioStream**/
-            handleOnAudioProcess()
+            audioRecord()
+
         }else{
             console.warn("获取音频失败")
         }
@@ -329,8 +319,14 @@ function openAudio(){
 }
 
 function stopAudio(){
-    let data={}
-    window.record.stopAudio(data)
+    window.record.stopAudio({callback:function(event){
+        if(event.codeType === 999){
+            console.warn("停止音频成功")
+            audioButton.textContent = "开始录制"
+        }else{
+            console.warn("停止音频失败")
+        }
+    }})
 }
 
 function openVideo(data){
@@ -474,9 +470,6 @@ function toggleShareButton(){
 
 function setDeviced(){
     selectDevice.style.display = 'block'
-    // isGetCamera = false
-    // isGetMic = false
-    // isGetSpeaker = false
 }
 function handleCamera(){
 
@@ -625,154 +618,11 @@ function isHandleMute(){
     }
 }
 
-function handleOnAudioProcess(){
-    let source = audioCtx.createMediaStreamSource(localStream.audio);
-    console.warn("source：",source)
-    // source.connect(audioCtx.destination)
-    // 创建一个jsNode
-    let jsNode = createJSNode(audioCtx);
-    // 需要连到扬声器消费掉outputBuffer，process回调才能触发
-    // 并且由于不给outputBuffer设置内容，所以扬声器不会播放出声音
-    jsNode.connect(audioCtx.destination);
-    jsNode.onaudioprocess = onAudioProcess;
-    // 把mediaNode连接到jsNode
-    source.connect(jsNode);
 
-    audio.style.display = "block"
-    // let scriptProcessor = audioCtx.createScriptProcessor(4096, 1, 1);
-    // source.connect(scriptProcessor);
-    // scriptProcessor.connect(audioCtx.destination);
-    // scriptProcessor.addEventListener("audioprocess", function (audioEvent) {
-    //     let buffer = audioEvent.inputBuffer.getChannelData(0);
-    //     instant = Math.max(...buffer)
-    // });
-}
-
-function createJSNode(audioCtx){
-    const BUFFER_SIZE = 4096;
-    const INPUT_CHANNEL_COUNT = 2;
-    const OUTPUT_CHANNEL_COUNT = 2;
-    // createJavaScriptNode已被废弃
-    let creator = audioCtx.createScriptProcessor || audioCtx.createJavaScriptNode;
-    creator = creator.bind(audioCtx);
-    return creator(BUFFER_SIZE,
-        INPUT_CHANNEL_COUNT, OUTPUT_CHANNEL_COUNT);
-}
-
-function onAudioProcess (event) {
-    // console.log(event.inputBuffer);
-    let audioBuffer = event.inputBuffer;
-    let leftChannelData = audioBuffer.getChannelData(0),
-        rightChannelData = audioBuffer.getChannelData(1);
-    // 需要克隆一下
-    leftDataList.push(leftChannelData.slice(0));
-    rightDataList.push(rightChannelData.slice(0));
-}
-
-function mergeArray (list) {
-    let length = list.length * list[0].length;
-    let data = new Float32Array(length),
-        offset = 0;
-    for (let i = 0; i < list.length; i++) {
-        data.set(list[i], offset);
-        offset += list[i].length;
-    }
-    return data;
-}
-function playRecord (arrayBuffer) {
-    let blob = new Blob([new Uint8Array(arrayBuffer)]);
-    console.warn("blob：", blob)
-    let blobUrl = URL.createObjectURL(blob);
-    // document.querySelector('.audio-node').src = blobUrl;
-    audio.src = blobUrl
-    audio.onloadedmetadata = function(e){
-        audio.play()
-        audioButton.textContent = "开始"
-    };
-
-}
-
-// 交叉合并左右声道的数据
-function interleaveLeftAndRight (left, right) {
-    let totalLength = left.length + right.length;
-    let data = new Float32Array(totalLength);
-    for (let i = 0; i < left.length; i++) {
-        let k = i * 2;
-        data[k] = left[i];
-        data[k + 1] = right[i];
-    }
-    return data;
-}
-
-// function createWavFile (audioData) {
-//     const WAV_HEAD_SIZE = 44;
-//     let buffer = new ArrayBuffer(audioData.length * 2 + WAV_HEAD_SIZE),
-//         // 需要用一个view来操控buffer
-//         view = new DataView(buffer);
-//     // 写入wav头部信息
-//     // RIFF chunk descriptor/identifier
-//     writeUTFBytes(view, 0, 'RIFF');
-//     // RIFF chunk length
-//     view.setUint32(4, 44 + audioData.length * 2, true);
-//     // RIFF type
-//     writeUTFBytes(view, 8, 'WAVE');
-//     // format chunk identifier
-//     // FMT sub-chunk
-//     writeUTFBytes(view, 12, 'fmt ');
-//     // format chunk length
-//     view.setUint32(16, 16, true);
-//     // sample format (raw)
-//     view.setUint16(20, 1, true);
-//     // stereo (2 channels)
-//     view.setUint16(22, 2, true);
-//     // sample rate
-//     view.setUint32(24, 44100, true);
-//     // byte rate (sample rate * block align)
-//     view.setUint32(28, 44100 * 2, true);
-//     // block align (channel count * bytes per sample)
-//     view.setUint16(32, 2 * 2, true);
-//     // bits per sample
-//     view.setUint16(34, 16, true);
-//     // data sub-chunk
-//     // data chunk identifier
-//     writeUTFBytes(view, 36, 'data');
-//     // data chunk length
-//     view.setUint32(40, audioData.length * 2, true);
+// function handleOnAudioProcess(){
+//
 // }
-function writeUTFBytes (view, offset, string) {
-    var lng = string.length;
-    for (var i = 0; i < lng; i++) {
-        view.setUint8(offset + i, string.charCodeAt(i));
-    }
-}
 
-function createWavFile (audioData) {
-    // 写入wav头部，代码同上
-    // 写入PCM数据
-    let length = audioData.length;
-    let index = 44;
-    let volume = 1;
-    let buffer = new ArrayBuffer(audioData.length * 2 + index);
-//         // 需要用一个view来操控buffer
-    let view = new DataView(buffer);
-    for (let i = 0; i < length; i++) {
-        view.setInt16(index, audioData[i] * (0x7FFF * volume), true);
-        index += 2;
-    }
-    return buffer;
-}
-function stopAudioRecord () {
-    // 停止录音
-    if(audioButton.textContent === '停止'){
-        let leftData = mergeArray(leftDataList),
-            rightData = mergeArray(rightDataList);
-        let allData = interleaveLeftAndRight(leftData, rightData);
-        let wavBuffer = createWavFile(allData);
-        playRecord(wavBuffer);
-    }else{
-        openAudio({type: 'audio'})
-    }
-}
 
 function beginRecord(data){
     tip.style.display = "none";
@@ -799,10 +649,10 @@ function beginRecord(data){
             console.warn("录制失败")
         }
     }
-    window.record.recording(data)
+    window.record.videoRecord(data)
 }
 
-function stopRecord(data){
+function stopVideoRecord(data){
     if(!isRecord){
         // let data = {}
         data.callback = callback
@@ -831,7 +681,7 @@ function stopRecord(data){
                 /***录制内容返回播放***/
                 let blob = new Blob(event.Blobs, {'type': 'video/webm'});
                 let url = window.URL.createObjectURL(blob);
-                if (data.type === 'video' || data.type === 'shareScreen') {
+                if (data.type === 'video' || data.type === 'shareScreen' || data.type === "record") {
                     recordVideo.srcObject = null;
                 }
                 recordVideo.src = url;
@@ -842,12 +692,78 @@ function stopRecord(data){
                 console.warn("停止录制失败")
             }
         }
-        window.record.stopRecording(data)
+        window.record.stopVideoRecord(data)
     }
 
 }
+function handleAudioRecord(){
+    if(audioButton.textContent === '开始录制'){
+        console.warn("音频录制  音频录制开始")
+        openAudio();
+        // audioRecord()
+    }else{
+        stopAudioRecord()
+    }
+}
+
+function audioRecord(){
+    let data = {}
+    data.callback = callback
+    data.stream = localStream.audio
+    function callback(event){
+        if(event.codeType === 999){
+            console.warn("音频录制成功")
+            audioButton.textContent = '停止录制'
+            // audio.srcObject = event.stream.stream
+            // audio.onloadedmetadata = function(e) {
+            //     console.warn("111111")
+            //     audio.play();
+            // };
+        }else{
+            console.warn("音频录制失败")
+        }
+    }
+    console.warn("data:",data)
+    window.record.audioRecord(data)
+}
+
+
+function stopAudioRecord(){
+    let data ={}
+    data.callback = callback
+    function callback(event){
+        console.warn("event:",event)
+        if(event.codeType === 999){
+            console.warn("停止音频录制成功")
+            audioButton.textContent = '开始录制'
+            /***录制后关闭流**/
+            stopAudio()
+
+            Object.keys(localStream).forEach(function (key) {
+                let stream = localStream[key]
+                if (stream) {
+                    window.record.closeStream(stream)
+                    localStream[key] = null
+                }
+            })
+
+            /***录制内容返回播放***/
+            let blob = new Blob(event.Blobs, {'type': 'audio/ogg'});
+            let url = window.URL.createObjectURL(blob);
+            // if (data.type === 'video' || data.type === 'shareScreen' || data.type === "record") {
+            //     recordVideo.srcObject = null;
+            // }
+            audio.src = url;
+            audio.controls = true
+        }else{
+            console.warn("停止音频录制失败")
+        }
+    }
+    window.record.stopAudioRecord(data)
+}
 
 function download(data){
+
     data.callback = callback
     function callback(event){
         if(event.codeType === 999){
@@ -856,7 +772,11 @@ function download(data){
             console.warn("下载失败")
         }
     }
-    window.record.download(data)
+    if(data.type === 'video'){
+        window.record.videoDownload(data)
+    }else{
+        window.record.audioDownload(data)
+    }
 }
 
 function restartRecord(){

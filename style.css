@@ -31,18 +31,23 @@ body{
      transform: translate(-50%,-50%);
      border: 2px solid #cbcbcb;
 
-     text-align: center;
+     text-align: left;
      display: flex;
      flex-direction:row;
      flex-wrap: wrap;
      justify-content: space-between ;
-     align-items: center;
-     align-content:center;
+     align-items: flex-start ;
+     align-content:flex-start ;
+}
+
+#flex .select{
+    width: 500px;
+    height: 100px;
 }
 
 #flex .audioButton{
     height: 50px;
-    width:60px;
+    width:80px;
     border: 1px solid #cbcbcb;
 }
 

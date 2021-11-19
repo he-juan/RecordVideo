@@ -291,17 +291,18 @@ Record.prototype.stopShare = function (data) {
 }
 
 
+/***************************************视频录制***************************************************/
 
-Record.prototype.recording = function(data){
+Record.prototype.videoRecord = function(data){
     console.info('recording video camera: ' + JSON.stringify(data, null, '    '))
+    let This = this
     if (!data && !data.stream) {
         console.warn('shareVideo: invalid parameters')
         data && data.callback && data.callback({codeType: This.CODE_TYPE.PARAMETER_ERROR})
         return
     }
-    let This = this
     let options = {
-        mimeType: 'video/webm;codecs=vp9;opus',
+        mimeType: 'video/webm;codecs=vp9;',
         audioBitsPerSecond : 128000,  // 音频码率
         videoBitsPerSecond : 500000,  // 视频码率
         ignoreMutedMedia: true
@@ -319,37 +320,37 @@ Record.prototype.recording = function(data){
         }else {
             console.warn('recording video filed ' + event.codeType)
         }
-        data.callback && data.callback({ codeType: event.codeType, stream: This.mediaRecorder})
+        data.callback && data.callback({ codeType: event.codeType, stream: This.videoMediaRecorder})
     }
 
     try{
-        This.mediaRecorder = new MediaRecorder(data.stream, options)
-        This.mediaRecorder.recordedBlobs = []
+        This.videoMediaRecorder = new MediaRecorder(data.stream, options)
+        This.videoMediaRecorder.recordedBlobs = []
     }catch(e){
         console.log('Unable to create MediaRecorder with options Object: ', e);
     }
 
-    This.mediaRecorder.start(10); // collect 10ms of data
-    console.log('MediaRecorder started', This.mediaRecorder);
-    This.mediaRecorder.ondataavailable = handleDataAvailable;
-    if(This.mediaRecorder){
-        recordingCallback({codeType: 999, stream: This.mediaRecorder})
+    This.videoMediaRecorder.start(10); // collect 10ms of data
+    console.log('MediaRecorder started', This.videoMediaRecorder);
+    This.videoMediaRecorder.ondataavailable = handleDataAvailable;
+    if(This.videoMediaRecorder){
+        recordingCallback({codeType: 999, stream: This.videoMediaRecorder})
     }else{
-        recordingCallback({codeType: 201, stream: This.mediaRecorder})
+        recordingCallback({codeType: 201, stream: This.videoMediaRecorder})
     }
 
     function handleDataAvailable(event){
         if (event.data && event.data.size > 0) {
-            This.mediaRecorder.recordedBlobs.push(event.data);
+            This.videoMediaRecorder.recordedBlobs.push(event.data);
         }
     }
 
 }
 
-Record.prototype.stopRecording = function(data){
+Record.prototype.stopVideoRecord = function(data){
     console.log('Recorder stopped: ', data);
     let This = this
-    This.mediaRecorder.onstop = function(){
+    This.videoMediaRecorder.onstop = function(){
         /**录制返回播放**/
         // let blob = new Blob(This.mediaRecorder.recordedBlobs, {'type': 'video/webm'});
         // let url = window.URL.createObjectURL(blob);
@@ -360,24 +361,126 @@ Record.prototype.stopRecording = function(data){
         console.warn("********************")
     }
 
-    This.mediaRecorder.addEventListener('dataavailable', function(event) {
+    This.videoMediaRecorder.addEventListener('dataavailable', function(event) {
         if (event.data && event.data.size > 0) {
-            This.mediaRecorder.recordedBlobs.push(event.data);
+            This.videoMediaRecorder.recordedBlobs.push(event.data);
         }
     })
 
-    data.callback && data.callback({ codeType: 999, Blobs: This.mediaRecorder.recordedBlobs,})
+    data.callback && data.callback({ codeType: 999, Blobs: This.videoMediaRecorder.recordedBlobs,})
 }
 
-Record.prototype.download = function(data){
+
+Record.prototype.videoDownload = function(data){
     let This = this
-    var blob = new Blob(This.mediaRecorder.recordedBlobs, {type: 'video/webm'});
+    var blob = new Blob(This.videoMediaRecorder.recordedBlobs, {type: 'video/webm'});
     var url = window.URL.createObjectURL(blob);
     var a = document.createElement('a');
     a.target = "_blank";
     a.style.display = 'none';
     a.href = url;
     a.download = 'test.webm';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function() {
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+    }, 100);
+
+    data.callback && data.callback({ codeType: 999, file: a})
+}
+
+
+/***********************************************音频录制****************************************************/
+
+Record.prototype.audioRecord = function(data){
+    console.info('recording audio MIC: ' + JSON.stringify(data, null, '    '))
+    let This = this
+    if (!data && !data.stream) {
+        console.warn('shareAudio: invalid parameters')
+        data && data.callback && data.callback({codeType: This.CODE_TYPE.PARAMETER_ERROR})
+        return
+    }
+    let options = {
+        mimeType: 'audio/webm;codecs=opus;',
+        audioBitsPerSecond : 128000,  // 音频码率
+        videoBitsPerSecond : 500000,  // 视频码率
+        ignoreMutedMedia: true
+    };
+
+    // MediaRecorder.isTypeSupported 判断是否支持设置的视频格式
+    if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+        console.error(`${options.mimeType} is not supported!`)
+        return
+    }
+
+    function recordingCallback(event){
+        if(event.codeType === 999){
+            console.info('recording video success')
+        }else {
+            console.warn('recording video filed ' + event.codeType)
+        }
+        data.callback && data.callback({ codeType: event.codeType, stream: This.audioMediaRecorder})
+    }
+
+    try{
+        This.audioMediaRecorder = new MediaRecorder(data.stream, options)
+        This.audioMediaRecorder.recordedBlobs = []
+    }catch(e){
+        console.log('Unable to create MediaRecorder with options Object: ', e);
+    }
+
+    This.audioMediaRecorder.start(10); // collect 10ms of data
+    console.log('MediaRecorder started', This.audioMediaRecorder);
+    This.audioMediaRecorder.ondataavailable = handleDataAvailable;
+    if(This.audioMediaRecorder){
+        recordingCallback({codeType: 999, stream: This.audioMediaRecorder})
+    }else{
+        recordingCallback({codeType: 201, stream: This.audioMediaRecorder})
+    }
+
+    function handleDataAvailable(event){
+        if (event.data && event.data.size > 0) {
+            This.audioMediaRecorder.recordedBlobs.push(event.data);
+        }
+    }
+
+}
+
+
+Record.prototype.stopAudioRecord = function(data){
+    console.log('Recorder stopped: ', data);
+    let This = this
+    This.audioMediaRecorder.onstop = function(){
+        /**录制返回播放**/
+        // let blob = new Blob(This.mediaRecorder.recordedBlobs, {'type': 'video/webm'});
+        // let url = window.URL.createObjectURL(blob);
+        // if (data.type === 'video' || data.type === 'shareScreen') {
+        //     recordVideo.srcObject = null;
+        // }
+        // recordVideo.src = url;
+        console.warn("********************")
+    }
+
+    This.audioMediaRecorder.addEventListener('dataavailable', function(event) {
+        if (event.data && event.data.size > 0) {
+            This.audioMediaRecorder.recordedBlobs.push(event.data);
+        }
+    })
+
+    data.callback && data.callback({ codeType: 999, Blobs: This.audioMediaRecorder.recordedBlobs,})
+}
+
+
+Record.prototype.audioDownload = function(data){
+    let This = this
+    var blob = new Blob(This.videoMediaRecorder.recordedBlobs, {type: 'audio/ogg'});
+    var url = window.URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.target = "_blank";
+    a.style.display = 'none';
+    a.href = url;
+    a.download = 'audio.ogg';
     document.body.appendChild(a);
     a.click();
     setTimeout(function() {
