@@ -33,25 +33,38 @@ body{
 
      text-align: left;
      display: flex;
-     flex-direction:row;
+     flex-direction:column;
      flex-wrap: wrap;
-     justify-content: space-between ;
+     justify-content: flex-start  ;
      align-items: flex-start ;
      align-content:flex-start ;
 }
 
 #flex .select{
+    margin-top:10px;
     width: 500px;
     height: 100px;
 }
 
-#flex .audioButton{
-    height: 50px;
+#flex .recordCon{
+    width: 600px;
+    /*height:300px;*/
+    margin-left: 10px;
+    display: flex;
+    flex-direction:column;
+    flex-wrap: nowrap;
+    justify-content: flex-start  ;
+    align-items: flex-start ;
+    align-content:center ;
+}
+
+#flex .recordCon .audioButton{
+    height:40px;
     width:80px;
     border: 1px solid #cbcbcb;
 }
 
-#flex .audio{
+#flex .recordCon .audio{
     height: 50px;
     width:300px;
 }

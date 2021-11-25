@@ -1,6 +1,6 @@
 
 
-
+// 关于视频录制按钮
 let buffer
 let tip = document.getElementById("tip")
 let audioTip = document.getElementById("audioTip")
@@ -27,6 +27,11 @@ let cameraDeviced = document.getElementsByClassName("cameraDeviced")[0]
 let cameraSelect = document.getElementsByClassName("camera")[0]
 let micSelect = document.getElementsByClassName("mic")[0]
 let speakerSelect = document.getElementsByClassName("speaker")[0]
+
+// 关于音频录制按钮
+let audioInSource = document.getElementsByClassName("audioInSource")[0]
+let audioOutSource = document.getElementsByClassName("audioOutSource")[0]
+
 
 window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
     window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
@@ -268,7 +273,8 @@ function getArea(data){
         audioTip.style.display = 'block'
         contrainer.style.opacity = "0.2";
         // openAudio(data)
-        handleAudioRecord()
+        handleDeviceds()
+        // handleAudioRecord()
     }
 }
 
@@ -297,24 +303,26 @@ function closeButton(){
     })
 }
 
-function openAudio(){
-    let data = {}
+function openAudio(data){
+    // let data = {}
     data.type = 'audio'
     data.constraints = {
-        audio: data.audio || true,
+        audio: {deviceId: data && data.audio} || true,
     }
     data.callback = callback
     function callback(event){
         if(event.codeType === 999){
+            console.warn("获取音频成功")
             localStream.audio = event.stream
 
             /**处理audioStream**/
-            audioRecord()
+            // audioRecord()
 
         }else{
             console.warn("获取音频失败")
         }
     }
+    console.warn("openAudio_data:",data)
     window.record.openAudio(data)
 }
 
@@ -337,7 +345,7 @@ function openVideo(data){
                 width: 720,   // 必须
                 height: 360,  // 必须
                 frameRate: 15,  // 可缺省，默认15fps
-                deviceId: data.deviceId  || ' '
+                // deviceId: data.deviceId  || ''
             }
         }
 
@@ -448,7 +456,8 @@ function toggleVideoButton(){
         if(localStream && localStream.main){
             console.warn("存在视频流")
         }else{
-            openVideo({type: 'video'})
+            // openVideo({type: 'video'})
+            handleVideoLogic({type: 'video'})
         }
     }else{
         stopVideo()
@@ -530,8 +539,23 @@ function handleSpeaker(){
     audioinput.style.display = 'block'
     cameraDeviced.style.display = "none"
     audioOutput.style.display = "none"
+}
 
-
+function handleVideoLogic(data){
+    setTimeout(function(){
+        console.warn("handleVideoLogic:",data)
+        if(data.type === 'audio'){
+            if(localStream.audio){
+                localStream.audio.getTracks().forEach(track => {track.stop()})
+            }
+            openAudio(data)
+        }else{
+            if(localStream.main){
+                localStream.main.getTracks().forEach(track => {track.stop()})
+            }
+            openVideo(data)
+        }
+    },2500)
 }
 
 function handleDeviceds(){
@@ -554,10 +578,11 @@ function handleDeviceds(){
                 if(microphone.deviceId !== 'default' && microphone.deviceId !== 'communications'){
                     let option = document.createElement('option')
                     option.text = microphone.label || ''
-                    // audioOutput = event.microphones
                     option.value = microphone.deviceId
-                    audioOutput.appendChild(option)
-                    audioOutput.style.display = 'block'
+                    // audioOutput.appendChild(option)
+                    // audioOutput.style.display = 'block'
+                    // 针对音频录制设备
+                    audioInSource.appendChild(option)
                 }
             }
         }
@@ -567,10 +592,11 @@ function handleDeviceds(){
                 if(speaker.deviceId !== 'default' && speaker.deviceId !== 'communications'){
                     let option = document.createElement('option')
                     option.text = speaker.label || ''
-                    // audioinput = event.speakers
                     option.value = speaker.deviceId
-                    audioinput.appendChild(option)
-                    audioinput.style.display = 'block'
+                    // audioinput.appendChild(option)
+                    // audioinput.style.display = 'block'
+                    // 针对音频录制设备
+                    audioOutSource.appendChild(option)
                 }
             }
         }
@@ -588,7 +614,8 @@ function getAudioInput(){
     selectDevice.style.display = 'none'
     audioinput.style.display = "none"
     let data = {type: 'video', audio: audioinput.value, deviceId: cameraDeviced.value}
-    openVideo(data)
+    // openVideo(data)
+    // handleVideoLogic({type: 'audio', audio:audioinput.value})
 }
 
 function getAudioOutput(){
@@ -598,6 +625,7 @@ function getAudioOutput(){
     console.warn("value:",audioOutput.value)
     selectDevice.style.display = 'none'
     audioOutput.style.display = "none"
+    handleVideoLogic({type: 'audio', audio:audioOutput.value})
 }
 
 function getCamera(){
@@ -609,13 +637,29 @@ function getCamera(){
     cameraDeviced.style.display = "none"
 
     let data = {type: 'video', deviceId: cameraDeviced.value}
-    openVideo(data)
+    // openVideo(data)
+    handleVideoLogic(data)
 }
 
 function isHandleMute(){
     if(isMuteButton.textContent === '非静音'){
 
     }
+}
+
+function getAudioSource(){
+    let option = audioInSource.options
+    audioInSource.value = option[audioInSource.selectedIndex].value
+    let data ={
+        audio:audioInSource.value
+    }
+    handleAudioRecord(data)
+    // openAudio(data)
+}
+
+function getAudioOutSource(){
+    let option = audioOutSource.options
+    audioOutSource.value = option[audioOutSource.selectedIndex].value
 }
 
 
@@ -628,8 +672,20 @@ function beginRecord(data){
     tip.style.display = "none";
     contrainer.style.opacity = "0.2";
     recordContrainer.style.display = 'block'
+    let saveStream = []
+    let canvasStream = canvas.captureStream(60)
+    let canvasTrack =  canvasStream.getTracks()[0]
+    if(canvasTrack){
+        saveStream.push(canvasTrack)
+    }
+    if(localStream.audio){
+        let micTrack = localStream.audio.getTracks()[0]
+        saveStream.push(micTrack)
+    }
 
-    data.stream = canvas.captureStream(60)
+    data.stream = new MediaStream(saveStream)
+    console.warn("canvasRecordStream:",data.stream)
+
     // let  audioCtx = new AudioContext();
     // let source = audioCtx.createBufferSource()
     // let track = audioCtx.createMediaStreamDestination()
@@ -652,7 +708,8 @@ function beginRecord(data){
     window.record.videoRecord(data)
 }
 
-function stopVideoRecord(data){
+function stopVideoRecord(){
+    let data = {}
     if(!isRecord){
         // let data = {}
         data.callback = callback
@@ -667,10 +724,10 @@ function stopVideoRecord(data){
                 /**停止录制后需要关闭流**/
                 let tracks = recordVideo.srcObject.getTracks();
                 tracks.forEach(track => track.stop());
-                stopVideo()
-                stopShare()
+                // stopVideo()
+                // stopShare()
+                // stopAudio()
                 Object.keys(localStream).forEach(function (key) {
-                    console.warn("key:",key )
                     let stream = localStream[key]
                     if (stream) {
                         window.record.closeStream(stream)
@@ -681,9 +738,9 @@ function stopVideoRecord(data){
                 /***录制内容返回播放***/
                 let blob = new Blob(event.Blobs, {'type': 'video/webm'});
                 let url = window.URL.createObjectURL(blob);
-                if (data.type === 'video' || data.type === 'shareScreen' || data.type === "record") {
+                // if (data.type === 'video' || data.type === 'shareScreen' || data.type === "record") {
                     recordVideo.srcObject = null;
-                }
+                // }
                 recordVideo.src = url;
                 recordVideo.controls = true
                 recordVideo.play();
@@ -696,10 +753,10 @@ function stopVideoRecord(data){
     }
 
 }
-function handleAudioRecord(){
+function handleAudioRecord(data){
     if(audioButton.textContent === '开始录制'){
         console.warn("音频录制  音频录制开始")
-        openAudio();
+        openAudio(data);
         // audioRecord()
     }else{
         stopAudioRecord()
@@ -737,7 +794,7 @@ function stopAudioRecord(){
             console.warn("停止音频录制成功")
             audioButton.textContent = '开始录制'
             /***录制后关闭流**/
-            stopAudio()
+            // stopAudio()
 
             Object.keys(localStream).forEach(function (key) {
                 let stream = localStream[key]
@@ -782,13 +839,24 @@ function download(data){
 function restartRecord(){
     tip.style.display = 'block'
     recordContrainer.style.display = 'none'
+    // stopVideo()
+    // stopShare()
+    // stopAudio()
+    Object.keys(localStream).forEach(function (key) {
+        let stream = localStream[key]
+        if (stream) {
+            window.record.closeStream(stream)
+            localStream[key] = null
+        }
+    })
     if(isRecord){
         isRecord = false
         recordButton.style.disabled = false
         recordButton.style.backgroundColor = "orangered "
+        stopVideoRecord()
     }
-
     recordVideo.srcObject = null
+
 
 }
 
