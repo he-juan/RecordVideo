@@ -338,8 +338,9 @@ Record.prototype.streamMuteSwitch = function (data) {
             }
         }
     }
-}
 
+   data && data.callback({stream: data.stream})
+}
 
 Record.prototype.setConstraintsOfGetStream = function(data,constraints) {
     console.info("set Constraints of Get Stream")

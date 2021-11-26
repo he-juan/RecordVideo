@@ -13,6 +13,9 @@ Record.prototype.openAudio = function(data){
     let type = 'audio'
 
     let stream = This.getStream(type, true)
+    if(stream){
+        This.closeStream(stream)
+    }
     let audioRefreshResult = function (event){
         console.info('audio refresh result: ' + JSON.stringify(event, null, '    '))
         if(event.codeType === 999){
@@ -37,8 +40,9 @@ Record.prototype.openAudio = function(data){
     }
 
     if (stream) {
-        This.streamMuteSwitch({stream: stream, type: type, mute: false})
-        audioRefreshResult({codeType: This.CODE_TYPE.ACTION_SUCCESS})
+        console.warn("暂时不会出现")
+        // This.streamMuteSwitch({stream: stream, type: type, mute: false})
+        // audioRefreshResult({codeType: This.CODE_TYPE.ACTION_SUCCESS})
     } else {
         console.info('getting new stream')
         This.getStreamFromDevice({ streamType: 'audio', constraints: data.constraints, callback: getMediaCallBack })
@@ -58,6 +62,7 @@ Record.prototype.stopAudio = function (data) {
     let stopShareAudioCallBack = function(event){
         console.info('stop share audio data: ' + JSON.stringify(event, null, '    '))
         if(event.codeType === 999){
+            This.localStreams.audio = null
             console.info('stop share audio success')
         }else {
             console.warn('stop share audio failed')
@@ -67,7 +72,8 @@ Record.prototype.stopAudio = function (data) {
 
     let stream = This.getStream('audio', true)
     if (stream) {
-        This.streamMuteSwitch({stream: stream, type: 'audio', mute: true})
+        This.closeStream(stream)
+        // This.streamMuteSwitch({stream: stream, type: 'audio', mute: true})
         stopShareAudioCallBack({codeType: This.CODE_TYPE.ACTION_SUCCESS})
     } else {
         console.warn('audio stream is null')
@@ -169,6 +175,7 @@ Record.prototype.stopVideo = function (data) {
     let stopVideoCallback = function(event){
         console.info('video off result data: ' + JSON.stringify(event, null, '    '))
         if(event.codeType === 999){
+            This.localStreams.main = null
             console.info('video off success')
         }else {
             console.warn('video off failed, code ' + event.codeType)
@@ -264,11 +271,12 @@ Record.prototype.stopShare = function (data) {
         if( This.mixStreamContext){
             This.mixStreamContext.close()
             This.mixStreamContext = null
-            let audioStream = This.getStream('audio', true)
-            // session.processAddStream(audioStream, pc, 'audio')
+            // let audioStream = This.getStream('audio', true)
+            // // session.processAddStream(audioStream, pc, 'audio')
         }
         if(event.codeType === 999){
             console.info('stop present success')
+            This.localStreams.slides = null
             // session.setEncodingParameters('main')
         }else {
             console.warn('stop present failed')

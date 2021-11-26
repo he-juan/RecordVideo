@@ -46,7 +46,7 @@ let context = canvas.getContext('2d')
 /**开启/关闭视频**/
 let isOpenVideo = false
 let isOpenShareScreen = false
-let isMute = false
+let isUnmute = false
 let isRecord = false
 
 /** 绘制canvas定时器**/
@@ -109,7 +109,7 @@ audioButton.addEventListener("click",handleAudioRecord)
 
 recordButton.addEventListener("click", stopVideoRecord)
 
-isMuteButton.addEventListener("click",isHandleMute)
+// isMuteButton.addEventListener("click",isHandleMute)
 
 function getVideoType(data){
     let videoType = null
@@ -253,11 +253,12 @@ function getArea(data){
         if(videoButton.textContent === '开启视频'){
             openVideo(data)
         }
-        // else if(screenButton.textContent === '屏幕共享'){
-        //     openShare(data)
-        // }else if(isMuteButton.textContent === '非静音'){
-        //
-        // }
+
+        if(isMuteButton.textContent === '非静音'){
+            let param = {audio: devices.microphones[0].deviceId}
+            console.warn("param:",param)
+            openAudio(param)
+        }
     }else{
         audioTip.style.display = 'block'
         contrainer.style.opacity = "0.2";
@@ -290,10 +291,12 @@ function closePopUp () {
 function closeButton(){
     recordContrainer.style.display = 'none';
     contrainer.style.opacity = "1";
-    let tracks = recordVideo.srcObject.getTracks();
-    tracks.forEach(track => {track.stop()});
-    recordVideo.src = null;
-    recordVideo.controls = false
+    if(recordVideo.srcObject){
+        let tracks = recordVideo.srcObject.getTracks();
+        tracks.forEach(track => {track.stop()});
+        recordVideo.src = null;
+        recordVideo.controls = false
+    }
 
     Object.keys(localStream).forEach(function (key) {
         if(key === 'audio'){
@@ -321,10 +324,10 @@ function openAudio(data){
         data.callback = callback
         function callback(event){
             if(event.codeType === 999){
-                console.warn("获取音频成功")
+                console.warn("获取音频成功:",event)
                 localStream.audio = event.stream
-                isMute = false
-                isMuteButton.textContent = '非静音'
+                isUnmute = true
+                isMuteButton.textContent = '静音'
 
                 /**处理audioStream**/
                 // audioRecord()
@@ -346,8 +349,9 @@ function stopAudio(){
        window.record.stopAudio({callback:function(event){
                if(event.codeType === 999){
                    console.warn("停止音频成功")
-                   isMuteButton.textContent = '静音'
-                   isMute = true
+                   isMuteButton.textContent = '非静音'
+                   isUnmute = false
+                   localStream.audio = null
 
                    audioButton.textContent = "开始录制"
                }else{
@@ -576,12 +580,14 @@ function handleVideoLogic(data){
         console.warn("handleVideoLogic:",data)
         if(data.type === 'audio'){
             if(localStream.audio){
-                localStream.audio.getTracks().forEach(track => {track.stop()})
+                stopAudio()
+                localStream.audio = null
             }
             openAudio(data)
         }else{
             if(localStream.main){
-                localStream.main.getTracks().forEach(track => {track.stop()})
+                stopVideo()
+                localStream.main = null
             }
             openVideo(data)
         }
@@ -638,9 +644,7 @@ function handleDeviceds(){
 
 function getAudioInput(){
     let option =  audioinput.options
-    console.warn("option:",option)
     audioinput.value = option[audioinput.selectedIndex].value  // selectedIndex代表的是你所选中项的index
-    console.warn("value:", audioinput.value)
     selectDevice.style.display = 'none'
     audioinput.style.display = "none"
     let data = {type: 'video', audio: audioinput.value, deviceId: cameraDeviced.value}
@@ -650,12 +654,9 @@ function getAudioInput(){
 
 function getAudioOutput(){
     let option = audioOutput.options
-    console.warn("option:",option)
     audioOutput.value = option[audioOutput.selectedIndex].value  // selectedIndex代表的是你所选中项的index
-    console.warn("value:",audioOutput.value)
     selectDevice.style.display = 'none'
     audioOutput.style.display = "none"
-
     // handleVideoLogic({type: 'audio', audio:audioOutput.value})
 }
 
@@ -673,25 +674,30 @@ function getCamera(){
 }
 
 function isHandleMute(){
-    if(isMuteButton.textContent === '静音'){
-        // isMuteButton.textContent = '非静音'
-        // isMute = false
-        if(!localStream || !localStream.audio){
-            let data= {audio:audioInSource.value}
-            openAudio({})
-        }else{
-           console.warn("此时没有音频流")
+    let data = {stream: localStream.audio, type: 'audio', mute: false}
+    data.callback = function(event){
+        if(!event || !event.stream){
+            console.warn("mute / unmute  failed")
+            return
         }
 
-    }else if(isMuteButton.textContent === "非静音"){
-        // isMuteButton.textContent = '静音'
-        // isMute = true
-        if(localStream && localStream.audio){
-            stopAudio()
+        let enable = event.stream.getTracks()[0].enabled
+        if(enable){
+            console.warn("现在处于 静音 状态")
+            isMuteButton.textContent = "非静音"
+            isUnmute = false
         }else{
-            console.warn("此时存在音频流")
+            console.warn("现在处于 非静音 状态")
+            isMuteButton.textContent = "静音"
+            isUnmute = true
         }
-
+    }
+    if(isUnmute){
+        data.mute = false
+        window.record.streamMuteSwitch(data)
+    }else {
+       data.mute = true
+        window.record.streamMuteSwitch(data)
     }
 }
 
