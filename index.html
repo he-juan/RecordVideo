@@ -34,7 +34,7 @@
             <hr />
 
             <div class = "recordCon">
-                <button class="audioButton">开始录制</button>
+                <button class="audioButton" onclick="handleAudioRecord()">开始录制</button>
                 <audio class="audio" controls></audio>
             </div>
 
@@ -69,15 +69,15 @@
                 <!--                     设备选择                             -->
                 <div class="selectDevice" >
                     <div class="setArea">
-                        <button class="camera">摄像头
+                        <button class="camera" onmousemove="handleCamera()">摄像头
                             <!--<span> > <span> -->
                         </button>
 
-                        <button class="speaker">扬声器
+                        <button class="speaker" onmousemove="handleSpeaker()">扬声器
                             <!--<span> > <span> -->
                         </button>
 
-                        <button class="mic">麦克风
+                        <button class="mic" onmousemove="handleMic()">麦克风
                             <!--<span> > <span> -->
                         </button>
 

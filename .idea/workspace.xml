@@ -3,9 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="aaa8972a-afa3-4fb1-9b4e-401998a707c6" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/api.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/stream.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/stream.js" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -33,11 +31,11 @@
           <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
-      <file leaf-file-name="stream.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="stream.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js/stream.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="483">
-              <caret line="338" column="9" lean-forward="true" selection-start-line="338" selection-start-column="9" selection-end-line="338" selection-end-column="9" />
+            <state relative-caret-position="78">
+              <caret line="311" column="22" lean-forward="true" selection-start-line="311" selection-start-column="22" selection-end-line="311" selection-end-column="22" />
             </state>
           </provider>
         </entry>
@@ -54,20 +52,17 @@
       <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="205">
+            <state relative-caret-position="257">
               <caret line="63" column="64" selection-start-line="63" selection-start-column="64" selection-end-line="63" selection-end-column="64" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="index.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="index.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/js/index.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="326">
-              <caret line="672" column="6" lean-forward="true" selection-start-line="672" selection-start-column="6" selection-end-line="672" selection-end-column="6" />
-              <folding>
-                <element signature="e#21520#21562#0" />
-              </folding>
+            <state relative-caret-position="419">
+              <caret line="697" column="8" lean-forward="true" selection-start-line="691" selection-start-column="7" selection-end-line="697" selection-end-column="8" />
             </state>
           </provider>
         </entry>
@@ -85,8 +80,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>stopRecord</find>
-      <find>beginRecord</find>
       <find>flex</find>
       <find>download</find>
       <find>captureStream</find>
@@ -94,7 +87,6 @@
       <find>onchange</find>
       <find>audioRecord()</find>
       <find>restartRecord.style.display = 'block'</find>
-      <find>recorded</find>
       <find>restartRecord</find>
       <find>isRecord</find>
       <find>canvas</find>
@@ -114,7 +106,10 @@
       <find>handleVideoLogic</find>
       <find>closeButton</find>
       <find>stopVideoRecord</find>
+      <find>recordButton</find>
+      <find>recorded</find>
       <find>enumDevices</find>
+      <find>audioButton</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -124,10 +119,10 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/style.css" />
-        <option value="$PROJECT_DIR$/index.html" />
-        <option value="$PROJECT_DIR$/js/index.js" />
         <option value="$PROJECT_DIR$/js/api.js" />
         <option value="$PROJECT_DIR$/js/stream.js" />
+        <option value="$PROJECT_DIR$/index.html" />
+        <option value="$PROJECT_DIR$/js/index.js" />
       </list>
     </option>
   </component>
@@ -207,12 +202,12 @@
       <option name="presentableId" value="Default" />
       <updated>1637055041815</updated>
       <workItem from="1637055043197" duration="19332000" />
-      <workItem from="1637544691588" duration="34905000" />
+      <workItem from="1637544691588" duration="37599000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="67831000" />
+    <option name="totallyTimeSpent" value="70525000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -222,10 +217,10 @@
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.50052685" side_tool="true" weight="0.3293348" />
-      <window_info active="true" anchor="bottom" id="Version Control" order="7" visible="true" weight="0.089422025" />
+      <window_info anchor="bottom" id="Version Control" order="7" weight="0.089422025" />
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Terminal" order="7" sideWeight="0.49947312" weight="0.33696836" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="7" sideWeight="0.49947312" visible="true" weight="0.33696836" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -277,17 +272,12 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/js/index.js</url>
-          <line>113</line>
+          <line>93</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/js/index.js</url>
-          <line>107</line>
-          <option name="timeStamp" value="3" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/js/index.js</url>
-          <line>596</line>
+          <line>576</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>
@@ -330,9 +320,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="15363">
           <caret line="569" column="50" selection-start-line="569" selection-start-column="50" selection-end-line="569" selection-end-column="50" />
-          <folding>
-            <element signature="e#21520#21562#0" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -371,9 +358,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="6912">
           <caret line="256" column="36" lean-forward="true" selection-start-line="256" selection-start-column="36" selection-end-line="256" selection-end-column="36" />
-          <folding>
-            <element signature="e#21520#21562#0" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -423,9 +407,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="343">
           <caret line="316" column="48" lean-forward="true" selection-start-line="316" selection-start-column="48" selection-end-line="316" selection-end-column="48" />
-          <folding>
-            <element signature="e#21520#21562#0" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -467,23 +448,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="205">
-          <caret line="63" column="64" selection-start-line="63" selection-start-column="64" selection-end-line="63" selection-end-column="64" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="326">
-          <caret line="672" column="6" lean-forward="true" selection-start-line="672" selection-start-column="6" selection-end-line="672" selection-end-column="6" />
-          <folding>
-            <element signature="e#21520#21562#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/js/api.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="432">
@@ -493,8 +457,22 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/js/stream.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="483">
-          <caret line="338" column="9" lean-forward="true" selection-start-line="338" selection-start-column="9" selection-end-line="338" selection-end-column="9" />
+        <state relative-caret-position="78">
+          <caret line="311" column="22" lean-forward="true" selection-start-line="311" selection-start-column="22" selection-end-line="311" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="257">
+          <caret line="63" column="64" selection-start-line="63" selection-start-column="64" selection-end-line="63" selection-end-column="64" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="419">
+          <caret line="697" column="8" lean-forward="true" selection-start-line="691" selection-start-column="7" selection-end-line="697" selection-end-column="8" />
         </state>
       </provider>
     </entry>

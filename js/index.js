@@ -76,40 +76,20 @@ let isGetMic = false
 let isGetSpeaker = false
 let isGetCamera = false
 
-// /**关于音频录制处理**/
-// let AudioContext = window.AudioContext || window.webkitAudioContext || window.mozAudioContext;  // 实例化音频对象
-// let audioCtx = new AudioContext()
-// /**左声道和右声道**/
-// let leftDataList = [],
-//     rightDataList = [];
 
+cameraSelect.addEventListener("mouseout", function(){
+    audioOutput.style.display = "none"
+    audioinput.style.display = "none"
+})
+micSelect.addEventListener("mouseleave", function(){
+    cameraDeviced.style.display = "none"
+    // audioinput.style.display = "none"
+})
+speakerSelect.addEventListener("mouseout", function(){
+    cameraDeviced.style.display = "none"
+    // audioOutput.style.display = "none"
+})
 
-// videoButton.addEventListener("click",toggleVideoButton)
-// screenButton.addEventListener("click",toggleShareButton)
-// setDeviceButton.addEventListener("click",setDeviced)
-
-cameraSelect.addEventListener("mousemove", handleCamera)
-micSelect.addEventListener("mousemove", handleMic)
-speakerSelect.addEventListener("mousemove", handleSpeaker)
-
-// cameraSelect.addEventListener("mouseout", function(){
-//     audioOutput.style.display = "none"
-//     audioinput.style.display = "none"
-// })
-// micSelect.addEventListener("mouseleave", function(){
-//     cameraDeviced.style.display = "none"
-//     // audioinput.style.display = "none"
-// })
-// speakerSelect.addEventListener("mouseout", function(){
-//     cameraDeviced.style.display = "none"
-//     // audioOutput.style.display = "none"
-// })
-
-audioButton.addEventListener("click",handleAudioRecord)
-
-recordButton.addEventListener("click", stopVideoRecord)
-
-// isMuteButton.addEventListener("click",isHandleMute)
 
 function getVideoType(data){
     let videoType = null
@@ -674,6 +654,11 @@ function getCamera(){
 }
 
 function isHandleMute(){
+    if(!localStream || !localStream.audio){
+        console.warn("当前不存在音频流")
+        return
+    }
+
     let data = {stream: localStream.audio, type: 'audio', mute: false}
     data.callback = function(event){
         if(!event || !event.stream){
@@ -683,22 +668,34 @@ function isHandleMute(){
 
         let enable = event.stream.getTracks()[0].enabled
         if(enable){
-            console.warn("现在处于 静音 状态")
-            isMuteButton.textContent = "非静音"
-            isUnmute = false
-        }else{
             console.warn("现在处于 非静音 状态")
             isMuteButton.textContent = "静音"
             isUnmute = true
+        }else{
+            console.warn("现在处于 静音 状态")
+            isMuteButton.textContent = "非静音"
+            isUnmute = false
         }
     }
-    if(isUnmute){
-        data.mute = false
-        window.record.streamMuteSwitch(data)
-    }else {
-       data.mute = true
-        window.record.streamMuteSwitch(data)
+    if(isMuteButton.textContent === '非静音'){
+        if(!isUnmute){
+            data.mute = false
+            window.record.streamMuteSwitch(data)
+        }
+    }else if(isMuteButton.textContent === '静音'){
+        if(isUnmute){
+            data.mute = true
+            window.record.streamMuteSwitch(data)
+        }
     }
+
+    // if(isUnmute){
+    //     data.mute = false
+    //     window.record.streamMuteSwitch(data)
+    // }else {
+    //    data.mute = true
+    //     window.record.streamMuteSwitch(data)
+    // }
 }
 
 function getAudioSource(){
@@ -898,6 +895,7 @@ function restartRecord(){
         console.warn("录制中...")
         stopVideoRecord()
     }
+    getArea({type: 'video'})
 
 }
 
