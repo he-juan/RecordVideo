@@ -388,6 +388,7 @@ select{
     color: cornsilk;
     border-radius: 2px;
     font-size:15px;
+    display: none;
 }
 .restartRecord:hover{
     /*width：60px;*/
