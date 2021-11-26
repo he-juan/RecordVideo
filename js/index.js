@@ -92,18 +92,18 @@ cameraSelect.addEventListener("mousemove", handleCamera)
 micSelect.addEventListener("mousemove", handleMic)
 speakerSelect.addEventListener("mousemove", handleSpeaker)
 
-cameraSelect.addEventListener("mouseout", function(){
-    audioOutput.style.display = "none"
-    audioinput.style.display = "none"
-})
-micSelect.addEventListener("mouseleave", function(){
-    cameraDeviced.style.display = "none"
-    audioinput.style.display = "none"
-})
-speakerSelect.addEventListener("mouseout", function(){
-    cameraDeviced.style.display = "none"
-    audioOutput.style.display = "none"
-})
+// cameraSelect.addEventListener("mouseout", function(){
+//     audioOutput.style.display = "none"
+//     audioinput.style.display = "none"
+// })
+// micSelect.addEventListener("mouseleave", function(){
+//     cameraDeviced.style.display = "none"
+//     // audioinput.style.display = "none"
+// })
+// speakerSelect.addEventListener("mouseout", function(){
+//     cameraDeviced.style.display = "none"
+//     // audioOutput.style.display = "none"
+// })
 
 audioButton.addEventListener("click",handleAudioRecord)
 
@@ -313,25 +313,31 @@ function closeButton(){
 }
 
 function openAudio(data){
-    data.type = 'audio'
-    data.constraints = {
-        audio: {deviceId: data && data.audio} || true,
-    }
-    data.callback = callback
-    function callback(event){
-        if(event.codeType === 999){
-            console.warn("获取音频成功")
-            localStream.audio = event.stream
-
-            /**处理audioStream**/
-            // audioRecord()
-
-        }else{
-            console.warn("获取音频失败")
+    if(!localStream  || ! localStream.audio){
+        data.type = 'audio'
+        data.constraints = {
+            audio: {deviceId: data && data.audio} || true,
         }
+        data.callback = callback
+        function callback(event){
+            if(event.codeType === 999){
+                console.warn("获取音频成功")
+                localStream.audio = event.stream
+                isMute = false
+                isMuteButton.textContent = '非静音'
+
+                /**处理audioStream**/
+                // audioRecord()
+
+            }else{
+                console.warn("获取音频失败")
+            }
+        }
+        console.warn("openAudio_data:",data)
+        window.record.openAudio(data)
+    }else {
+        console.warn("已经存在流")
     }
-    console.warn("openAudio_data:",data)
-    window.record.openAudio(data)
 }
 
 function stopAudio(){
@@ -340,6 +346,9 @@ function stopAudio(){
        window.record.stopAudio({callback:function(event){
                if(event.codeType === 999){
                    console.warn("停止音频成功")
+                   isMuteButton.textContent = '静音'
+                   isMute = true
+
                    audioButton.textContent = "开始录制"
                }else{
                    console.warn("停止音频失败")
@@ -531,15 +540,15 @@ function handleMic(){
                     let option = document.createElement('option')
                     option.text = microphone.label || ''
                     option.value = microphone.deviceId
-                    audioOutput.appendChild(option)
+                    audioinput.appendChild(option)
                 }
             }
         }
         isGetMic = true
     }
-    audioOutput.style.display = "block"
+    audioinput.style.display = "block"
     cameraDeviced.style.display = 'none'
-    audioinput.style.display = "none"
+    audioOutput.style.display = "none"
 }
 
 function handleSpeaker(){
@@ -551,19 +560,19 @@ function handleSpeaker(){
                     let option = document.createElement('option')
                     option.text = speaker.label || ''
                     option.value = speaker.deviceId
-                    audioinput.appendChild(option)
+                    audioOutput.appendChild(option)
                 }
             }
         }
         isGetSpeaker = true
     }
-    audioinput.style.display = 'block'
+    audioOutput.style.display = 'block'
     cameraDeviced.style.display = "none"
-    audioOutput.style.display = "none"
+    audioinput.style.display = "none"
 }
 
 function handleVideoLogic(data){
-    setTimeout(function(){
+    // setTimeout(function(){
         console.warn("handleVideoLogic:",data)
         if(data.type === 'audio'){
             if(localStream.audio){
@@ -576,7 +585,7 @@ function handleVideoLogic(data){
             }
             openVideo(data)
         }
-    },2500)
+    // },2500)
 }
 
 function handleDeviceds(){
@@ -636,7 +645,7 @@ function getAudioInput(){
     audioinput.style.display = "none"
     let data = {type: 'video', audio: audioinput.value, deviceId: cameraDeviced.value}
     // openVideo(data)
-    // handleVideoLogic({type: 'audio', audio:audioinput.value})
+    handleVideoLogic({type: 'audio', audio:audioinput.value})
 }
 
 function getAudioOutput(){
@@ -646,7 +655,8 @@ function getAudioOutput(){
     console.warn("value:",audioOutput.value)
     selectDevice.style.display = 'none'
     audioOutput.style.display = "none"
-    handleVideoLogic({type: 'audio', audio:audioOutput.value})
+
+    // handleVideoLogic({type: 'audio', audio:audioOutput.value})
 }
 
 function getCamera(){
@@ -663,7 +673,24 @@ function getCamera(){
 }
 
 function isHandleMute(){
-    if(isMuteButton.textContent === '非静音'){
+    if(isMuteButton.textContent === '静音'){
+        // isMuteButton.textContent = '非静音'
+        // isMute = false
+        if(!localStream || !localStream.audio){
+            let data= {audio:audioInSource.value}
+            openAudio({})
+        }else{
+           console.warn("此时没有音频流")
+        }
+
+    }else if(isMuteButton.textContent === "非静音"){
+        // isMuteButton.textContent = '静音'
+        // isMute = true
+        if(localStream && localStream.audio){
+            stopAudio()
+        }else{
+            console.warn("此时存在音频流")
+        }
 
     }
 }
