@@ -4,11 +4,14 @@
 let buffer
 let tip = document.getElementById("tip")
 let audioTip = document.getElementById("audioTip")
+let shareTip = document.getElementById("shareTip")
+// let body = document.getElementsByTagName("body")
 let audio = document.getElementsByClassName("audio")[0]
 let contrainer = document.getElementById("contrainer")
 let recordContrainer = document.getElementById("record")
 let video = document.getElementById("video")
 let shareVideo = document.getElementById("shareScreen")
+let share_video = document.getElementsByClassName("share_video")[0]
 
 let startMark = document.getElementsByClassName("startMark")[0]
 let recordVideo = document.getElementById("recordVideo")
@@ -37,11 +40,17 @@ let audioInSource = document.getElementsByClassName("audioInSource")[0]
 let audioOutSource = document.getElementsByClassName("audioOutSource")[0]
 
 
-window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
-    window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 
 let canvas = document.getElementById("canvas")
 let context = canvas.getContext('2d')
+
+
+let share_canvas = document.getElementsByClassName("share_canvas")[0]
+let ctx = share_canvas.getContext("2d")
+let shareButton = document.getElementsByClassName("shareButton")[0]
+
+
 
 /**开启/关闭视频**/
 let isOpenVideo = false
@@ -121,6 +130,8 @@ function getVideoType(data){
     }
     return videoType
 }
+
+// *************************************************获取音视频阶段******************************************************************
 
 function draw(data){
     /*处理canvas绘制video像素模糊问题*/
@@ -227,7 +238,14 @@ function switchToCanvas(type, video, sx, sy, swidth, sheight, x, y, width, heigh
 }
 
 function getArea(data){
-    if(data.type === 'video'){
+    if(data.recodeType === 'audio' ){
+        audioTip.style.display = 'block'
+        contrainer.style.opacity = "0.2";
+        // openAudio(data)
+        handleDeviceds()
+        // handleAudioRecord()
+    } else if(data.recodeType === 'video' ){
+
         tip.style.display = "block";
         contrainer.style.opacity = "0.2";
         if(videoButton.textContent === '开启视频'){
@@ -240,11 +258,12 @@ function getArea(data){
             openAudio(param)
         }
     }else{
-        audioTip.style.display = 'block'
-        contrainer.style.opacity = "0.2";
-        // openAudio(data)
-        handleDeviceds()
-        // handleAudioRecord()
+        console.warn("区域录制")
+        shareTip.style.display = "block"
+        // tip.style.display = "block";
+        // body.style.opacity = "0.2"
+        contrainer.style.opacity = "0";
+        openShare(data)
     }
 }
 
@@ -324,27 +343,27 @@ function openAudio(data){
 }
 
 function stopAudio(){
-   if(localStream.audio){
-       console.warn ("开始停止音频流")
-       window.record.stopAudio({callback:function(event){
-               if(event.codeType === 999){
-                   console.warn("停止音频成功")
-                   isMuteButton.textContent = '非静音'
-                   isUnmute = false
-                   localStream.audio = null
+    if(localStream.audio){
+        console.warn ("开始停止音频流")
+        window.record.stopAudio({callback:function(event){
+                if(event.codeType === 999){
+                    console.warn("停止音频成功")
+                    isMuteButton.textContent = '非静音'
+                    isUnmute = false
+                    localStream.audio = null
 
-                   audioButton.textContent = "开始录制"
-               }else{
-                   console.warn("停止音频失败")
-               }
-       }})
-   }else{
-       console.warn("没有音频流")
-   }
+                    audioButton.textContent = "开始录制"
+                }else{
+                    console.warn("停止音频失败")
+                }
+            }})
+    }else{
+        console.warn("没有音频流")
+    }
 }
 
 function openVideo(data){
-    if(data.type === 'video'){
+    if(!localStream  || !localStream.main){
         data.constraints = {
             audio: data.audio || false,
             video: {
@@ -358,6 +377,7 @@ function openVideo(data){
         data.callback = callback
         function callback(event){
             if(event.codeType === 999){
+                console.warn("开启视频成功")
                 if(event.type === 'main'){
                     isOpenVideo = true
                     localStream.main = event.stream
@@ -410,7 +430,7 @@ function stopVideo(){
 }
 
 function openShare(data){
-    if(data.type === 'shareScreen'){
+    if(!localStream  || !localStream.slides){
         data.callback = callback
         data.constraints = {
             audio: false ,
@@ -421,46 +441,73 @@ function openShare(data){
             }
         }
         function callback(event){
-            if(event.type === 'slides'){
-                isOpenShareScreen = true
+            if(event.codeType === 999){
                 localStream.slides = event.stream
-                screenButton.textContent = '停止共享'
-                shareVideo.srcObject = localStream.slides
-                shareVideo.onloadedmetadata = function(e){
-                    shareVideo.play()
-                };
-                shareVideo.addEventListener('play',function(){
-                    if(isOpenVideo){
-                        draw({openVideo:true})
-                    }else{
-                        draw()
+                if(data.recodeType === 'video' || data.type === 'shareScreen'){
+                    if(event.type === 'slides'){
+                        isOpenShareScreen = true
+                        shareVideo.srcObject = localStream.slides
+                        screenButton.textContent = '停止共享'
+                        shareVideo.onloadedmetadata = function(e){
+                            shareVideo.play()
+                        };
+                        shareVideo.addEventListener('play',function(){
+                            if(isOpenVideo){
+                                draw({openVideo:true})
+                            }else{
+                                draw()
+                            }
+                        })
                     }
-                })
-
+                }else if(data.recodeType === 'regionalVideo'){
+                    share_video.srcObject = localStream.slides
+                    share_video.onloadedmetadata = function(){
+                        share_video.play()
+                    }
+                    shareButton.textContent = "关闭共享"
+                }
+            }else{
+                console.warn("开启演示失败")
             }
+
         }
         window.record.openShare(data)
     }
 }
 
-function stopShare(){
+function stopShare(data){
     if(localStream.slides){
         console.warn("开始停止演示流")
-        let data = {}
-        data.callback= callback
-        function callback(event){
-            if(event.codeType === 999){
-                isOpenShareScreen = false
-                window.record.closeStream(localStream.slides)
-                localStream.slides = null
-                screenButton.textContent = '屏幕共享'
+        if(!data){
+            let data = {}
+            data.callback= callback
+            function callback(event){
+                if(event.codeType === 999){
+                    isOpenShareScreen = false
+                    window.record.closeStream(localStream.slides)
+                    localStream.slides = null
+                    screenButton.textContent = '屏幕共享'
 
-                window.cancelAnimationFrame(shareTimeOut)
-                context.clearRect(setX, setY, setWidth, setHeight)
-                draw()
+                    window.cancelAnimationFrame(shareTimeOut)
+                    context.clearRect(setX, setY, setWidth, setHeight)
+                    draw()
+                }
             }
+            window.record.stopShare(data)
+        }else {
+            data.callback  = callback
+            function callback(event){
+                if(event.codeType === 999){
+                    isOpenShareScreen = false
+                    window.record.closeStream(localStream.slides)
+                    localStream.slides = null
+                    shareButton.textContent = '开启共享'
+                    context.clearRect(setX, setY, setWidth, setHeight)
+                }
+            }
+            window.record.stopShare(data)
         }
-        window.record.stopShare(data)
+
     }else{
         console.warn("没有演示流")
     }
@@ -496,6 +543,8 @@ function toggleShareButton(){
 function setDeviced(){
     selectDevice.style.display = 'block'
 }
+
+// ********************************************获取设备阶段********************************************************
 function handleCamera(){
 
     if(!isGetCamera){
@@ -556,22 +605,29 @@ function handleSpeaker(){
 }
 
 function handleVideoLogic(data){
-    // setTimeout(function(){
-        console.warn("handleVideoLogic:",data)
-        if(data.type === 'audio'){
-            if(localStream.audio){
-                stopAudio()
-                localStream.audio = null
-            }
-            openAudio(data)
-        }else{
-            if(localStream.main){
-                stopVideo()
-                localStream.main = null
-            }
-            openVideo(data)
+    console.warn("handleVideoLogic:",data)
+    if(data.type === 'audio'){
+        if(localStream.audio){
+            stopAudio()
+            localStream.audio = null
         }
-    // },2500)
+        openAudio(data)
+    }else{
+        if(localStream.main){
+            stopVideo()
+            localStream.main = null
+        }
+        openVideo(data)
+    }
+}
+
+function handleShareLogic(){
+    if(localStream && localStream.slides){
+        stopShare({recodeType: 'regionalVideo'})
+
+    }else{
+        openShare({recodeType: 'regionalVideo'})
+    }
 }
 
 function handleDeviceds(){
@@ -688,14 +744,6 @@ function isHandleMute(){
             window.record.streamMuteSwitch(data)
         }
     }
-
-    // if(isUnmute){
-    //     data.mute = false
-    //     window.record.streamMuteSwitch(data)
-    // }else {
-    //    data.mute = true
-    //     window.record.streamMuteSwitch(data)
-    // }
 }
 
 function getAudioSource(){
@@ -712,6 +760,9 @@ function getAudioOutSource(){
     audioOutSource.value = option[audioOutSource.selectedIndex].value
 }
 
+
+
+// ********************************************录制下载阶段********************************************
 function beginRecord(data){
     if(localStream && (localStream.main || localStream.slides)){
         tip.style.display = "none";
@@ -895,7 +946,7 @@ function restartRecord(){
         console.warn("录制中...")
         stopVideoRecord()
     }
-    getArea({type: 'video'})
+    getArea({recodeType: 'video'})
 
 }
 
@@ -916,12 +967,130 @@ function devicedsInfo(){
             }else{
                 console.warn("获取设备失败")
             }
-    }})
+        }})
 }
+
+
+
+// *********************************************区域录制获取区域阶段**************************************************************
+function finish() {
+
+    // let position = getElementViewPosition(share_video)
+    // console.warn("ll:",position)
+
+
+    var videoHeight = share_video.videoHeight;
+    var videoWidth = share_video.videoWidth;
+
+    width = Math.abs(window.endPositionX - window.startPositionX);
+    height = Math.abs( window.endPositionY - window.startPositionY);
+    rangeW = videoWidth * (width / share_video.offsetWidth);
+    rangeH = videoHeight * (height / share_video.offsetHeight);
+    console.warn("rangeW:",rangeW)
+    console.warn("rangeH:",rangeH)
+    share_canvas.height = rangeH ;
+    share_canvas.width  = rangeW ;
+
+
+    sx = (window.startPositionX-window.startLeftX) ;
+    sy = (window.startPositionY-window.startTopY);
+
+
+    ctx.clearRect(0, 0, videoWidth, videoHeight);
+    console.log(" start finish")
+    playCanvas(share_video,ctx,sx,sy,rangeW,rangeH);
+
+}
+
+function getElementViewPosition(element){
+    //计算x坐标
+    var actualLeft = element.offsetLeft;
+    var current = element.offsetParent;
+    console.warn("actualLeft :",actualLeft )
+    console.warn("currentLeft:",current)
+    while (current !== null){
+        actualLeft +=  (current.offsetLeft+current.clientLeft);
+        current = current.offsetParent;
+    }
+    if (document.compatMode == "BackCompat"){
+        var elementScrollLeft=document.body.scrollLeft;
+    } else {
+        var elementScrollLeft=document.documentElement.scrollLeft;
+    }
+    var left = actualLeft - elementScrollLeft;
+    //计算y坐标
+    var actualTop = element.offsetTop;
+    var current = element.offsetParent;
+    console.warn("currentRight:",current)
+    while (current !== null){
+        actualTop += (current.offsetTop+current.clientTop);
+        current = current.offsetParent;
+    }
+    if (document.compatMode == "BackCompat"){
+        var elementScrollTop=document.body.scrollTop;
+    } else {
+        var elementScrollTop=document.documentElement.scrollTop;
+    }
+    var right = actualTop-elementScrollTop;
+    //返回结果
+    return {x: left, y: right}
+}
+
+
+
+
+/*
+* video视频转换到canvas中
+* */
+function playCanvas(video,ctx,sx,sy,rangeW,rangeH){
+
+    // data = div.value;
+    // data1 = text.value;
+    // console.log("data:",data);
+    // console.log("data1:",data1);
+    // var tw1 = ctx.measureText(data1).width;
+    // var tw = ctx.measureText(data).width;
+    ctx.drawImage(video, sx, sy, rangeW, rangeH, 0, 0, canvas.width, canvas.height);
+    canvas.style.border = "none";
+    ctx.fillStyle = "#05a0ff";
+    ctx.font = "italic 30px 黑体";
+    ctx.textBaseline = 'middle';//更改字号后，必须重置对齐方式，否则居中麻烦。设置文本的垂直对齐方式
+    ctx.textAlign = 'center';
+
+
+
+    // var ftop =  mousedowny ;
+    // var fleft =  mousedownx;
+    // ctx.fillText(data,fleft,ftop);
+
+    // var fftop = canvas.height/2+120;
+    // var ffleft = canvas.width/2;
+    // ctx.fillText("追逐",150,140);
+    // ctx.fillText(data1,ffleft,fftop);
+
+    requestAnimationFrame(() => {
+        playCanvas(video,ctx,sx,sy,rangeW,rangeH);
+    })
+}
+
+
+// *****************************************初始化阶段****************************************************
 
 window.addEventListener('load', function () {
     if (Record) {
         Record.prototype.preInit()
     }
     devicedsInfo()
+})
+
+$(document).ready(function(){
+    $('.shareTip_middle').frameSelection({
+        mask:true,
+        callback:function(){
+            console.log('rendering!!!');
+        },
+        done:function(result){
+            console.log('rendering done',result);
+        }
+    }) ;
 })

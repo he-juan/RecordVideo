@@ -5,7 +5,7 @@ body{
 
 }
 
-#tip, #record,#audioTip{
+#tip, #record, #audioTip{
     height: 600px;
     width: 800px;
     border: 2px solid #cbcbcb;
@@ -22,22 +22,107 @@ body{
     transform: translate(-50%,-50%);
 }
 
- #flex{
-     width: 600px;
-     height:400px;
-     position: absolute;
-     left: 50%;
-     top: 50%;
-     transform: translate(-50%,-50%);
-     border: 2px solid #cbcbcb;
+#shareTip{
+    height: 800px;
+    width: 1200px;
+    border: 2px solid #cbcbcb;
+    background-color: #fff;
+    text-align: left;
+    color: #020404;
+    z-index: 999;
+    display:none;
+    border-radius: 10px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    overflow: hidden;
+}
 
-     text-align: left;
-     display: flex;
-     flex-direction:column;
-     flex-wrap: wrap;
-     justify-content: flex-start  ;
-     align-items: flex-start ;
-     align-content:flex-start ;
+#shareTip .shareContrainer{
+    height: 800px;
+    width: 1200px;
+    overflow: hidden;
+}
+
+#shareTip .shareTip_top{
+    color: #020404;
+    height: 60px;
+    /*margin: 0 auto;*/
+    margin-left:10px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between  ;
+    align-items: center ;
+    align-content:center;
+}
+
+
+.shareTip_top .shareButton{
+    width: 80px;
+    height:40px;
+    color: #cbcbcb;
+    border: 0  solid  #cbcbcb;
+}
+
+.shareTip_top .close{
+    margin-right: 10px;
+    width: 60px;
+    height: 40px;
+    background: #c8c3c3;
+    border: 0  solid  #c8c3c3;
+    color: cornsilk;
+    border-radius: 2px;
+    font-size: 20px;
+    font-weight:500;
+    padding: 0px;
+}
+
+#shareTip {
+    height: 800px;
+    border-radius: 5px;
+    padding: 0px;
+    /*border: 1px solid coral;*/
+}
+
+.shareTip_middle,.shareTip_bottom{
+   height: 350px;
+   /*border: 1px solid coral;*/
+}
+
+.shareTip_middle{
+    margin-top: -10px;
+}
+
+.share_video, .share_canvas{
+    width: 700px;
+    height: 350px;
+    border-radius: 2px;
+    margin-left:250px;
+    /*position: absolute;*/
+    /*left: 200px;*/
+    /*top: 80px;*/
+    border: 1px solid #F0EFDA;
+    /*padding:0px;*/
+}
+
+#flex{
+    width: 600px;
+    height:400px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    border: 2px solid #cbcbcb;
+
+    text-align: left;
+    display: flex;
+    flex-direction:column;
+    flex-wrap: wrap;
+    justify-content: flex-start  ;
+    align-items: flex-start ;
+    align-content:flex-start ;
 }
 
 #flex .select{
@@ -79,6 +164,7 @@ body{
     height: 400px;
     width:800px;
 }
+
 #recordVideo{
     height:360px;
     width: 720px;
@@ -142,16 +228,15 @@ video, canvas{
     width: 720px;
     height: 360px;
     border-radius: 2px;
-    position: absolute;
-    left: 0px;
-    top: 0px;
+    /*position: absolute;*/
+    /*left: 0px;*/
+    /*top: 0px;*/
     border: 1px solid #F0EFDA;
 }
 #video， #shareScreen{
     display:none;
     /*z-index:-1;*/
 }
-
 
 #shareScreen{
     width: 720px;
@@ -430,6 +515,19 @@ button{
     border-radius: 5px;
 }
 
-/*.audioRecording:hover{*/
-/**/
-/*}*/
+.mask,
+.rect {
+    position: absolute;
+    /*position:fixed;*/
+}
+
+.mask {
+    background-color: #000;
+    opacity: 0;
+}
+
+.rect {
+    background-color: #fff;
+    opacity: 0.5;
+    border:1px dashed #f50;
+}
