@@ -967,7 +967,7 @@ function devicedsInfo(){
             }else{
                 console.warn("获取设备失败")
             }
-        }})
+    }})
 }
 
 
@@ -982,22 +982,33 @@ function finish() {
     var videoHeight = share_video.videoHeight;
     var videoWidth = share_video.videoWidth;
 
+    // let width = Math.abs( end_x - start_x)
+    // let height = Math.abs( end_y - start_y )
     width = Math.abs(window.endPositionX - window.startPositionX);
     height = Math.abs( window.endPositionY - window.startPositionY);
-    rangeW = videoWidth * (width / share_video.offsetWidth);
-    rangeH = videoHeight * (height / share_video.offsetHeight);
+    let rangeW = videoWidth * (width / share_video.offsetWidth);
+    let rangeH = videoHeight * (height / share_video.offsetHeight);
     console.warn("rangeW:",rangeW)
     console.warn("rangeH:",rangeH)
     share_canvas.height = rangeH ;
     share_canvas.width  = rangeW ;
 
-
+    // window.startLeftX = domReact.left
+    // window.startTopY = document.top
     sx = (window.startPositionX-window.startLeftX) ;
     sy = (window.startPositionY-window.startTopY);
+
+    // let sx = start_x - window.startLeftX
+    // let sy = start_y - window.startTopY
+    
 
 
     ctx.clearRect(0, 0, videoWidth, videoHeight);
     console.log(" start finish")
+    console.warn("sx:",sx)
+    console.warn("sy:",sy)
+    console.warn("rangeW:",rangeW)
+    console.warn("rangeH:",rangeH)
     playCanvas(share_video,ctx,sx,sy,rangeW,rangeH);
 
 }

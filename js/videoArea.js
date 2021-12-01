@@ -178,15 +178,15 @@
         //var ctx =canvas.getContext("2d");
         this.$rangeEl.bind('mousedown', function (event) {
             console.warn("mousedown", event)
-            console.warn("offsetWidth: ", event.offsetX);
-            console.warn("offsetHeight: ", event.offsetY);
+            console.warn("offsetX: ", event.offsetX);
+            console.warn("offsetY: ", event.offsetY);
+            console.warn("clientX:",event.clientX)
+            console.warn("clientY:",event.clientY)
 
-            console.warn("containerTop:",window.containerTop);
-            console.warn("containerLeft:",window.containerLeft);
 
-            console.warn(" containerWidth:", window.containerWidth);
-            console.warn(" containerHeight", window.containerHeight);
-            var loc = windowTovideo(share_video,event.clientX,event.clientY) ;//获取鼠标点击在video的坐标
+
+            var loc = windowTovideo(share_video) ;//获取鼠标点击在video的坐标
+            console.warn("loc:",loc)
             event.preventDefault();
 
             window.startPositionX = event.clientX;
@@ -200,6 +200,7 @@
             window.startTopY = loc.y;
 
             var start = new Point(event.pageX, event.pageY);
+            console.warn("start:",start)
 
 
             //清理
@@ -208,7 +209,10 @@
 
             self.$rangeEl.bind('mousemove', function (e) {
                 console.warn("11111")
-                var end = new Point(e.pageX, e.pageY);
+                console.warn("$rangeEl:",self.$rangeEl)
+                // var end = new Point(e.pageX, e.pageY);
+                var end = new Point(e.clientX, e.clientY)
+                console.warn("end:",end)
 
                 //绘制
                 self.render(start, end);
@@ -221,12 +225,11 @@
         this.$rangeEl.bind('mouseup', function (e) {
 
             console.warn("mouseup", e)
-            console.warn("offsetWidth: ", e.offsetX)
-            console.warn("offsetHeight: ", e.offsetY)
-            console.warn("window.rectWidth:",window.rectWidth);
-            console.warn("window.rectHeight:",window.rectHeight)
-            console.warn("window.recttop:",window.rectTop)
-            console.warn("window rectLeft:",window.rectLeft)
+            console.warn("offsetX: ", e.offsetX)
+            console.warn("offsetY: ", e.offsetY)
+
+            console.warn("clientX:",e.clientX)
+            console.warn("clientY:",e.clientY)
 
             window.endPositionX = e.clientX;
             window.endPositionY = e.clientY;
