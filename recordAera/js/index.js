@@ -435,8 +435,8 @@ function openShare(data){
         data.constraints = {
             audio: false ,
             video: {
-                width: 1920,   // 必须
-                height: 1080,  // 必须
+                width: 720,   // 必须
+                height: 360,  // 必须
                 frameRate: 15,  // 可缺省，默认15fps
             }
         }
@@ -993,14 +993,9 @@ function finish() {
     share_canvas.height = rangeH ;
     share_canvas.width  = rangeW ;
 
-    // window.startLeftX = domReact.left
-    // window.startTopY = document.top
-    sx = (window.startPositionX-window.startLeftX) ;
-    sy = (window.startPositionY-window.startTopY);
 
-    // let sx = start_x - window.startLeftX
-    // let sy = start_y - window.startTopY
-    
+    let sx = window.startPositionX
+    let sy = window.startPositionY
 
 
     ctx.clearRect(0, 0, videoWidth, videoHeight);
@@ -1012,41 +1007,6 @@ function finish() {
     playCanvas(share_video,ctx,sx,sy,rangeW,rangeH);
 
 }
-
-function getElementViewPosition(element){
-    //计算x坐标
-    var actualLeft = element.offsetLeft;
-    var current = element.offsetParent;
-    console.warn("actualLeft :",actualLeft )
-    console.warn("currentLeft:",current)
-    while (current !== null){
-        actualLeft +=  (current.offsetLeft+current.clientLeft);
-        current = current.offsetParent;
-    }
-    if (document.compatMode == "BackCompat"){
-        var elementScrollLeft=document.body.scrollLeft;
-    } else {
-        var elementScrollLeft=document.documentElement.scrollLeft;
-    }
-    var left = actualLeft - elementScrollLeft;
-    //计算y坐标
-    var actualTop = element.offsetTop;
-    var current = element.offsetParent;
-    console.warn("currentRight:",current)
-    while (current !== null){
-        actualTop += (current.offsetTop+current.clientTop);
-        current = current.offsetParent;
-    }
-    if (document.compatMode == "BackCompat"){
-        var elementScrollTop=document.body.scrollTop;
-    } else {
-        var elementScrollTop=document.documentElement.scrollTop;
-    }
-    var right = actualTop-elementScrollTop;
-    //返回结果
-    return {x: left, y: right}
-}
-
 
 
 
@@ -1061,7 +1021,7 @@ function playCanvas(video,ctx,sx,sy,rangeW,rangeH){
     // console.log("data1:",data1);
     // var tw1 = ctx.measureText(data1).width;
     // var tw = ctx.measureText(data).width;
-    ctx.drawImage(video, sx, sy, rangeW, rangeH, 0, 0, canvas.width, canvas.height);
+    ctx.drawImage(video, sx, sy, rangeW, rangeH, 0, 0, share_canvas.width, share_canvas.height);
     canvas.style.border = "none";
     ctx.fillStyle = "#05a0ff";
     ctx.font = "italic 30px 黑体";

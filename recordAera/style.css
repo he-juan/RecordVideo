@@ -1,8 +1,14 @@
+
+
+/**{*/
+    /*padding: 0;*/
+    /*margin: 0;*/
+/*}*/
+
 body{
     background-image: linear-gradient(to right, #37b9e9 , #89bfbc);
     color: #fff;
     font-family: "Source Sans Pro", sans-serif;
-
 }
 
 #tip, #record, #audioTip{
@@ -33,9 +39,14 @@ body{
     display:none;
     border-radius: 10px;
     position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%,-50%);
+    margin: auto;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    /*left: 50%;*/
+    /*top: 50%;*/
+    /*transform: translate(-50%,-50%);*/
     overflow: hidden;
 }
 
@@ -79,29 +90,34 @@ body{
     padding: 0px;
 }
 
-#shareTip {
-    height: 800px;
-    border-radius: 5px;
-    padding: 0px;
-    /*border: 1px solid coral;*/
-}
+/*#shareTip {*/
+    /*height: 800px;*/
+    /*border-radius: 5px;*/
+    /*padding: 0px;*/
+    /*!*border: 1px solid coral;*!*/
+/*}*/
 
 .shareTip_middle,.shareTip_bottom{
    height: 350px;
-   width:700px;
-   margin-left:250px;
+   width: 1000px;
+   margin-left: 100px;
    border: 1px solid coral;
 }
 
-.shareTip_middle{
-    margin-top: -10px;
-}
+
+/*.shareTip_middle{*/
+    /*margin-top: -10px;*/
+/*}*/
 
 .share_video, .share_canvas{
-    width: 700px;
-    height: 350px;
+    /*width: 700px;*/
+    /*height: 350px;*/
     border-radius: 2px;
     border: 1px solid #F0EFDA;
+}
+
+.share_video{
+    position:absolute;
 }
 
 #flex{
@@ -221,13 +237,17 @@ body{
     border-radius: 5px;
 }
 
-video, canvas{
+/*video, canvas{*/
+    /*width: 720px;*/
+    /*height: 360px;*/
+    /*border-radius: 2px;*/
+    /*border: 1px solid #F0EFDA;*/
+/*}*/
+#video， #shareScreen{
     width: 720px;
     height: 360px;
     border-radius: 2px;
     border: 1px solid #F0EFDA;
-}
-#video， #shareScreen{
     display:none;
     /*z-index:-1;*/
 }
