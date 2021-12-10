@@ -29,7 +29,7 @@ body{
 }
 
 #shareTip{
-    height: 800px;
+    height: 900px;
     width: 1200px;
     border: 2px solid #cbcbcb;
     background-color: #fff;
@@ -44,14 +44,11 @@ body{
     left: 0;
     right: 0;
     bottom: 0;
-    /*left: 50%;*/
-    /*top: 50%;*/
-    /*transform: translate(-50%,-50%);*/
     overflow: hidden;
 }
 
 #shareTip .shareContrainer{
-    height: 800px;
+    height: 900px;
     width: 1200px;
     overflow: hidden;
 }
@@ -90,34 +87,95 @@ body{
     padding: 0px;
 }
 
-/*#shareTip {*/
-    /*height: 800px;*/
-    /*border-radius: 5px;*/
-    /*padding: 0px;*/
-    /*!*border: 1px solid coral;*!*/
-/*}*/
 
-.shareTip_middle,.shareTip_bottom{
-   height: 350px;
-   width: 1000px;
-   margin-left: 100px;
+#middle{
+    height: 800px;
+    width: 1200px;
+    border: 1px solid #37b9e9;
+}
+
+#middle::after {              /**清除浮动**/
+    content: '';
+    display: block;
+    clear: both;
+}
+.shareTip_middles{
+    float: left;
+    height: 800px;
+    width: 1100px;
+    border: 1px solid #37b9e9;
+}
+
+.shareTip_middle{
+   height: 360px;
+   width: 750px;
+   margin-left: 250px;
    border: 1px solid coral;
 }
 
+.shareTip_bottom{
+    height:360px;
+    width:750px;
+    margin-left: 250px;
+    margin-top:5px;
+    border: 1px solid coral;
+}
 
-/*.shareTip_middle{*/
-    /*margin-top: -10px;*/
-/*}*/
 
 .share_video, .share_canvas{
-    /*width: 700px;*/
-    /*height: 350px;*/
     border-radius: 2px;
-    border: 1px solid #F0EFDA;
+    /*border: 1px solid #F0EFDA;*/
 }
 
 .share_video{
     position:absolute;
+}
+.share_canvas{
+    margin: 0 auto;
+}
+
+#share_record {
+    width: 0px;
+    height: 0px;
+}
+
+#share_mediaRecord, #tip_mediaRecord{
+    float: right;
+    height:800px;
+    width: 90px;
+    /*height: 80px;*/
+    border: 1px solid coral;
+    z-index:999;
+    /*margin-top:5px;*/
+    /*margin-top:100px;*/
+    /*display:none;*/
+}
+
+#share_mediaRecord .mediaRecordButton, #tip_mediaRecord .tip_RecordButton {
+    z-index:999;
+    height:500px;
+    border: 1px solid coral;
+    /*margin-left: 180px;*/
+    /*margin-right:150px;*/
+    /*display: flex;*/
+    /*flex-direction: row;*/
+    /*flex-wrap: nowrap;*/
+    /*justify-content: space-between  ;*/
+    /*align-items: center ;*/
+    /*align-content:center;*/
+
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-between ;
+    align-items: flex-start;
+    align-content:space-between;
+}
+.mediaRecordButton button{
+    width:90px;
+    height: 60px;
+    color: #37b9e9;
+    border:none;
 }
 
 #flex{

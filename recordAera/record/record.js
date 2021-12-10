@@ -10,7 +10,7 @@ Record.prototype.preInit = function() {
 
 
  function Record(){
-    console.warn("start record....")
+    console.warn("init record....")
      this.constraints = {audio:true, video: {width:640,height:360} }
      this.videoUpResolution = null  ;      // 当前主流上行分辨率
 
@@ -22,6 +22,7 @@ Record.prototype.preInit = function() {
          audio: null,
          main: null,
          slides: null,
+         localVideo:null,
      }
     this.RESOLUTION = {
         VIDEO_DEFAULT:{ width: 640, height: 360 },

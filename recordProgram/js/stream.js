@@ -12,7 +12,7 @@ Record.prototype.getMedia = async function (data, constraints) {
         console.warn('get stream failed: ' + JSON.stringify(constraints, null, '  '))
         console.warn('onGetStreamFailed error message: ' + error.message)
         console.warn('error name: ' + error.name)
-        console.warn('error constraint: ' + error.constraint)
+        console.warn('error constraint: ' + error.constraints)
         if (error.name === 'OverconstrainedError' || error.name === 'ConstraintNotSatisfiedError') {
             // constraints can not be satisfied by avb.device
             console.info('constraints can not be satisfied by avb.device')

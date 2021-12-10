@@ -209,7 +209,17 @@ Record.prototype.openShare = function (data) {
         return
     }
 
+    let captureElem
+    if(data.captureElem) {
+        //重新取流
+        captureElem = data.captureElem
+        data.stream = This.getCaptureStreams(captureElem)
+    }
+
     let type = 'slides'
+    if(data.shareType === 'localVideo'){
+       localStream.localVideo = data.stream
+    }
     function getMediaCallBack(event) {
         if (event.stream) {
             console.info('get stream success, ' + event.stream.id)
@@ -218,17 +228,18 @@ Record.prototype.openShare = function (data) {
             if (This.getBrowserDetail().browser === 'firefox') {
                 let tracks = stream.getVideoTracks();
                 tracks[0].onended = function () {
-                    This.closeStream(stream )
+                    // This.closeStream(stream )
+                    toggleShareButton({type: data.type})
                 }
             }else {
                 stream.oninactive = function () {
                     console.warn('user clicks the bottom share bar to stop sharing')
                     // This.closeStream(stream )
-                    toggleShareButton()
+                    toggleShareButton({type: data.type})
                 }
             }
 
-            let localAudioStream = This.getStream('audio', true)
+            let localAudioStream = This.getStream('audio', true) || This.getStream('localVideo', true)
             if (localAudioStream && stream.getAudioTracks().length > 0) {
                 mixStream = This.mixingStream(stream, localAudioStream)
                 // session.processAddStream(mixStream, pc, 'audio')
@@ -358,6 +369,7 @@ Record.prototype.videoRecord = function(data){
 Record.prototype.stopVideoRecord = function(data){
     console.log('Recorder stopped: ', data);
     let This = this
+    This.videoMediaRecorder.stop()
     This.videoMediaRecorder.onstop = function(){
         /**录制返回播放**/
         // let blob = new Blob(This.mediaRecorder.recordedBlobs, {'type': 'video/webm'});
@@ -375,7 +387,45 @@ Record.prototype.stopVideoRecord = function(data){
         }
     })
 
-    data.callback && data.callback({ codeType: 999, Blobs: This.videoMediaRecorder.recordedBlobs,})
+    data.callback && data.callback({ codeType: 999, stream: This.videoMediaRecorder})
+}
+
+
+Record.prototype.pauseVideoRecord = function(data){
+    console.warn("pause pause")
+    let This = this
+    This.videoMediaRecorder.pause()
+    This.videoMediaRecorder.onpause = function(){
+        console.warn("********************")
+
+    }
+    This.videoMediaRecorder.addEventListener('dataavailable', function(event) {
+        if (event.data && event.data.size > 0) {
+            This.videoMediaRecorder.recordedBlobs.push(event.data);
+        }
+    })
+
+
+
+    data.callback && data.callback({ codeType: 999, stream: This.videoMediaRecorder})
+}
+
+
+Record.prototype.resumeVideoRecord = function(data){
+    console.log('Recorder resume: ', data);
+    let This = this
+    This.videoMediaRecorder.resume()
+    This.videoMediaRecorder.onresume = function(){
+        console.warn("********************")
+    }
+
+    This.videoMediaRecorder.addEventListener('dataavailable', function(event) {
+        if (event.data && event.data.size > 0) {
+            This.videoMediaRecorder.recordedBlobs.push(event.data);
+        }
+    })
+
+    data.callback && data.callback({ codeType: 999, stream: This.videoMediaRecorder})
 }
 
 

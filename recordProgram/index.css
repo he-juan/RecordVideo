@@ -1,0 +1,223 @@
+
+*{
+    padding: 0;
+    margin: 0;
+}
+
+body{
+    color: #fff;
+    font-family: "Source Sans Pro", sans-serif;
+}
+
+
+#header,#footer{
+    width: 100%;
+    height: 100px;
+    background: #ccc;
+}
+
+/************************************头部**************************************************************/
+#header{
+    height:100px;
+    text-align: center;
+    font-weight: 200;
+    line-height:100px;
+    background-image: linear-gradient(to right, #37b9e9 , #89bfbc);
+}
+
+.title{
+    text-shadow: 2px 2px 15px rgb(26, 70, 90);
+    margin: 0 auto;
+}
+
+
+/*********************************************正文布局************************************************************/
+#container{
+    position: absolute;
+    width: 100%;
+    display: flex;
+    top: 100px;
+    bottom: 100px;
+}
+.left-group{
+    width: 200px;
+    background-color: #cbcbcb;
+    text-align: center;
+}
+
+.right-group{
+    width: 100px;
+    background-color: #cbcbcb;
+    text-align: center;
+}
+.mid-group{
+    flex: 1;
+    text-align: center;
+    border:1px solid #cbcbcb;
+}
+.foot{
+    position: absolute;
+    width: 100%;
+    height: 100px;
+    bottom: 0;
+    background-color: purple;
+    text-align: center;
+}
+
+
+
+/*******************************正文左边内容**************************************/
+
+.leftContrainterButton{
+    width:200px;
+    height:400px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-between ;
+    align-items: flex-start;
+    align-content:space-between;
+}
+
+.leftContrainterButton  button{
+    width: 200px;
+    height: 80px;
+    color: white;
+    font-weight:bold;
+    background-color: skyblue;
+    border:none;
+}
+
+
+/*.leftContrainterButton  button:hover{*/
+    /*background-color:white;*/
+    /*color: skyblue;*/
+/*}*/
+
+.setDeviced{
+    width:150px;
+    height:100px;
+    margin-left:20px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-between ;
+    align-items: flex-start;
+    align-content:space-between;
+}
+
+.select select{
+    height: 20px;
+    width: 90px;
+}
+
+
+/**************************************正文中部内容*************************************/
+.midTop{
+    width: auto;
+    height:50px;
+    background-color: darkkhaki;
+
+    display: flex;
+    flex-direction:row;
+    flex-wrap: nowrap;
+    justify-content:space-between;
+    align-items: center;
+    align-content:space-between;
+}
+
+.midTop button{
+    width: 80px;
+    height:40px;
+    border:none;
+}
+
+.midMiddle{
+    width: auto;
+    height:1000px;
+}
+
+.midContent{
+    width: auto;
+    display: none;
+}
+.btn.active{
+    background-color: pink;
+}
+.midMiddle .show{
+    display:block;
+
+}
+
+/****************关于音视频录制、区域录制处理************************/
+
+.videoContrainer{
+    width: auto;
+    height:1000px;
+}
+.shareCanvas{
+    width:720px;
+    height:360px;
+    border: 1px solid red;
+}
+
+/*.shareVideo{*/
+    /*width: 0px;*/
+    /*height:0px;*/
+/*}*/
+
+
+/**************************************正文右边内容*************************************/
+
+.rightTop{
+    width:100px;
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content:space-between;
+    align-items: center;
+    align-content:space-between;
+}
+
+.rightTop  button{
+    width: 100px;
+    height: 80px;
+    color: white;
+    font-weight:bold;
+    background-color: skyblue;
+    border:none;
+}
+
+/*.rightTop  button:hover{*/
+    /*background-color:white;*/
+    /*color: skyblue;*/
+/*}*/
+
+
+
+
+
+
+
+
+
+
+
+/********************获取区域************************/
+.mask,
+.rect {
+    position: absolute;
+    /*position:fixed;*/
+}
+
+.mask {
+    background-color: #000;
+    opacity: 0;
+}
+
+.rect {
+    background-color: #fff;
+    opacity: 0.5;
+    border:1px dashed #f50;
+}

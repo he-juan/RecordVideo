@@ -46,10 +46,22 @@ let canvas = document.getElementById("canvas")
 let context = canvas.getContext('2d')
 
 
+
+
 let share_canvas = document.getElementsByClassName("share_canvas")[0]
 let ctx = share_canvas.getContext("2d")
 let shareButton = document.getElementsByClassName("shareButton")[0]
 
+let shareTip_bottom = document.getElementsByClassName("shareTip_bottom")[0]
+let shareTip_middle = document.getElementsByClassName("shareTip_middle")[0]
+let share_mediaRecord = document.getElementById("share_mediaRecord")
+let share_record = document.getElementById("share_record")
+
+let share_startRecord = document.getElementsByClassName("share_startRecord")[0]
+let share_pauseRecord = document.getElementsByClassName("share_pauseRecord")[0]
+let share_resumeRecord = document.getElementsByClassName("share_resumeRecord")[0]
+let share_stopRecord = document.getElementsByClassName("share_stopRecord")[0]
+let share_download = document.getElementsByClassName("share_download")[0]
 
 
 /**开启/关闭视频**/
@@ -62,6 +74,8 @@ let isRecord = false
 let  switchTimeOut
 let  shareTimeOut
 
+let stopTimeout
+
 /** 像素匹配位置**/
 let setX
 let setY
@@ -72,6 +86,7 @@ let localStream ={
     audio: null,
     main: null,
     slides: null,
+    localVideo:null,
 }
 
 let devices = {
@@ -153,20 +168,22 @@ function draw(data){
     console.warn("video.videoHeight:",video.videoHeight)
     console.warn(" canvas.height:", rangeH)
     console.warn(" canvas.width  :", rangeW  )
+    window.cancelAnimationFrame(switchTimeOut)
+    window.cancelAnimationFrame(shareTimeOut)
 
     let videoType = getVideoType(data)
     if(videoType === 'openVideoStopShare'){
         console.warn("只有视频  只有视频openVideoStopShare")
-        window.cancelAnimationFrame(switchTimeOut)
-        window.cancelAnimationFrame(shareTimeOut)
+        // window.cancelAnimationFrame(switchTimeOut)
+        // window.cancelAnimationFrame(shareTimeOut)
         context.clearRect(0, 0, canvas.width ,canvas.height)
         switchToCanvas(videoType, video, 0, 0, 0, 0, 0, 0, rangeW, rangeH,)
     }
 
     if(videoType === 'openVideoOpenShare'){
         console.warn("两者皆有openVideoOpenShare")
-        window.cancelAnimationFrame(switchTimeOut)
-        window.cancelAnimationFrame(shareTimeOut)
+        // window.cancelAnimationFrame(switchTimeOut)
+        // window.cancelAnimationFrame(shareTimeOut)
         context.clearRect(0, 0, canvas.width ,canvas.height)
         shareToCanvas(videoType, shareVideo,0, 0, 0, 0, 0, 0, canvas.width, canvas.height)
         switchToCanvas(videoType, video, 0, 0, video.videoWidth, video.videoHeight, setX, setY, setWidth, setHeight)
@@ -174,8 +191,8 @@ function draw(data){
 
     if(videoType === 'openShareOpenVideo'){
         console.warn("两者都有openShareOpenVideo")
-        window.cancelAnimationFrame(switchTimeOut)
-        window.cancelAnimationFrame(shareTimeOut)
+        // window.cancelAnimationFrame(switchTimeOut)
+        // window.cancelAnimationFrame(shareTimeOut)
         context.clearRect(0, 0, canvas.width ,canvas.height)
         shareToCanvas(videoType, shareVideo,0, 0, 0, 0, 0, 0, canvas.width, canvas.height)
         switchToCanvas(videoType, video, 0, 0, video.videoWidth, video.videoHeight, setX, setY, setWidth, setHeight)
@@ -183,8 +200,8 @@ function draw(data){
 
     if(videoType === 'openShareStopVideo'){
         console.warn("只有共享openShareStopVideo")
-        window.cancelAnimationFrame(switchTimeOut)
-        window.cancelAnimationFrame(shareTimeOut)
+        // window.cancelAnimationFrame(switchTimeOut)
+        // window.cancelAnimationFrame(shareTimeOut)
         context.clearRect(0, 0, canvas.width ,canvas.height)
 
         shareToCanvas(videoType, shareVideo,0, 0, 0, 0, 0, 0, canvas.width, canvas.height)
@@ -216,7 +233,8 @@ function shareToCanvas(type, video, sx, sy, swidth, sheight, x, y, width, height
     shareTimeOut = window.requestAnimationFrame(() => {
         shareToCanvas(type,video, sx, sy, swidth, sheight, x, y, width, height);
     })
-
+    // video.style.display = "none"
+    // shareVideo.style.display = "none"
 }
 
 function switchToCanvas(type, video, sx, sy, swidth, sheight, x, y, width, height) {
@@ -249,6 +267,7 @@ function getArea(data){
         tip.style.display = "block";
         contrainer.style.opacity = "0.2";
         if(videoButton.textContent === '开启视频'){
+            data.deviceId = devices.cameras[0].deviceId
             openVideo(data)
         }
 
@@ -365,12 +384,12 @@ function stopAudio(){
 function openVideo(data){
     if(!localStream  || !localStream.main){
         data.constraints = {
-            audio: data.audio || false,
+            audio:  false,
             video: {
                 width: 720,   // 必须
                 height: 360,  // 必须
                 frameRate: 15,  // 可缺省，默认15fps
-                // deviceId: data.deviceId  || ''
+                deviceId: data.deviceId  || ''
             }
         }
 
@@ -387,8 +406,6 @@ function openVideo(data){
                         video.play();
                     };
                     video.addEventListener("play",function(){
-                        console.warn("video.videoWidth111:",video.videoWidth)
-                        console.warn("video.videoHeight111:",video.videoHeight)
                         if(isOpenShareScreen){
                             draw({openShare:true})
                         }else{
@@ -479,7 +496,7 @@ function stopShare(data){
     if(localStream.slides){
         console.warn("开始停止演示流")
         if(!data){
-            let data = {}
+            let data ={}
             data.callback= callback
             function callback(event){
                 if(event.codeType === 999){
@@ -502,7 +519,14 @@ function stopShare(data){
                     window.record.closeStream(localStream.slides)
                     localStream.slides = null
                     shareButton.textContent = '开启共享'
-                    context.clearRect(setX, setY, setWidth, setHeight)
+                    ctx.clearRect( 0, 0,  share_canvas.width, share_canvas.height)
+                    window.cancelAnimationFrame(stopTimeout)
+                    share_video.style.backgroundColor = " white"
+
+                    let rect = document.getElementsByClassName('rect')[0]
+                    rect.style.display = "none"
+
+                    // shareTip.style.display ="block"
                 }
             }
             window.record.stopShare(data)
@@ -527,10 +551,11 @@ function toggleVideoButton(){
     }
 }
 
-function toggleShareButton(){
+function toggleShareButton(data){
     if(screenButton.textContent === '屏幕共享'){
         if(localStream && localStream.slides){
             console.warn("存在演示流")
+            stopShare({type: data.recodeType})
         }else{
             openShare({type: 'shareScreen'})
         }
@@ -626,6 +651,17 @@ function handleShareLogic(){
         stopShare({recodeType: 'regionalVideo'})
 
     }else{
+        /**处理页面逻辑*****/
+        share_record.style.marginLeft = "-250px"
+        share_record.style.marginRight = "-150px"
+        share_record.style.borderColor = "white"
+        share_record.style.border = 'none';
+        share_record.style.width = "0px";
+        share_record.style.height = "0px";
+
+        share_video.style.display = "block";
+        shareTip_bottom.style.marginTop = '-10px';
+        shareTip_bottom.style.zIndex = "1"
         openShare({recodeType: 'regionalVideo'})
     }
 }
@@ -764,12 +800,28 @@ function getAudioOutSource(){
 
 // ********************************************录制下载阶段********************************************
 function beginRecord(data){
-    if(localStream && (localStream.main || localStream.slides)){
-        tip.style.display = "none";
-        contrainer.style.opacity = "0.2";
-        recordContrainer.style.display = 'block'
+    if(localStream && (localStream.main || localStream.slides ||localStream.localVideo)){
+
         let saveStream = []
-        let canvasStream = canvas.captureStream(60)
+        let canvasStream
+
+        if(data.type === 'canvasRecord'){
+            tip.style.display = "none";
+            contrainer.style.opacity = "0.2";
+            recordContrainer.style.display = 'block'
+            console.warn("111111111111")
+            canvasStream = canvas.captureStream(60)
+        }else if (data.type === 'shareCanvasRecord'){
+            console.warn("22222222")
+            // 处理页面逻辑
+            share_video.style.display = "none";
+            shareTip_bottom.style.marginTop = '-360px';
+            shareTip_bottom.style.zIndex = "999"
+            let rect = document.getElementsByClassName("rect")[0]
+            // rect.style.border = "none";
+            rect.style.display = "none"
+            canvasStream = share_canvas.captureStream(60)
+        }
         let canvasTrack =  canvasStream.getTracks()[0]
         if(canvasTrack){
             saveStream.push(canvasTrack)
@@ -778,77 +830,362 @@ function beginRecord(data){
             let micTrack = localStream.audio.getTracks()[0]
             saveStream.push(micTrack)
         }
-
         data.stream = new MediaStream(saveStream)
+
         console.warn("canvasRecordStream:",data.stream)
 
-        data.callback = callback
-        function callback(event){
-            console.warn("beginRecord:",event)
-            if(event.codeType === 999){
-                isRecord = true
-                recordVideo.srcObject = event.stream.stream
-                recordVideo.onloadedmetadata = function(e) {
-                    recordVideo.play();
-                };
-            }else{
-                console.warn("录制失败")
+
+        if(data.type === 'canvasRecord'){
+            data.callback = callback
+            function callback(event){
+                console.warn("beginRecord:",event)
+                if(event.codeType === 999){
+                    isRecord = true
+                    recordVideo.srcObject = event.stream.stream
+                    recordVideo.onloadedmetadata = function(e) {
+                        recordVideo.play();
+                    };
+                }else{
+                    console.warn("录制失败")
+                }
             }
+            window.record.videoRecord(data)
+        }else if (data.type === 'shareCanvasRecord'){
+            data.callback = function(event){
+                console.warn("shareCanvasRecord")
+                if(event.codeType === 999){
+                    share_record.style.marginLeft = "250px"
+                    share_record.style.marginRight = "150px"
+                    share_record.style.borderColor = "orange"
+                    share_record.style.borderStyle = 'solid';
+                    share_record.style.width = "700px";
+                    share_record.style.height = "350px";
+
+                    share_record.srcObject = event.stream.stream
+                    share_record.onloadedmetadata = function(){
+                       share_record.play()
+                    }
+
+                    share_startRecord.disabled = true
+                    share_stopRecord.disabled = false
+                    share_pauseRecord.disabled = false
+                    share_resumeRecord.disabled = false
+                    share_download.disabled = true
+                }
+            }
+            window.record.videoRecord(data)
         }
-        window.record.videoRecord(data)
+
     }else{
         console.warn("当前没有视频流或演示流")
     }
 }
 
-function stopVideoRecord(){
-    let data = {}
-    if(isRecord){
-        data.callback = callback
-        function callback(event){
-            console.warn("event:",event)
-            reRecordButton.style.display = 'block'
-            startMark.textContent = "停止录制"
-            isRecord = false
+
+function pauseVideoRecord(data){
+   if(data.type === 'shareCanvasRecord'){
+      data.callback = function(event){
+         if(event.codeType === 999){
+             buffer = event.stream.recordedBlobs
+             let Blobs= new Blob(buffer, {'type': 'video/webm'})
+             share_pauseRecord.disabled = true
+             share_resumeRecord.disabled = false
+             share_download.disabled = true
+             // share_record.srcObject = Blobs
+             share_record.pause()
+         }
+      }
+      window.record.pauseVideoRecord(data)
+   }
+}
+
+
+
+function resumeVideoRecord(data){
+    if(data.type === 'shareCanvasRecord'){
+        data.callback = function(event){
             if(event.codeType === 999){
-                buffer = event.recordedBlobs
-                recordButton.disabled = true
-                recordButton.style.backgroundColor = '#A2A2A2'
-
-                /**停止录制后需要关闭流**/
-                let tracks = recordVideo.srcObject.getTracks();
-                tracks.forEach(track => {track.stop()});
-                Object.keys(localStream).forEach(function (key) {
-                    if(key === 'audio'){
-                        stopAudio()
-                    }else if (key === 'main'){
-                        stopVideo()
-                    }else if(key === 'slides'){
-                        stopShare()
-                    }
-                    let stream = localStream[key]
-                    if (stream) {
-                        window.record.closeStream(stream)
-                        localStream[key] = null
-                    }
-                })
-
-                /***录制内容返回播放***/
-                let blob = new Blob(event.Blobs, {'type': 'video/webm'});
-                let url = window.URL.createObjectURL(blob);
-                recordVideo.srcObject = null;
-                recordVideo.src = url;
-                recordVideo.controls = true
-                recordVideo.play();
-                console.warn("停止录制成功")
-            }else{
-                console.warn("停止录制失败")
+                buffer = event.stream.recordedBlobs
+                let Blobs= new Blob(buffer, {'type': 'video/webm'})
+                share_pauseRecord.disabled = false
+                share_resumeRecord.disabled = true
+                share_download.disabled = true
+                // share_record.srcObject = Blobs
+                share_record.play()
             }
         }
-        window.record.stopVideoRecord(data)
+        window.record.resumeVideoRecord(data)
+    }
+}
+
+function stopVideoRecord(data){
+    if(data.type === 'canvasRecord'){
+        if(isRecord){
+            data.callback = callback
+            function callback(event){
+                console.warn("event:",event)
+                reRecordButton.style.display = 'block'
+                startMark.textContent = "停止录制"
+                isRecord = false
+                if(event.codeType === 999){
+                    buffer = event.stream.recordedBlobs
+                    recordButton.disabled = true
+                    recordButton.style.backgroundColor = '#A2A2A2'
+
+                    /**停止录制后需要关闭流**/
+                   if(share_record.srcObject){
+                       let tracks = share_record.srcObject.getTracks();
+                       tracks.forEach(track => {track.stop()});
+                       share_record.srcObject = null
+                   }
+                    Object.keys(localStream).forEach(function (key) {
+                        if(key === 'audio'){
+                            stopAudio()
+                        }else if (key === 'main'){
+                            stopVideo()
+                        }else if(key === 'slides'){
+                            stopShare()
+                        }
+                        let stream = localStream[key]
+                        if (stream) {
+                            window.record.closeStream(stream)
+                            localStream[key] = null
+                        }
+                    })
+
+                    /***录制内容返回播放***/
+                    let blob = new Blob(buffer, {'type': 'video/webm'});
+                    let url = window.URL.createObjectURL(blob);
+                    recordVideo.controls = true
+                    recordVideo.srcObject = null;
+                    recordVideo.src = url;
+                    recordVideo.play();
+                    console.warn("停止录制成功")
+                }else{
+                    console.warn("停止录制失败")
+                }
+            }
+            window.record.stopVideoRecord(data)
+        }
+    }else if (data.type === 'shareCanvasRecord'){
+         if(localStream && localStream.slides){
+             data.callback = function (event){
+                 if(event.codeType === 999){
+                     buffer = event.stream.recordedBlobs
+                     shareButton.textContent = '开启共享'
+                     share_startRecord.disabled = false
+                     share_stopRecord.disabled = true
+                     share_pauseRecord.disabled = true
+                     share_resumeRecord.disabled = true
+                     share_download.disabled = false
+
+                     /**停止录制后需要关闭流**/
+                     let tracks = share_record.srcObject.getTracks();
+                     tracks.forEach(track => {track.stop()});
+                     Object.keys(localStream).forEach(function (key) {
+                         if(key === 'audio'){
+                             stopAudio()
+                         }else if (key === 'main'){
+                             stopVideo()
+                         }else if(key === 'slides'){
+                             stopShare()
+                         }
+                         let stream = localStream[key]
+                         if (stream) {
+                             window.record.closeStream(stream)
+                             localStream[key] = null
+                         }
+                     })
+
+                     /***录制内容返回播放***/
+                     let blob = new Blob(buffer, {'type': 'video/webm'});
+                     let url = window.URL.createObjectURL(blob);
+                     share_record.controls = true
+                     share_record.srcObject = null;
+                     share_record.src = url;
+                     share_record.play();
+                     console.warn("停止录制成功")
+                 }else{
+                     console.warn("停止录制失败")
+                 }
+             }
+             window.record.stopVideoRecord(data)
+         }
+    }
+}
+
+/********************************处理不同类型获取页面逻辑(录制视频、录制音频、区域录制)**********************************************/
+
+// //获取页面的每个按钮
+// let btns = document.getElementsByClassName("btn")　　　　　//获取内容盒子
+// let contents = document.getElementsByClassName("midContent")
+// //遍历每个按钮为其添加点击事件
+// for(let i=0;i < btns.length;i++){
+//     btns[i].index = i;
+//     btns[i].onclick = function(){　　　　　　　　　　//对当前点击的按钮赋予active类名及显示当前按钮对应的内容
+//         for(let j=0;j<btns.length;j++){
+//             btns[j].className = btns[j].className.replace(' active', '').trim();
+//             contents[j].className = contents[j].className.replace(' show', '').trim();
+//         }
+//         this.className = this.className + ' active';
+//         contents[this.index].className = contents[this.index].className + ' show';
+//     };
+// }
+
+/************************************************共享本地文件*********************************************************/
+// let localVideo = document.createElement("video")
+let videoInput = document.createElement('input');
+let fileName = document.getElementById('fileName')
+let file;
+let fileURL;
+let ifMediaChange = false;
+
+videoInput.setAttribute('type', 'file');
+videoInput.setAttribute('id', 'localVideoInput');
+videoInput.setAttribute('style', 'visibility: hidden');
+document.body.appendChild(videoInput);
+
+/**开始上传视频**/
+async function shareLocalVideo() {
+    videoInput.click();
+}
+
+share_video.oncanplay = async function(){
+    /**
+     * 帧率localMediaframeRate
+     * 最大值为 30
+     * 考虑到mcu解码可能吃不消
+     * ipvt一般设置为 5
+     */
+    if (fileURL) {
+        if (isUploadVideo === true){
+            console.warn('switch local sharing source')
+                if(ifMediaChange){
+                    switchLocalVideoShare()
+                }
+        } else {
+            function callback(data) {
+                console.warn('local video share on call back: ', data)
+                if (data.codeType === 999){
+                    // shareScreenBtn.disabled = true
+                    // shareScreenBtn.style.background = "#8c818a"
+                    // stopShareLoVidBtn.disabled = false
+                    // stopShareLoVidBtn.style.background = "#3789a4"
+                    // localShareVideoMuteBtn.hidden = false
+                    isUploadVideo = true
+
+                    
+                    console.warn("share local video success...")
+                }else {
+                    if(data.reason){
+                        alert(data.reason)
+                    }
+                    console.warn("share local video failed: ", data)
+
+                }
+            }
+            let data = {
+                type:'slides',
+                captureElem:share_video,
+                shareType:'localVideo',
+                callback:callback
+            }
+            window.record.openShare(data)
+        }
+    }
+}
+
+videoInput.addEventListener('change', function(){
+    // if (!gsRTC) {
+    //     tsk_utils_log_warn('gsRTC is not initialized')
+    //     return
+    // }
+    // if (!gsRTC.RTCSession) {
+    //     tsk_utils_log_warn("please call first")
+    //     return
+    // }
+    // if(gsRTC.MEDIA_STREAMS.REMOTE_PRESENT_STREAM || gsRTC.RTCSession.getStream('slides', false) && gsRTC.RTCSession.getStream('slides', false).getVideoTracks().length > 0){
+    //     gsRTC.presentSharing = true;
+    // } else {
+    //     gsRTC.presentSharing = false;
+    // }
+
+    if(isUploadVideo === true){
+        console.warn('LocalVideo is sharing now.')
+        let ifChange = confirm('是否要切换演示媒体文件?');
+        if(ifChange){
+            console.warn('Slides stream is going to change!')
+            ifMediaChange = true
+        }else{
+            this.value = "";  // clear input
+            return
+        }
     }
 
+    if (videoInput.files) {
+        try {
+            file = videoInput.files[0];
+            fileURL = window.record.getObjectURL(file);
+            let fileType = file.type.split('/')[0];
+            if(fileType === 'audio' || fileType === 'video'){
+                share_video.controls = 'controls'
+                share_video.setAttribute('src', fileURL);
+
+                fileName.innerHTML = videoInput.files[0].name
+                try {
+                    share_video.play();
+                }catch (e) {
+                    console.warn(e)
+                }
+            }else{
+                console.warn('only support upload video or audio, please try again！')
+            }
+        }catch (e) {
+            console.warn(e)
+        }
+    }
+
+})
+
+/**
+ * 停止共享本地视频
+ */
+function stopShareLocalVideo() {
+    if (isUploadVideo === true){
+        function callback(data) {
+            console.warn("stopShareLocalVideo: ", data)
+            if (data.codeType === 999){
+                videoInput.value = ""
+                localShareVideoMuteBtn.hidden = true
+                fileName.innerHTML = ''
+                shareScreenBtn.disabled = ''
+                shareScreenBtn.style.background = "#3789a4"
+                stopShareLoVidBtn.disabled = true
+                stopShareLoVidBtn.style.background = "#8c818a"
+                localVideoEle.setAttribute('src', '')
+                ifMediaChange = false
+                gsRTC.MEDIA_STREAMS.LOCAL_VIDEO_SHARE_STREAM = null
+                gsRTC.isUploadVideo = false
+                console.warn("<span>stop share local video success...</span>")
+            } else {
+                if(data.reason){
+                    alert(data.reason)
+                }
+                console.warn("share video call failed: ", data)
+                writeToScreen("<span>stop present failed...</span>")
+            }
+        }
+        gsRTC.stopShareScreen({
+            isStopShareLoVideo: true,
+            type: 'slides',
+            callback: callback
+        })
+    }
 }
+
+
+
+
 function handleAudioRecord(data){
     if(audioButton.textContent === '开始录制'){
         console.warn("音频录制  音频录制开始")
@@ -925,6 +1262,8 @@ function download(data){
     }
     if(data.type === 'video'){
         window.record.videoDownload(data)
+    }else if(data.type === 'shareCanvasRecord'){
+        window.record.videoDownload(data)
     }else{
         window.record.audioDownload(data)
     }
@@ -974,16 +1313,13 @@ function devicedsInfo(){
 
 // *********************************************区域录制获取区域阶段**************************************************************
 function finish() {
-
-    // let position = getElementViewPosition(share_video)
-    // console.warn("ll:",position)
-
+    share_startRecord.disabled = false
 
     var videoHeight = share_video.videoHeight;
     var videoWidth = share_video.videoWidth;
+    share_video.width = videoWidth
+    share_video.height = videoHeight
 
-    // let width = Math.abs( end_x - start_x)
-    // let height = Math.abs( end_y - start_y )
     width = Math.abs(window.endPositionX - window.startPositionX);
     height = Math.abs( window.endPositionY - window.startPositionY);
     let rangeW = videoWidth * (width / share_video.offsetWidth);
@@ -992,6 +1328,8 @@ function finish() {
     console.warn("rangeH:",rangeH)
     share_canvas.height = rangeH ;
     share_canvas.width  = rangeW ;
+    shareTip_bottom.width = rangeW
+    shareTip_bottom.height = rangeH
 
 
     let sx = window.startPositionX
@@ -1005,7 +1343,6 @@ function finish() {
     console.warn("rangeW:",rangeW)
     console.warn("rangeH:",rangeH)
     playCanvas(share_video,ctx,sx,sy,rangeW,rangeH);
-
 }
 
 
@@ -1029,17 +1366,7 @@ function playCanvas(video,ctx,sx,sy,rangeW,rangeH){
     ctx.textAlign = 'center';
 
 
-
-    // var ftop =  mousedowny ;
-    // var fleft =  mousedownx;
-    // ctx.fillText(data,fleft,ftop);
-
-    // var fftop = canvas.height/2+120;
-    // var ffleft = canvas.width/2;
-    // ctx.fillText("追逐",150,140);
-    // ctx.fillText(data1,ffleft,fftop);
-
-    requestAnimationFrame(() => {
+    stopTimeout = requestAnimationFrame(() => {
         playCanvas(video,ctx,sx,sy,rangeW,rangeH);
     })
 }

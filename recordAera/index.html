@@ -8,7 +8,7 @@
     <!--外部样式表-->
     <link rel="stylesheet" type="text/css" href="style.css" />
     <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.js"></script>
-    <script type = "text/javascript"  src="js/videoArea.js"></script>
+    <script type = "text/javascript"  src="record/videoArea.js"></script>
 </head>
 <body>
 
@@ -17,7 +17,7 @@
 
 <div id="contrainer">
     <div id="contrainer_start">
-        <button class="audioRecording"onclick="getArea({recodeType: 'audio'})"> 录制音频</button>
+        <!--<button class="audioRecording"onclick="getArea({recodeType: 'audio'})"> 录制音频</button>-->
         <button class="videoRecodering" onclick=" getArea({recodeType: 'video'})"> 录制视频</button>
         <button class="RegionalRecording" onclick=" getArea({recodeType: 'regionalVideo'})"> 区域录制</button>
     </div>
@@ -51,17 +51,47 @@
         <div class="shareTip_top">
             <span> <h2>区域录制片段</h2></span>
             <button class="shareButton" onclick="handleShareLogic()">开启演示</button>
+            <!--<button class="uploadVideo" onclick="shareLocalVideo()">上传视频</button>-->
             <button class="close" onclick="closePopUp()">X</button>
             <!--</button>-->
         </div>
         <hr/>
+        <div id="middle">
+            <div class="shareTip_middles">
+                <div class="midContent show">
+                    <div class="shareTip_middle">
+                        <video class="share_video"></video>
+                    </div>
+                    <div class="shareTip_bottom">
+                        <canvas class="share_canvas"></canvas>
+                    </div>
+                    <video id="share_record"></video>
+                </div>
 
-        <div class="shareTip_middle">
-            <video class="share_video"></video>
+                <!--<div class="midContent">-->
+                    <!--<div class="shareTip_bottom">-->
+                        <!--<canvas class="share_canvas"></canvas>-->
+                    <!--</div>-->
+                    <!--<video id="share_record"></video>-->
+                <!--</div>-->
+
+                <!--<div class="midContent">-->
+                    <!--&lt;!&ndash;<video id="share_record"></video>&ndash;&gt;-->
+                <!--</div>-->
+            </div>
+
+            <div id="share_mediaRecord">
+                <div class="mediaRecordButton">
+                    <button class="share_startRecord  btn"  onclick="beginRecord({type: 'shareCanvasRecord'})" disabled>开始录制</button>
+                    <button class="share_pauseRecord"  onclick="pauseVideoRecord({type: 'shareCanvasRecord'})" disabled>暂停录制</button>
+                    <button class="share_resumeRecord"  onclick="resumeVideoRecord({type: 'shareCanvasRecord'})" disabled>恢复录制</button>
+                    <button class="share_stopRecord btn"  onclick="stopVideoRecord({type: 'shareCanvasRecord'})" disabled>停止录制</button>
+                    <button class="share_download" onclick ="download({type: 'shareCanvasRecord'})" disabled>下载</button>
+                </div>
+            </div>
         </div>
-        <div class="shareTip_bottom">
-            <canvas class="share_canvas"></canvas>
-        </div>
+
+
     </div>
 </div>
 
@@ -119,7 +149,7 @@
         <hr/>
         <div class="record">
             <button class="share" onclick="toggleShareButton()">屏幕共享</button>
-            <button class="recording" onclick = "beginRecord({type: 'record'})">开始记录</button>
+            <button class="recording" onclick = "beginRecord({type: 'canvasRecord'})">开始记录</button>
         </div>
     </div>
 </div>
@@ -147,7 +177,7 @@
 
     <div class="tip_bottom">
         <div class="record">
-            <button class="recorded" onclick="stopVideoRecord()">停止记录</button>
+            <button class="recorded" onclick="stopVideoRecord({type: 'canvasRecord'})">停止记录</button>
             <button>已完成</button>
             <button class="download" onclick ="download({type: 'video'})">下载</button>
         </div>
@@ -155,11 +185,10 @@
 </div>
 
 
-<script type = "text/javascript"  src="js/index.js"></script>
-<!--<script type=  "text/javascript"   src="areaPoaition.js" ></script>-->
-<script type = "text/javascript"  src="js/record.js"></script>
-<script type = "text/javascript"  src="js/api.js"></script>
-<script type = "text/javascript"  src="js/stream.js"></script>
-<script type = "text/javascript"  src="js/common.js"></script>
+<script type = "text/javascript"  src="index.js"></script>
+<script type = "text/javascript"  src="record/record.js"></script>
+<script type = "text/javascript"  src="record/api.js"></script>
+<script type = "text/javascript"  src="record/stream.js"></script>
+<script type = "text/javascript"  src="record/common.js"></script>
 </body>
 </html>

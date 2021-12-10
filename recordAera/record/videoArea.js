@@ -77,11 +77,6 @@
             $right = this.$rangeEl.find('div.mask:eq(2)'),
             $bottom = this.$rangeEl.find('div.mask:eq(3)');
 
-        // console.warn("$rect:",$rect)
-        // console.warn("$top:",$top)
-        // console.warn("$left:",$left)
-        // console.warn("$right:",$right)
-        // console.warn("$bottom:", $bottom)
 
 
         $top.css({
@@ -130,7 +125,6 @@
      * 创建矩形选框
      */
     FrameSelection.prototype.renderRect = function (p1, p2) {
-        // console.warn("p1:  " +p1  + "  p2: " + p2)
         var $rect = this.$rangeEl.find('div.rect');
         let  videoContainer = document.getElementsByClassName("shareTip_middle")[0]
 
@@ -226,7 +220,6 @@
             self.$rangeEl.bind('mousemove', function (e) {
                 console.warn("11111")
                 var end = new Point(e.pageX, e.pageY);
-                // var end = new Point(e.clientX - videoContainer.offsetLeft, e.clientY - videoContainer.offsetTop);
 
                 //绘制
                 self.render(start, end);
