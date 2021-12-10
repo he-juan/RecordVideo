@@ -1,6 +1,12 @@
 
 let shareVideo = document.getElementsByClassName("shareVideo")[0]
+let shareRecord = document.getElementsByClassName("shareRecord")[0]
 let shareCanvas = document.getElementsByClassName("shareCanvas")[0]
+let ctx = shareCanvas.getContext('2d')
+
+
+let mainVideo = document.createElement("video")
+let slidesVideo = document.createElement('video')
 
 
 // *********************正文中间按钮********************
@@ -9,7 +15,8 @@ let videoBtn = document.getElementsByClassName("videoBtn")[0]
 let audioBtn = document.getElementsByClassName("audioBtn")[0]
 
 areaVideoBtn.addEventListener("click",function(){
-    currentRecodeType = "areaVideo"
+    window.record.currentRecodeType = "areaVideo"
+
     toggleVideoBtn.disabled = true
     toggleVideoBtn.style.opacity ='0.1'
 
@@ -20,7 +27,7 @@ areaVideoBtn.addEventListener("click",function(){
     getCategory()
 })
 videoBtn.addEventListener("click",function () {
-    currentRecodeType = "video"
+    window.record.currentRecodeType = "video"
 
     toggleVideoBtn.disabled = false
     toggleVideoBtn.style.opacity ='1'
@@ -34,7 +41,7 @@ videoBtn.addEventListener("click",function () {
 })
 
 audioBtn.addEventListener("click",function () {
-    currentRecodeType = "audio"
+    window.record.currentRecodeType = "audio"
 
     toggleVideoBtn.disabled = true
     toggleShareBtn.disabled = true
@@ -58,8 +65,9 @@ let devices ={
 }
 let localStreams = {
     audio:null,
-    video:null,
-    slides: null
+    main:null,
+    slides: null,
+    localVideo: null,
 }
 let audioInputSelect = document.querySelector('select#audioSource');
 let audioOutputSelect = document.querySelector('select#audioOutput');
@@ -228,6 +236,7 @@ function attachSinkId(element, sinkId) {
 //获取页面的每个按钮
 let btns = document.getElementsByClassName("btn")　　　　　//获取内容盒子
 let contents = document.getElementsByClassName("midContent")
+
 //遍历每个按钮为其添加点击事件
 for(let i=0;i < btns.length;i++){
     btns[i].index = i;
@@ -239,6 +248,15 @@ for(let i=0;i < btns.length;i++){
         this.className = this.className + ' active';
         contents[this.index].className = contents[this.index].className + ' show';
     };
+
+    if(btns[i].textContent === '区域录制'){
+        currentRecodeType = 'areaVideo'
+    }else if(btns[i].textContent === '视频录制'){
+        currentRecodeType = 'video'
+    }else if(btns[i].textContent === '音频录制'){
+        currentRecodeType = 'audio'
+    }
+
 }
 
 
@@ -268,12 +286,16 @@ function toggleVideoButton(){
 
 function getCategory(){
     console.warn("start handle getCategory")
-   if(currentRecodeType === 'areaVideo'){
+    if(!record){
+        console.warn('record is not initialized')
+        return
+    }
+   if(window.record.currentRecodeType === 'areaVideo'){
        if(!localStreams || !localStreams.slides){
            let data={}
            data.callback = function(event){
                if(event.codeType === 999){
-                   console.warn("获取流成功")
+                   console.warn("获取流成功",event)
                    shareVideo.style.display = 'inline-block'
                    shareCanvas.style.display = 'inline-block'
                    toggleShareBtn.textContent = "关闭共享"
@@ -289,16 +311,16 @@ function getCategory(){
            }
            openAreaVideo(data)
        }
-   }else if(currentRecodeType === 'video'){
+   }else if(window.record.currentRecodeType === 'video'){
        if(!localStreams || !localStreams.video){
            let data={}
            data.callback = function(event){
                if(event.codeType === 999){
-                   localStreams.slides = event.stream
-                   shareVideo.srcObject = localStreams.slides
-                   shareVideo.onloadedmetadata = function(){
-                       shareVideo.play()
-                   }
+                   localStreams.main = event.stream
+                   // shareVideo.srcObject = localStreams.slides
+                   // shareVideo.onloadedmetadata = function(){
+                   //     shareVideo.play()
+                   // }
                }
            }
            data.deviceId = devices.cameras[0].deviceId
@@ -313,7 +335,11 @@ function getCategory(){
 
 function stopCategory(){
     console.warn("stop handle getCategory")
-    if(currentRecodeType === 'areaVideo'){
+    if(!record){
+        console.warn('record is not initialized')
+        return
+    }
+    if(window.record.currentRecodeType === 'areaVideo'){
         if(localStreams  && localStreams.slides){
             let data={}
             data.callback = function(event){
@@ -333,7 +359,7 @@ function stopCategory(){
             }
             stopAreaVideo(data)
         }
-    }else if(currentRecodeType === 'video') {
+    }else if(window.record.currentRecodeType === 'video') {
         // if (localStreams && localStreams.video) {
         //     let data={}
         //     data.callback = function (event) {
@@ -357,8 +383,7 @@ function stopCategory(){
 
 
 // *********************************************区域录制获取区域阶段**************************************************************
-let canvas = document.getElementsByClassName("shareCanvas")[0]
-let ctx = canvas.getContext('2d')
+// let shareCanvas = document.getElementsByClassName("shareCanvas")[0]
 function finish() {
 
     var videoHeight = shareVideo.videoHeight;
@@ -388,7 +413,7 @@ function finish() {
     console.warn("sy:",sy)
     console.warn("rangeW:",rangeW)
     console.warn("rangeH:",rangeH)
-    playCanvas(shareVideo,ctx,sx,sy,rangeW,rangeH);
+    playCanvas(shareVideo,shareCanvas, ctx,sx,sy,rangeW,rangeH);
 }
 
 
@@ -396,7 +421,7 @@ function finish() {
 /*
 * video视频转换到canvas中
 * */
-function playCanvas(video,ctx,sx,sy,rangeW,rangeH){
+function playCanvas(video,canvas,ctx,sx,sy,rangeW,rangeH){
 
     // data = div.value;
     // data1 = text.value;
@@ -404,7 +429,7 @@ function playCanvas(video,ctx,sx,sy,rangeW,rangeH){
     // console.log("data1:",data1);
     // var tw1 = ctx.measureText(data1).width;
     // var tw = ctx.measureText(data).width;
-    ctx.drawImage(video, sx, sy, rangeW, rangeH, 0, 0, shareCanvas.width, shareCanvas.height);
+    ctx.drawImage(video, sx, sy, rangeW, rangeH, 0, 0, canvas.width, canvas.height);
     canvas.style.border = "none";
     ctx.fillStyle = "#05a0ff";
     ctx.font = "italic 30px 黑体";
@@ -413,9 +438,174 @@ function playCanvas(video,ctx,sx,sy,rangeW,rangeH){
 
 
     stopTimeout = requestAnimationFrame(() => {
-        playCanvas(video,ctx,sx,sy,rangeW,rangeH);
+        playCanvas(video,canvas,ctx,sx,sy,rangeW,rangeH);
     })
 }
+
+
+// *****************************************录制阶段*********************************************************
+
+function beginRecord() {
+    console.warn("start record...")
+    if (!record) {
+        console.warn('record is not initialized')
+        return
+    }
+    if (!localStreams && (!localStreams.audio || !localStreams.main || !localStreams.slides || !localStreams.localVideo)) {
+        console.warn("localStream is null")
+        return
+    }
+    let mixStream = []
+    let data = {}
+    let canvasStream = shareCanvas.captureStream(60)
+    let canvasTrack = canvasStream.getTracks()[0]
+    if (canvasTrack) {
+        mixStream.push(canvasTrack)
+    }
+    if (localStreams.audio) {
+        let audioTrack = localStreams.audio.getTracks()[0]
+        mixStream.push(audioTrack)
+    }
+    data.stream = new MediaStream(mixStream)
+    console.warn("RecordStream:", data.stream)
+
+    if (window.record.currentRecodeType === 'areaVideo') {
+        data.callback = function (event) {
+            if (event.codeType === 999) {
+                console.warn("begin Record success:",event)
+                shareRecord.width = shareCanvas.width
+                shareRecord.height = shareCanvas.height
+                shareRecord.srcObject = event.stream.stream
+                shareRecord.onloadedmetadata = function (e) {
+                    shareRecord.play();
+                };
+            }else{
+                console.warn("begin Record failed")
+            }
+        }
+        window.record.videoRecord(data)
+    } else if (window.record.currentRecodeType === 'video') {
+
+    }
+}
+
+
+function stopRecord() {
+    console.warn("start record...")
+    if (!record) {
+        console.warn('record is not initialized')
+        return
+    }
+    if (!localStreams && (!localStreams.audio || !localStreams.main || !localStreams.slides || !localStreams.localVideo)) {
+        console.warn("localStream is null")
+        return
+    }
+    let data = {}
+
+    if (window.record.currentRecodeType === 'areaVideo') {
+        data.callback = function (event) {
+            if (event.codeType === 999) {
+                console.warn("stop record success:", event)
+                let buffer = event.stream.recordedBlobs
+                shareRecord.srcObject = event.stream.stream
+                // share_startRecord.disabled = false
+                // share_stopRecord.disabled = true
+                // share_pauseRecord.disabled = true
+                // share_resumeRecord.disabled = true
+                // share_download.disabled = false
+
+                /**停止录制后需要关闭流**/
+                let tracks = shareRecord.srcObject.getTracks();
+                tracks.forEach(track => {
+                    track.stop()
+                });
+                // Object.keys(localStream).forEach(function (key) {
+                //     if(key === 'audio'){
+                //         stopAudio()
+                //     }else if (key === 'main'){
+                //         stopVideo()
+                //     }else if(key === 'slides'){
+                //         stopShare()
+                //     }
+                //     let stream = localStream[key]
+                //     if (stream) {
+                //         window.record.closeStream(stream)
+                //         localStream[key] = null
+                //     }
+                // })
+
+                /***录制内容返回播放***/
+                let blob = new Blob(buffer, {'type': 'video/webm'});
+                let url = window.URL.createObjectURL(blob);
+                shareRecord.controls = true
+                shareRecord.srcObject = null;
+                shareRecord.src = url;
+                shareRecord.play();
+            } else {
+                console.warn("stop record failed")
+            }
+        }
+        window.record.stopVideoRecord(data)
+    } else if (window.record.currentRecodeType === 'video') {
+
+    }
+}
+
+function pauseRecord(){
+    console.warn("pause record...")
+    if (!record) {
+        console.warn('record is not initialized')
+        return
+    }
+    if (!localStreams && (!localStreams.audio || !localStreams.main || !localStreams.slides || !localStreams.localVideo)) {
+        console.warn("localStream is null")
+        return
+    }
+    let data = {}
+
+    if (window.record.currentRecodeType === 'areaVideo') {
+        data.callback = function (event) {
+            if (event.codeType === 999) {
+                console.warn("pause record success:", event)
+                shareRecord.pause();
+            } else {
+                console.warn("pause record failed")
+            }
+        }
+        window.record.pauseVideoRecord(data)
+    } else if (window.record.currentRecodeType === 'video') {
+
+    }
+}
+
+
+function resumeRecord(){
+    console.warn("resume record...")
+    if (!record) {
+        console.warn('record is not initialized')
+        return
+    }
+    if (!localStreams && (!localStreams.audio || !localStreams.main || !localStreams.slides || !localStreams.localVideo)) {
+        console.warn("localStream is null")
+        return
+    }
+    let data = {}
+
+    if (window.record.currentRecodeType === 'areaVideo') {
+        data.callback = function (event) {
+            if (event.codeType === 999) {
+                console.warn("resume record success:", event)
+                shareRecord.play();
+            } else {
+                console.warn("resume record failed")
+            }
+        }
+        window.record.resumeVideoRecord(data)
+    } else if (window.record.currentRecodeType === 'video') {
+
+    }
+}
+
 
 
 
@@ -425,6 +615,7 @@ window.addEventListener('load', function () {
     if (Record) {
         Record.prototype.preInit()
     }
+    window.record.currentRecodeType = currentRecodeType
     navigator.mediaDevices.enumerateDevices().then(gotDevices).catch(handleError);
 })
 

@@ -35,6 +35,7 @@ body{
 #container{
     position: absolute;
     width: 100%;
+    height:1000px;
     display: flex;
     top: 100px;
     bottom: 100px;
@@ -70,7 +71,7 @@ body{
 
 .leftContrainterButton{
     width:200px;
-    height:400px;
+    height:550px;
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
@@ -151,13 +152,13 @@ body{
 
 /****************关于音视频录制、区域录制处理************************/
 
-.videoContrainer{
+.videoContrainer, .shareContrainer, .audioContrainter{
     width: auto;
     height:1000px;
 }
 .shareCanvas{
-    width:720px;
-    height:360px;
+    /*width:720px;*/
+    /*height:360px;*/
     border: 1px solid red;
 }
 

@@ -10,13 +10,14 @@ Record.prototype.preInit = function() {
 
 
  function Record(){
-    console.warn("init record....")
+     console.warn("init record....")
      this.constraints = {audio:true, video: {width:640,height:360} }
      this.videoUpResolution = null  ;      // 当前主流上行分辨率
 
      // 录制内容
      this.mediaRecorder = null;
      this.recordedBlobs = null;
+     this.currentRecodeType = null
 
      this.localStreams = {
          audio: null,

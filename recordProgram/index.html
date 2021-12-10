@@ -20,6 +20,7 @@
                <div class="leftContrainterButton">
                    <button class="toggleVideoButton" onclick="toggleVideoButton()">开启视频</button>
                    <button class="toggleShareButton" onclick="toggleShareButton()">开启共享</button>
+                   <button class="localVideoButton" onclick="localVideoButton()">上传本地视频</button>
                    <button class="toggleMuteButton" onclick="toggleMuteButton()">静音</button>
                    <button>设置</button>
                </div>
@@ -51,36 +52,41 @@
                <!--***************************页面中间显示部分（音视频录制）**************************-->
                <div class="midMiddle">
                    <div class="midContent show">
-                       <div class="videoContrainter">
+                       <div class="shareContrainter">
                            <div class="videoArea">
                                <video class="shareVideo"></video>
                            </div>
-
-
+                           <canvas class="shareCanvas"></canvas>
+                           <video class="shareRecord"></video>
                        </div>
-                       <canvas class="shareCanvas"></canvas>
-
                    </div>
 
                    <div class="midContent ">
-                       <p>页面一要显示的内容</p>
-                       <input type="text" placeholder="页面一内容"/>
+                       <div class="videoContrainter">
+                           <canvas class="video_canvas"></canvas>
+                           <p>页面一要显示的内容</p>
+                           <input type="text" placeholder="页面一内容"/>
+                       </div>
+
                    </div>
                    <div class="midContent">
-                       <p>页面二要显示的内容</p>
-                       <input type="text" placeholder="页面二内容" />
+                       <div class="audioContrainter">
+                           <p>页面二要显示的内容</p>
+                           <input type="text" placeholder="页面二内容" />
+                       </div>
+
                    </div>
                </div>
            </div>
            <!--**************************************页面右边（右侧边栏）**************************************-->
            <div class="right-group">
                <div class="rightTop">
-                   <button>开始录制</button>
-                   <button>暂停录制</button>
-                   <button>恢复录制</button>
-                   <button>录制完成</button>
-                   <button>重新录制</button>
-                   <button>下载</button>
+                   <button class="startRecord"  onclick="beginRecord()" >开始录制</button>
+                   <button class="pauseRecord"  onclick="pauseRecord()" >暂停录制</button>
+                   <button class="resumeRecord"  onclick="resumeRecord()" >恢复录制</button>
+                   <button class="stopRecord"  onclick="stopRecord()" >停止录制</button>
+                   <button class="restartRecord"  onclick="restartRecord()" >重新录制</button>
+                   <button class="download" onclick ="download()" >下载</button>
                </div>
            </div>
        </div>

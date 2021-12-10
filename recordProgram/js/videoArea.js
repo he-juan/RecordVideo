@@ -183,7 +183,7 @@
         // var canvas = document.getElementById("canvas");
         //var ctx =canvas.getContext("2d");
         let shareTip = document.getElementById("container")
-        let videoContainer = document.getElementsByClassName("videoArea")[0]
+        let videoContainer = document.getElementsByClassName("shareVideo")[0]
         this.$rangeEl.bind('mousedown', function (event) {
             console.warn("mousedown", event)
             console.warn("offsetWidth: ", event.offsetX);
@@ -197,8 +197,8 @@
             // var loc = windowTovideo(share_video) ;//获取鼠标点击在video的坐标
             event.preventDefault();
 
-            window.startPositionX = event.clientX /*- shareTip.offsetLeft /*- videoContainer.offsetLeft*/;
-            window.startPositionY = event.clientY /*- shareTip.offsetTop /*- videoContainer.offsetTop*/;
+            window.startPositionX = event.clientX - shareTip.offsetLeft - videoContainer.offsetLeft;
+            window.startPositionY = event.clientY - shareTip.offsetTop - videoContainer.offsetTop;
             window.lefts = event.offsetX
             window.tops = event.offsetY;
             window.mouseDownLeft = event.clientX
@@ -239,8 +239,8 @@
             // console.warn("window.recttop:",window.rectTop)
             // console.warn("window rectLeft:",window.rectLeft)
 
-            window.endPositionX = e.clientX /* - shareTip.offsetLeft -  videoContainer.offsetLeft*/;
-            window.endPositionY = e.clientY /* - shareTip.offsetTop /*- videoContainer.offsetTop*/;
+            window.endPositionX = e.clientX  - shareTip.offsetLeft -  videoContainer.offsetLeft;
+            window.endPositionY = e.clientY  - shareTip.offsetTop - videoContainer.offsetTop;
 
 
 

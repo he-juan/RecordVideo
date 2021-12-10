@@ -368,6 +368,7 @@ Record.prototype.stopVideoRecord = function(data){
         // }
         // recordVideo.src = url;
         console.warn("********************")
+
     }
 
     This.videoMediaRecorder.addEventListener('dataavailable', function(event) {
@@ -376,7 +377,11 @@ Record.prototype.stopVideoRecord = function(data){
         }
     })
 
-    data.callback && data.callback({ codeType: 999, Blobs: This.videoMediaRecorder.recordedBlobs,})
+    if(This.videoMediaRecorder.state === 'inactive'){
+        console.warn("********* stop success***********")
+        data.callback && data.callback({ codeType: 999, stream: This.videoMediaRecorder})
+    }
+
 }
 
 
@@ -385,35 +390,37 @@ Record.prototype.pauseVideoRecord = function(data){
     let This = this
     This.videoMediaRecorder.pause()
     This.videoMediaRecorder.onpause = function(){
-        console.warn("********************")
-        This.videoMediaRecorder.addEventListener('dataavailable', function(event) {
-            if (event.data && event.data.size > 0) {
-                This.videoMediaRecorder.recordedBlobs.push(event.data);
-            }
-        })
+
     }
-
-
-
-    data.callback && data.callback({ codeType: 999, Blobs: This.videoMediaRecorder.recordedBlobs,})
-}
-
-
-Record.prototype.resumeVideoRecord = function(data){
-    console.log('Recorder stopped: ', data);
-    let This = this
-    // This.videoMediaRecorder.resume()
-    This.videoMediaRecorder.onresume = function(){
-        console.warn("********************")
-    }
-
     This.videoMediaRecorder.addEventListener('dataavailable', function(event) {
         if (event.data && event.data.size > 0) {
             This.videoMediaRecorder.recordedBlobs.push(event.data);
         }
     })
 
-    data.callback && data.callback({ codeType: 999, Blobs: This.videoMediaRecorder.recordedBlobs,})
+    if(This.videoMediaRecorder.state === 'paused'){
+        console.warn("********* pause success***********")
+        data.callback && data.callback({ codeType: 999, stream: This.videoMediaRecorder})
+    }
+}
+
+
+Record.prototype.resumeVideoRecord = function(data){
+    console.log('Recorder stopped: ', data);
+    let This = this
+    This.videoMediaRecorder.resume()
+    This.videoMediaRecorder.onresume = function(){
+
+    }
+    This.videoMediaRecorder.addEventListener('dataavailable', function(event) {
+        if (event.data && event.data.size > 0) {
+            This.videoMediaRecorder.recordedBlobs.push(event.data);
+        }
+    })
+    if(This.videoMediaRecorder.state  === 'recording'){
+        console.warn("********* resume success ***********")
+        data.callback && data.callback({ codeType: 999, stream: This.videoMediaRecorder})
+    }
 }
 
 
