@@ -89,6 +89,10 @@ body{
     border:none;
 }
 
+.toggleVideoButton{
+    opacity: 0.1;
+}
+
 
 /*.leftContrainterButton  button:hover{*/
     /*background-color:white;*/
@@ -111,6 +115,7 @@ body{
     height: 20px;
     width: 90px;
 }
+
 
 
 /**************************************正文中部内容*************************************/
@@ -159,7 +164,7 @@ body{
 .shareCanvas{
     /*width:720px;*/
     /*height:360px;*/
-    border: 1px solid red;
+    /*border: 1px solid red;*/
 }
 
 /*.shareVideo{*/
@@ -167,6 +172,16 @@ body{
     /*height:0px;*/
 /*}*/
 
+
+
+.mainVideo, .slidesVideo{
+    width: 720px;
+    height: 360px;
+    border-radius: 2px;
+    /*border: 1px solid #F0EFDA;*/
+    /*display:none;*/
+    /*z-index:-1;*/
+}
 
 /**************************************正文右边内容*************************************/
 

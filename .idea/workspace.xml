@@ -2,7 +2,7 @@
 <project version="4">
   <component name="BookmarkManager">
     <bookmark url="file://$PROJECT_DIR$/recordProgram/index.html" line="9" />
-    <bookmark url="file://$PROJECT_DIR$/recordProgram/index.js" line="12" />
+    <bookmark url="file://$PROJECT_DIR$/recordProgram/index.js" line="20" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="aaa8972a-afa3-4fb1-9b4e-401998a707c6" name="Default" comment="">
@@ -10,10 +10,8 @@
       <change beforePath="$PROJECT_DIR$/recordProgram/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/recordProgram/index.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/recordProgram/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/recordProgram/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/recordProgram/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/recordProgram/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordProgram/js/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/recordProgram/js/api.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/recordProgram/js/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/recordProgram/js/main.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordProgram/js/record.js" beforeDir="false" afterPath="$PROJECT_DIR$/recordProgram/js/record.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/recordProgram/js/videoArea.js" beforeDir="false" afterPath="$PROJECT_DIR$/recordProgram/js/videoArea.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/recordProgram/js/stream.js" beforeDir="false" afterPath="$PROJECT_DIR$/recordProgram/js/stream.js" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -36,29 +34,20 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/recordAera/index.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="351">
-              <caret line="88" column="120" lean-forward="true" selection-start-line="84" selection-start-column="20" selection-end-line="88" selection-end-column="120" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="index.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/recordAera/index.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="284">
-              <caret line="1011" column="48" lean-forward="true" selection-start-line="1011" selection-start-column="13" selection-end-line="1011" selection-end-column="48" />
+            <state relative-caret-position="256">
+              <caret line="1050" column="1" lean-forward="true" selection-start-line="1050" selection-start-column="1" selection-end-line="1050" selection-end-column="1" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
+      <file leaf-file-name="index.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/recordProgram/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="261">
-              <caret line="60" column="29" selection-start-line="60" selection-start-column="29" selection-end-line="60" selection-end-column="29" />
+            <state relative-caret-position="284">
+              <caret line="20" column="92" selection-start-line="20" selection-start-column="92" selection-end-line="20" selection-end-column="92" />
             </state>
           </provider>
         </entry>
@@ -75,8 +64,17 @@
       <file leaf-file-name="api.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/recordProgram/js/api.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="342">
-              <caret line="422" column="5" lean-forward="true" selection-start-line="422" selection-start-column="5" selection-end-line="422" selection-end-column="5" />
+            <state relative-caret-position="-543">
+              <caret line="85" selection-start-line="85" selection-end-line="85" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="stream.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/recordProgram/js/stream.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="378">
+              <caret line="240" selection-start-line="233" selection-end-line="240" />
             </state>
           </provider>
         </entry>
@@ -84,17 +82,17 @@
       <file leaf-file-name="main.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/recordProgram/js/main.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="396">
-              <caret line="103" selection-start-line="103" selection-end-line="103" />
+            <state relative-caret-position="24">
+              <caret line="29" column="9" selection-start-line="29" selection-start-column="9" selection-end-line="29" selection-end-column="9" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="videoArea.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/recordProgram/js/videoArea.js">
+      <file leaf-file-name="style.css" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/recordAera/style.css">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="261">
-              <caret line="246" column="16" lean-forward="true" selection-start-line="246" selection-start-column="16" selection-end-line="246" selection-end-column="16" />
+            <state relative-caret-position="257">
+              <caret line="303" selection-start-line="303" selection-end-line="310" selection-end-column="1" />
             </state>
           </provider>
         </entry>
@@ -102,17 +100,17 @@
       <file leaf-file-name="index.css" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/recordProgram/index.css">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="216">
-              <caret line="161" column="26" lean-forward="true" selection-start-line="161" selection-start-column="26" selection-end-line="161" selection-end-column="26" />
+            <state relative-caret-position="448">
+              <caret line="182" column="19" selection-start-line="180" selection-start-column="4" selection-end-line="182" selection-end-column="19" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="index.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="index.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/recordProgram/index.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="243">
-              <caret line="9" lean-forward="true" selection-start-line="9" selection-end-line="9" />
+            <state relative-caret-position="338">
+              <caret line="452" column="18" lean-forward="true" selection-start-line="452" selection-start-column="18" selection-end-line="452" selection-end-column="18" />
             </state>
           </provider>
         </entry>
@@ -130,7 +128,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>startClip</find>
       <find>stopTimeout</find>
       <find>beginRecord</find>
       <find>share_mediaRecord</find>
@@ -140,7 +137,6 @@
       <find>title</find>
       <find>stopVideoRecord</find>
       <find>button</find>
-      <find>canvas</find>
       <find>cont</find>
       <find>container</find>
       <find>share_video</find>
@@ -156,10 +152,12 @@
       <find>isSharingScreen</find>
       <find>shareCanvas</find>
       <find>startMark</find>
-      <find>buffer</find>
       <find>leftContrainterButton</find>
-      <find>let currentRecodeType</find>
+      <find>canvas</find>
+      <find>buffer</find>
+      <find />
       <find>videoContrainter</find>
+      <find>videoBtn</find>
     </findStrings>
     <replaceStrings>
       <replace>clipvideo</replace>
@@ -207,12 +205,13 @@
         <option value="$PROJECT_DIR$/recordAera/index.html" />
         <option value="$PROJECT_DIR$/recordAera/index.js" />
         <option value="$PROJECT_DIR$/recordProgram/js/videoArea.js" />
-        <option value="$PROJECT_DIR$/recordProgram/js/main.js" />
         <option value="$PROJECT_DIR$/recordProgram/js/record.js" />
         <option value="$PROJECT_DIR$/recordProgram/js/api.js" />
+        <option value="$PROJECT_DIR$/recordProgram/js/stream.js" />
         <option value="$PROJECT_DIR$/recordProgram/index.css" />
-        <option value="$PROJECT_DIR$/recordProgram/index.html" />
+        <option value="$PROJECT_DIR$/recordProgram/js/main.js" />
         <option value="$PROJECT_DIR$/recordProgram/index.js" />
+        <option value="$PROJECT_DIR$/recordProgram/index.html" />
       </list>
     </option>
   </component>
@@ -225,7 +224,7 @@
   <component name="NodePackageJsonFileManager">
     <packageJsonPaths />
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="x" value="-8" />
     <option name="y" value="-8" />
     <option name="width" value="1001" />
@@ -323,12 +322,12 @@
       <workItem from="1638337826103" duration="83000" />
       <workItem from="1638338033244" duration="100004000" />
       <workItem from="1639015661442" duration="1588000" />
-      <workItem from="1639017260578" duration="61036000" />
+      <workItem from="1639017260578" duration="65759000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="254255000" />
+    <option name="totallyTimeSpent" value="258978000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -574,24 +573,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/recordAera/style.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="176">
-          <caret line="136" column="13" selection-start-line="136" selection-start-column="1" selection-end-line="136" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/recordAera/record/stream.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="286">
           <caret line="478" column="43" lean-forward="true" selection-start-line="478" selection-start-column="43" selection-end-line="478" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/recordProgram/js/stream.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="459">
-          <caret line="138" column="53" selection-start-line="138" selection-start-column="43" selection-end-line="138" selection-end-column="53" />
         </state>
       </provider>
     </entry>
@@ -636,24 +621,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/recordProgram/js/main.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="396">
-          <caret line="103" selection-start-line="103" selection-end-line="103" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/recordAera/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="351">
           <caret line="88" column="120" lean-forward="true" selection-start-line="84" selection-start-column="20" selection-end-line="88" selection-end-column="120" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/recordAera/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="284">
-          <caret line="1011" column="48" lean-forward="true" selection-start-line="1011" selection-start-column="13" selection-end-line="1011" selection-end-column="48" />
         </state>
       </provider>
     </entry>
@@ -673,29 +644,57 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/recordProgram/js/api.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="342">
-          <caret line="422" column="5" lean-forward="true" selection-start-line="422" selection-start-column="5" selection-end-line="422" selection-end-column="5" />
+        <state relative-caret-position="-543">
+          <caret line="85" selection-start-line="85" selection-end-line="85" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/recordProgram/js/stream.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="378">
+          <caret line="240" selection-start-line="233" selection-end-line="240" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/recordAera/style.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="257">
+          <caret line="303" selection-start-line="303" selection-end-line="310" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/recordAera/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="256">
+          <caret line="1050" column="1" lean-forward="true" selection-start-line="1050" selection-start-column="1" selection-end-line="1050" selection-end-column="1" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/recordProgram/index.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="216">
-          <caret line="161" column="26" lean-forward="true" selection-start-line="161" selection-start-column="26" selection-end-line="161" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/recordProgram/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="261">
-          <caret line="60" column="29" selection-start-line="60" selection-start-column="29" selection-end-line="60" selection-end-column="29" />
+        <state relative-caret-position="448">
+          <caret line="182" column="19" selection-start-line="180" selection-start-column="4" selection-end-line="182" selection-end-column="19" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/recordProgram/index.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="243">
-          <caret line="9" lean-forward="true" selection-start-line="9" selection-end-line="9" />
+        <state relative-caret-position="338">
+          <caret line="452" column="18" lean-forward="true" selection-start-line="452" selection-start-column="18" selection-end-line="452" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/recordProgram/js/main.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="24">
+          <caret line="29" column="9" selection-start-line="29" selection-start-column="9" selection-end-line="29" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/recordProgram/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="284">
+          <caret line="20" column="92" selection-start-line="20" selection-start-column="92" selection-end-line="20" selection-end-column="92" />
         </state>
       </provider>
     </entry>

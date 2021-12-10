@@ -1,6 +1,6 @@
 
 
-function openAreaVideo(data){
+function openShare(data){
     console.warn("openAreaVideo:"+ JSON.stringify(data, null, '    ') )
     if(!data){
         console.warn("openAreaVideo: invalid parameters")
@@ -27,7 +27,7 @@ function openAreaVideo(data){
     window.record.openShare(param)
 }
 
-function stopAreaVideo(data){
+function stopShare(data){
     console.warn("stopAreaVideo:"+ JSON.stringify(data, null, '    ') )
     if(!data){
         console.warn("openAreaVideo: invalid parameters")
@@ -65,7 +65,7 @@ function openVideo(data){
     }
     param.callback = data.callback
 
-    window.record.openVideo(data)
+    window.record.openVideo(param)
 }
 
 function stopVideo(data) {

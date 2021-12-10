@@ -18,8 +18,8 @@
            <!--***************************************页面左边（左边侧边栏）*********************************************-->
            <div class="left-group">
                <div class="leftContrainterButton">
-                   <button class="toggleVideoButton" onclick="toggleVideoButton()">开启视频</button>
-                   <button class="toggleShareButton" onclick="toggleShareButton()">开启共享</button>
+                   <button class="toggleVideoButton" onclick="toggleVideoButton({type:'video'})" disabled>开启视频</button>
+                   <button class="toggleShareButton" onclick="toggleShareButton({type: 'shareScreen'})">开启共享</button>
                    <button class="localVideoButton" onclick="localVideoButton()">上传本地视频</button>
                    <button class="toggleMuteButton" onclick="toggleMuteButton()">静音</button>
                    <button>设置</button>
@@ -63,6 +63,8 @@
 
                    <div class="midContent ">
                        <div class="videoContrainter">
+                           <video class="mainVideo"></video>
+                           <video class="slidesVideo"></video>
                            <canvas class="video_canvas"></canvas>
                            <p>页面一要显示的内容</p>
                            <input type="text" placeholder="页面一内容"/>
