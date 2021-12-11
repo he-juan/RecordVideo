@@ -15,7 +15,7 @@ function stopAudio(data){
     if(!data || !data.callback){
         console.warn("stopAudio: invalid parameters")
     }
-    window.record.openAudio(data)
+    window.record.stopAudio(data)
 }
 
 function openVideo(data){

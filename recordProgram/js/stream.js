@@ -423,8 +423,10 @@ Record.prototype.closeStream = function (stream) {
     try {
         Object.keys(This.localStreams).forEach(function (key) {
             let getStream = localStreams[key]
-            if (stream.id === getStream.id) {
-                This.localStreams[key] = null
+            if(getStream){
+                if (stream.id === getStream.id) {
+                    This.localStreams[key] = null
+                }
             }
         })
         stream.oninactive = null

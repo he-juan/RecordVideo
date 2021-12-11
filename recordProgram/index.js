@@ -1,3 +1,5 @@
+let audio = document.createElement("audio")
+
 
 /************************************正文左边按钮******************/
 let videoBtn = document.getElementsByClassName("toggleVideoButton")[0]
@@ -242,7 +244,7 @@ function changeMic(){
 
 function changeAudioDestination() {
     const audioDestination = audioOutputSelect.value;
-    // attachSinkId(audioEle, audioDestination);
+    attachSinkId(audio, audioDestination);
     currentSpeaker = audioDestination
     console.warn("currentSpeaker:",currentSpeaker)
 }
@@ -252,7 +254,7 @@ function changeCamera(){
         stopCategory({type: 'main'})
     }
     const camera = cameraSelect.value;
-    // attachSinkId(audioEle, camera);
+    // attachSinkId(audio, camera);
      currentCamrea = camera
     console.warn("currentCamrea:",currentCamrea)
     switchLcoalCamera()
@@ -436,6 +438,11 @@ function getCategory(data){
                     console.warn("open audio success")
                     localStreams.audio = event.stream
                     muteBtn.textContent = "非静音"
+                    let audio = document.createElement("audio")
+                    audio.srcObject = localStreams.audio
+                    audio.onloadedmetadata = function(){
+                        audio.play()
+                    }
                 }else{
                     console.warn("open audio failed")
                 }
@@ -582,6 +589,7 @@ function stopCategory(data){
                 }
             }
         }
+
         stopAudio(data)
     }
 
@@ -998,23 +1006,23 @@ function stopRecord() {
                     track.stop()
                 });
 
-                Object.keys(localStreams).forEach(function (key) {
-                    if(key === 'audio'){
-                        stopCategory({type: 'audio'})
-                    }else if (key === 'main'){
-                        stopCategory({type: 'main'})
-                    }else if(key ==='localVideo'){
-                        stopCategory({type: 'localVideo'})
-                    } else if(key === 'slides'){
-                        stopCategory({type: 'shareScreen'})
-                    }
-                    let stream = localStreams[key]
-                    if (stream) {
-                        window.record.closeStream(stream)
-                        localStreams[key] = null
-                    }
-                })
-                canvasRecord.style.marginTop = '-400px'
+                // Object.keys(localStreams).forEach(function (key) {
+                //     if(key === 'audio'){
+                //         stopCategory({type: 'audio'})
+                //     }else if (key === 'main'){
+                //         stopCategory({type: 'main'})
+                //     }else if(key ==='localVideo'){
+                //         stopCategory({type: 'localVideo'})
+                //     } else if(key === 'slides'){
+                //         stopCategory({type: 'shareScreen'})
+                //     }
+                //     let stream = localStreams[key]
+                //     if (stream) {
+                //         window.record.closeStream(stream)
+                //         localStreams[key] = null
+                //     }
+                // })
+                // canvasRecord.style.marginTop = '-400px'
 
                 /***录制内容返回播放***/
                 let blob = new Blob(buffer, {'type': 'video/webm'});
