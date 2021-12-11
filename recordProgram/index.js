@@ -25,6 +25,8 @@ let shareRecord = document.getElementsByClassName("shareRecord")[0]
 let shareCanvas = document.getElementsByClassName("shareCanvas")[0]
 let ctx = shareCanvas.getContext('2d')
 
+let video_Area = document.getElementsByClassName("videoArea")[0]
+
 
 // let mainVideo = document.getElementsByClassName("mainVideo")[0]
 // let slidesVideo = document.getElementsByClassName("slidesVideo")[0]
@@ -82,7 +84,7 @@ videoArea.addEventListener("click",function () {
         }
     })
 
-    getCategory({type: 'video'})
+    getCategory({type: 'main'})
 })
 
 audioArea.addEventListener("click",function () {
@@ -361,6 +363,9 @@ function getCategory(data){
                    shareCanvas.style.display = 'inline-block'
                    toggleShareBtn.textContent = "关闭共享"
 
+                   video_Area.height = shareVideo.videoHeight
+                   video_Area.width = shareVideo.videoWidth
+
                    toggleShareBtn.style.backgroundColor = "skyBlue"
                    localVideoBtn.style.backgroundColor = "skyBlue"
                    toggleVideoBtn.style.backgroundColor = "#8c818a"
@@ -378,7 +383,7 @@ function getCategory(data){
            openShare(data)
        }
    }else if(window.record.currentRecodeType === 'video'){
-       if(data.type === 'video' || data.type === 'localVideo'){
+       if(data.type === 'main' || data.type === 'localVideo'){
            data.callback = function(event){
                if(event.codeType === 999){
                    console.warn(" open video success:" , event)
@@ -421,6 +426,8 @@ function getCategory(data){
                    shareBtn.textContent = "关闭共享"
                    isOpenShareScreen = true
 
+                   vtcanvas.style.display = 'inline-block'
+                   canvasRecord.style.display = "none"
                    toggleShareBtn.style.backgroundColor = "skyBlue"
                    localVideoBtn.style.backgroundColor = "skyBlue"
                    toggleVideoBtn.style.backgroundColor = "skyBlue"
@@ -491,7 +498,7 @@ function stopCategory(data){
             stopShare(data)
         }
     }else if(window.record.currentRecodeType === 'video') {
-        if(data.type === 'video' || data.type === 'localVideo'){
+        if(data.type === 'main' || data.type === 'localVideo'){
             data.callback = function(event){
                 if(event.codeType === 999){
                     console.warn(" stop video success: ", event )
@@ -767,6 +774,7 @@ function beginRecord() {
             if (event.codeType === 999) {
                 console.warn("begin Record success:",event)
                 isRecording = true
+                shareRecord.style.display = "inline-block"
                 shareRecord.width = shareCanvas.width ;
                 shareRecord.height = shareCanvas.height;
                 shareRecord.srcObject = event.stream.stream
@@ -829,20 +837,24 @@ function stopRecord() {
                 tracks.forEach(track => {
                     track.stop()
                 });
-                // Object.keys(localStream).forEach(function (key) {
-                //     if(key === 'audio'){
-                //         stopAudio()
-                //     }else if (key === 'main'){
-                //         stopVideo()
-                //     }else if(key === 'slides'){
-                //         stopShare()
-                //     }
-                //     let stream = localStream[key]
-                //     if (stream) {
-                //         window.record.closeStream(stream)
-                //         localStream[key] = null
-                //     }
-                // })
+                Object.keys(localStreams).forEach(function (key) {
+                    if(key === 'audio'){
+                        stopCategory({type: 'audio'})
+                    }else if (key === 'main'){
+                        stopCategory({type: 'main'})
+                    }else if(key ==='localVideo'){
+                        stopCategory({type: 'localVideo'})
+                    } else if(key === 'slides'){
+                        stopCategory({type: 'shareScreen'})
+                    }
+                    let stream = localStreams[key]
+                    if (stream) {
+                        window.record.closeStream(stream)
+                        localStreams[key] = null
+                    }
+                })
+                let rect = document.getElementsByClassName('rect')[0]
+                rect.style.display = "none"
 
                 /***录制内容返回播放***/
                 let blob = new Blob(buffer, {'type': 'video/webm'});
@@ -874,20 +886,24 @@ function stopRecord() {
                 tracks.forEach(track => {
                     track.stop()
                 });
-                // Object.keys(localStream).forEach(function (key) {
-                //     if(key === 'audio'){
-                //         stopAudio()
-                //     }else if (key === 'main'){
-                //         stopVideo()
-                //     }else if(key === 'slides'){
-                //         stopShare()
-                //     }
-                //     let stream = localStream[key]
-                //     if (stream) {
-                //         window.record.closeStream(stream)
-                //         localStream[key] = null
-                //     }
-                // })
+
+                Object.keys(localStreams).forEach(function (key) {
+                    if(key === 'audio'){
+                        stopCategory({type: 'audio'})
+                    }else if (key === 'main'){
+                        stopCategory({type: 'main'})
+                    }else if(key ==='localVideo'){
+                        stopCategory({type: 'localVideo'})
+                    } else if(key === 'slides'){
+                        stopCategory({type: 'shareScreen'})
+                    }
+                    let stream = localStreams[key]
+                    if (stream) {
+                        window.record.closeStream(stream)
+                        localStreams[key] = null
+                    }
+                })
+                canvasRecord.style.marginTop = '-400px'
 
                 /***录制内容返回播放***/
                 let blob = new Blob(buffer, {'type': 'video/webm'});
@@ -972,6 +988,39 @@ function download(){
     if (window.record.currentRecodeType === 'areaVideo' || window.record.currentRecodeType === 'video') {
         window.record.videoDownload(data)
     } else if (window.record.currentRecodeType === 'audio') {
+
+    }
+}
+
+
+function restartRecord(){
+
+    if(!(localStreams.audio || localStreams.main || localStreams.slides || localStreams.localVideo)){
+        console.warn("This.localStreams has  been closed")
+        Object.keys(localStreams).forEach(function (key) {
+            let stream = localStreams[key]
+            if (stream) {
+                window.record.closeStream(stream)
+            }
+            localStreams.audio = null
+            localStreams.main = null
+            localStreams.localVideo = null
+            localStreams.slides = null
+        })
+    }
+
+
+
+    if (window.record.currentRecodeType === 'areaVideo' ) {
+        shareVideo.style.display = "none"
+        shareCanvas.style.display = 'none'
+        shareRecord.style.display = 'none'
+        let rect = document.getElementsByClassName('rect')[0]
+        rect.style.display = "none"
+    } else if (window.record.currentRecodeType === 'video') {
+        vtcanvas.style.display = 'none'
+        canvasRecord.style.display = "none"
+    }else if(window.record.currentRecodeType === 'audio'){
 
     }
 }

@@ -412,6 +412,7 @@ Record.prototype.setConstraintsOfGetStream = function(data,constraints) {
 
 
 Record.prototype.closeStream = function (stream) {
+    let This = this
     if (!stream) {
         console.info('closeStream:stream is null')
         return
