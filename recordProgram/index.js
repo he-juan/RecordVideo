@@ -960,6 +960,23 @@ function resumeRecord(){
 }
 
 
+function download(){
+    let data = {}
+    data.callback = function (event) {
+        if (event.codeType === 999) {
+            console.warn("download record success:", event)
+        } else {
+            console.warn("download record failed")
+        }
+    }
+    if (window.record.currentRecodeType === 'areaVideo' || window.record.currentRecodeType === 'video') {
+        window.record.videoDownload(data)
+    } else if (window.record.currentRecodeType === 'audio') {
+
+    }
+}
+
+
 
 
 // *****************************************初始化阶段****************************************************
