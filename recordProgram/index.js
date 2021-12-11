@@ -67,12 +67,12 @@ areaVideoArea.addEventListener("click",function(){
     toggleVideoBtn.disabled = true
     toggleShareBtn.disabled = false
 
-    Object.keys(localStreams).forEach(function (key) {
-        let stream = localStreams[key]
-        if (stream) {
-            window.record.closeStream(stream)
-        }
-    })
+    // Object.keys(localStreams).forEach(function (key) {
+    //     let stream = localStreams[key]
+    //     if (stream) {
+    //         window.record.closeStream(stream)
+    //     }
+    // })
     getCategory({type: 'shareScreen'})
 })
 videoArea.addEventListener("click",function () {
@@ -82,12 +82,12 @@ videoArea.addEventListener("click",function () {
     toggleShareBtn.disabled = false
     toggleMuteBtn.disabled = false
 
-    Object.keys(localStreams).forEach(function (key) {
-        let stream = localStreams[key]
-        if (stream) {
-            window.record.closeStream(stream)
-        }
-    })
+    // Object.keys(localStreams).forEach(function (key) {
+    //     let stream = localStreams[key]
+    //     if (stream) {
+    //         window.record.closeStream(stream)
+    //     }
+    // })
 
     getCategory({type: 'main'})
 })
@@ -415,7 +415,7 @@ function toggleMuteButton(data){
  */
 
 function getCategory(data){
-    console.warn("start handle getCategory")
+    console.warn("start handle getCategory:", data)
     if(!record){
         console.warn('record is not initialized')
         return
@@ -447,9 +447,10 @@ function getCategory(data){
                     console.warn("open audio failed")
                 }
             }
+            data.deviceId = currentMic || devices.microphones[0].deviceId
+            openAudio(data)
         }
-        data.deviceId = currentMic || devices.microphones[0].deviceId
-        openAudio(data)
+
     }
 
 
