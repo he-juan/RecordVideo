@@ -1,4 +1,22 @@
+function openAudio(data){
+    console.warn("openAudio:"+ JSON.stringify(data, null, '    ') )
+    if(!data || !data.callback){
+        console.warn("openAudio: invalid parameters")
+    }
+    data.constraints ={
+        audio: {deviceId: data && data.deviceId} || false
+    }
+    window.record.openAudio(data)
+}
 
+
+function stopAudio(data){
+    console.warn("stopAudio:"+ JSON.stringify(data, null, '    ') )
+    if(!data || !data.callback){
+        console.warn("stopAudio: invalid parameters")
+    }
+    window.record.openAudio(data)
+}
 
 function openVideo(data){
     console.warn("openVideo:"+ JSON.stringify(data, null, '    ') )
@@ -12,7 +30,7 @@ function openVideo(data){
             width: 720,   // 必须
             height: 360,  // 必须
             frameRate: 15,  // 可缺省，默认15fps
-            deviceId: data.deviceId  || ''
+            deviceId: data && data.deviceId ? data.deviceId : ''
         }
     }
     window.record.openVideo(data)

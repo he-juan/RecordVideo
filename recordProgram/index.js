@@ -41,8 +41,11 @@ let canvasRecord = document.getElementsByClassName("canvasRecord")[0]
 /***********************开启、关闭视频、演示的标志*****/
 let isOpenVideo = false
 let isOpenShareScreen = false
-let isUnmute = false
+let isMute = false
 let isRecording = true
+let currentMic = null
+let currentSpeaker = null
+let currentCamrea = null
 
 /**************** 绘制canvas定时器********************/
 let switchTimeOut
@@ -179,63 +182,107 @@ function handleError(error) {
 
     console.warn(errorMessage);
 }
-/**
- * 获取音频流
- */
-function getAudioStream(){
-    if (localAudioStream) {
-        localAudioStream.getTracks().forEach(track => {
-            track.stop();
-        });
-    }
+// /**
+//  * 获取音频流
+//  */
+// function getAudioStream(){
+//     if (localStream.audio) {
+//         localStream.audio.getTracks().forEach(track => {
+//             track.stop();
+//         });
+//     }
+//     const audioSource = audioInputSelect.value;
+//     const constraints = {
+//         audio: {deviceId: audioSource ? {exact: audioSource} : undefined},
+//         video: false
+//     };
+//
+//     navigator.mediaDevices.getUserMedia(constraints).then(handleSuccess).catch(handleError);
+// }
+//
+//
+// function handleSuccess(stream) {
+//     const audioTracks = stream.getAudioTracks();
+//     console.log('Got stream with constraints:', constraints);
+//     console.log('Using audio device: ' + audioTracks[0].label);
+//     if(getBrowserDetail().browser === 'firefox'){
+//         audioTracks[0].onended = function () {
+//             console.warn('track on ended');
+//         }
+//     }else {
+//         stream.oninactive = function() {
+//             console.log('Stream ended');
+//         };
+//     }
+//
+//     localAudioStream = stream; // make variable available to browser console
+//     audioEle.srcObject = stream;
+//
+//     setupNewTrack(stream)
+// }
+//
+// function handleError(error) {
+//     let errorMessage
+//     if(error.message && error.name){
+//         errorMessage = 'navigator.MediaDevices.getUserMedia error: ' + error.message + ' ' + error.name;
+//     }else {
+//         errorMessage = error
+//     }
+//
+//     console.warn(errorMessage);
+// }
+
+function changeMic(){
     const audioSource = audioInputSelect.value;
-    const constraints = {
-        audio: {deviceId: audioSource ? {exact: audioSource} : undefined},
-        video: false
-    };
+    currentMic = audioSource
+    console.warn("currentSpeaker:",currentMic)
 
-    navigator.mediaDevices.getUserMedia(constraints).then(handleSuccess).catch(handleError);
-}
-
-
-function handleSuccess(stream) {
-    const audioTracks = stream.getAudioTracks();
-    console.log('Got stream with constraints:', constraints);
-    console.log('Using audio device: ' + audioTracks[0].label);
-    if(getBrowserDetail().browser === 'firefox'){
-        audioTracks[0].onended = function () {
-            console.warn('track on ended');
-        }
-    }else {
-        stream.oninactive = function() {
-            console.log('Stream ended');
-        };
-    }
-
-    localAudioStream = stream; // make variable available to browser console
-    audioEle.srcObject = stream;
-
-    setupNewTrack(stream)
-}
-
-function handleError(error) {
-    let errorMessage
-    if(error.message && error.name){
-        errorMessage = 'navigator.MediaDevices.getUserMedia error: ' + error.message + ' ' + error.name;
-    }else {
-        errorMessage = error
-    }
-
-    console.warn(errorMessage);
+    switchlocalMic()
 }
 
 function changeAudioDestination() {
     const audioDestination = audioOutputSelect.value;
-    attachSinkId(audioEle, audioDestination);
+    // attachSinkId(audioEle, audioDestination);
+    currentSpeaker = audioDestination
+    console.warn("currentSpeaker:",currentSpeaker)
 }
 
-audioInputSelect.onchange = getAudioStream;
+function changeCamera(){
+    if (localStreams.main) {
+        stopCategory({type: 'main'})
+    }
+    const camera = cameraSelect.value;
+    // attachSinkId(audioEle, camera);
+     currentCamrea = camera
+    console.warn("currentCamrea:",currentCamrea)
+    switchLcoalCamera()
+}
+
+function switchlocalMic (){
+    if (localStreams.audio) {
+        stopCategory({type: 'audio'})
+    }
+
+    if(window.record.currentRecodeType === 'areaVideo' || window.record.currentRecodeType === 'video'){
+        getCategory({type: 'audio'})
+    }
+
+}
+
+
+function switchLcoalCamera(){
+    if (localStreams.main) {
+        stopCategory({type: 'main'})
+    }
+
+    if(window.record.currentRecodeType === 'areaVideo' || window.record.currentRecodeType === 'video'){
+        getCategory({type: 'main'})
+    }
+}
+
+audioInputSelect.onchange = changeMic;
 audioOutputSelect.onchange = changeAudioDestination
+cameraSelect.onchange = changeCamera
 
 /******************************************************************************************************************/
 
@@ -331,6 +378,35 @@ function toggleVideoButton(data){
     }
 }
 
+
+function toggleMuteButton(data){
+    if(muteBtn.textContent === '静音'){
+        if(!localStreams.audio){
+            getCategory(data)
+        }else{
+            data.mute = true
+            data.stream = localStreams.audio
+            data.callback = function(event){
+                if(event.stream){
+                    muteBtn.textContent = "非静音"
+                }
+            }
+            window.record.streamMuteSwitch(data)
+
+        }
+    }else if(muteBtn.textContent === '非静音'){
+        data.mute = false
+        data.stream = localStreams.audio
+        data.callback = function(event){
+            if(event.stream){
+                muteBtn.textContent = "静音"
+            }
+        }
+        window.record.streamMuteSwitch(data)
+
+    }
+}
+
 /**
  * 获取录制类型,
  * 类型 type：如areaVideo、 video 、 audio
@@ -348,10 +424,28 @@ function getCategory(data){
         return
     }
 
-    if(!localStreams && !localStreams.audio && !localStreams.main && !localStreams.slides && !localStreams.localVideo){
+    if(!localStreams && !localStreams.main && !localStreams.slides && !localStreams.localVideo){
         console.warn('localStreams is  null')
         return
     }
+
+    if(window.record.currentRecodeType === 'areaVideo' || window.record.currentRecodeType === 'video'){
+        if(data.type === 'audio'){
+            data.callback = function(event){
+                if(event.codeType === 999){
+                    console.warn("open audio success")
+                    localStreams.audio = event.stream
+                    muteBtn.textContent = "非静音"
+                }else{
+                    console.warn("open audio failed")
+                }
+            }
+        }
+        data.deviceId = currentMic || devices.microphones[0].deviceId
+        openAudio(data)
+    }
+
+
    if(window.record.currentRecodeType === 'areaVideo'){
        if(data.type === 'shareScreen' || data.type === 'localVideo'){
            data.callback = function(event){
@@ -417,7 +511,7 @@ function getCategory(data){
                    console.warn(" open video failed")
                }
            }
-           data.deviceId = devices.cameras[0].deviceId
+           data.deviceId =  currentCamrea || devices.cameras[0].deviceId
            openVideo(data)
        }else if(data.type === 'shareScreen'){
            data.callback = function(event){
@@ -454,9 +548,10 @@ function getCategory(data){
                    console.warn(" open shareScreen failed")
                }
            }
-           data.deviceId = devices.cameras[0].deviceId
            openShare(data)
        }
+   }else if(window.record.currentRecodeType === 'audio'){
+
    }
 }
 
@@ -477,6 +572,19 @@ function stopCategory(data){
         console.warn('localStreams is  not null')
         return
     }
+    if(window.record.currentRecodeType === 'areaVideo' || window.record.currentRecodeType === 'video'){
+        if(data.type === 'audio'){
+            data.callback = function(event){
+                if(event.codeType === 999){
+                    console.warn("open audio success")
+                }else{
+                    console.warn("open audio failed")
+                }
+            }
+        }
+        stopAudio(data)
+    }
+
     if(window.record.currentRecodeType === 'areaVideo'){
         if(data.type === 'shareScreen' || data.type === 'localVideo'){
             let data={}
@@ -496,6 +604,8 @@ function stopCategory(data){
                 }
             }
             stopShare(data)
+        }else if(data.type === 'audio'){
+
         }
     }else if(window.record.currentRecodeType === 'video') {
         if(data.type === 'main' || data.type === 'localVideo'){
@@ -528,6 +638,8 @@ function stopCategory(data){
             }
             stopShare(data)
         }
+    }else if(window.record.currentRecodeType === 'audio'){
+
     }
 }
 
@@ -628,8 +740,6 @@ function draw(data){
 
     if(!videoType){
         console.warn("清除canvas")
-        window.cancelAnimationFrame(switchTimeOut)
-        window.cancelAnimationFrame(shareTimeOut)
         context.fillStyle = "white"
         context.fillRect(0, 0, vtcanvas.width, vtcanvas.height)
     }
@@ -740,8 +850,7 @@ function playCanvas(video,canvas,ctx,sx,sy,rangeW,rangeH){
 // *****************************************录制阶段*********************************************************
 
 function beginRecord() {
-    console.warn("start record...")
-    if (!record) {
+    if (!record ) {
         console.warn('record is not initialized')
         return
     }
@@ -749,6 +858,7 @@ function beginRecord() {
         console.warn("localStream is null")
         return
     }
+    console.warn("start record...")
     let mixStream = []
     let data = {}
     let canvasStream
@@ -808,7 +918,6 @@ function beginRecord() {
 
 
 function stopRecord() {
-    console.warn("stop record...")
     if (!record) {
         console.warn('record is not initialized')
         return
@@ -817,6 +926,8 @@ function stopRecord() {
         console.warn("localStream is null")
         return
     }
+    console.warn("stop record...")
+
     let data = {}
 
     if (window.record.currentRecodeType === 'areaVideo') {
@@ -921,7 +1032,6 @@ function stopRecord() {
 }
 
 function pauseRecord(){
-    console.warn("pause record...")
     if (!record) {
         console.warn('record is not initialized')
         return
@@ -930,6 +1040,8 @@ function pauseRecord(){
         console.warn("localStream is null")
         return
     }
+    console.warn("pause record...")
+
     let data = {}
 
     if (window.record.currentRecodeType === 'areaVideo') {
@@ -949,7 +1061,6 @@ function pauseRecord(){
 
 
 function resumeRecord(){
-    console.warn("resume record...")
     if (!record) {
         console.warn('record is not initialized')
         return
@@ -958,6 +1069,8 @@ function resumeRecord(){
         console.warn("localStream is null")
         return
     }
+    console.warn("resume record...")
+
     let data = {}
 
     if (window.record.currentRecodeType === 'areaVideo') {
@@ -977,6 +1090,15 @@ function resumeRecord(){
 
 
 function download(){
+    if (!record) {
+        console.warn('record is not initialized')
+        return
+    }
+    if (!(localStreams.audio || localStreams.main || localStreams.slides || localStreams.localVideo)) {
+        console.warn("localStream is null")
+        return
+    }
+
     let data = {}
     data.callback = function (event) {
         if (event.codeType === 999) {
@@ -994,6 +1116,15 @@ function download(){
 
 
 function restartRecord(){
+
+    if (!record) {
+        console.warn('record is not initialized')
+        return
+    }
+    if (!localStreams.audio || !localStreams.main || !localStreams.slides || !localStreams.localVideo) {
+        console.warn("localStream is null")
+        return
+    }
 
     if(!(localStreams.audio || localStreams.main || localStreams.slides || localStreams.localVideo)){
         console.warn("This.localStreams has  been closed")
