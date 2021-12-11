@@ -359,8 +359,8 @@ Record.prototype.setConstraintsOfGetStream = function(data,constraints) {
                     video: {
                         width: {ideal: constraints.video.width.exact},
                         height: {ideal: constraints.video.height.exact},
-                        frameRate: {exact: constraints.video.frameRate && constraints.video.frameRate.exact || ' '},
-                        deviceId: {exact: constraints.video.deviceId && constraints.video.deviceId.exact || ' '}
+                        // frameRate: {exact: constraints.video.frameRate && constraints.video.frameRate.exact || ' '},
+                        // deviceId: {exact: constraints.video.deviceId && constraints.video.deviceId.exact || ' '}
                     },
                 }
             } else if (data.action === 'adjustResolution') {

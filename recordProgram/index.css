@@ -47,7 +47,7 @@ body{
 }
 
 .right-group{
-    width: 100px;
+    width: 150px;
     background-color: #cbcbcb;
     text-align: center;
 }
@@ -81,16 +81,20 @@ body{
 }
 
 .leftContrainterButton  button{
-    width: 200px;
+    width: 180px;
     height: 80px;
+    background-color: #8c818a;
     color: white;
-    font-weight:bold;
-    background-color: skyblue;
-    border:none;
+    margin: 8px 5px;
+    padding: 3px;
+    border: 0;
+    border-radius: 8px;
+    transition: all 200ms;
+    font-size: medium;
 }
 
-.toggleVideoButton{
-    opacity: 0.1;
+.leftContrainterButton .toggleShareButton, .leftContrainterButton .localVideoButton{
+    background-color: skyblue;
 }
 
 
@@ -133,9 +137,16 @@ body{
 }
 
 .midTop button{
-    width: 80px;
+    width: 120px;
     height:40px;
-    border:none;
+    background-color: #8c818a;
+    color: white;
+    margin: 8px 5px;
+    padding: 3px;
+    border: 0;
+    border-radius: 8px;
+    transition: all 200ms;
+    font-size: medium;
 }
 
 .midMiddle{
@@ -144,22 +155,29 @@ body{
 }
 
 .midContent{
+    height: 1000px;
     width: auto;
     display: none;
+    border: 5px solid #F35252;
 }
 .btn.active{
-    background-color: pink;
+    background-color: skyblue;
 }
 .midMiddle .show{
     display:block;
 
 }
 
+
 /****************关于音视频录制、区域录制处理************************/
 
-.videoContrainer, .shareContrainer, .audioContrainter{
+.shareContrainer, .videoContrainer, .audioContrainter{
     width: auto;
     height:1000px;
+}
+
+.videoContrainer{
+    margin: 0 auto;
 }
 .shareCanvas{
     /*width:720px;*/
@@ -175,18 +193,23 @@ body{
 
 
 .mainVideo, .slidesVideo{
-    width: 720px;
-    height: 360px;
-    border-radius: 2px;
+    /*width: 720px;*/
+    /*height: 360px;*/
+    /*border-radius: 2px;*/
     /*border: 1px solid #F0EFDA;*/
     /*display:none;*/
     /*z-index:-1;*/
 }
 
+/*.videoToCanvas, .canvasRecord{*/
+    /*width: 720px;*/
+    /*height: 360px;*/
+/*}*/
+
 /**************************************正文右边内容*************************************/
 
 .rightTop{
-    width:100px;
+    width:150px;
     height: 600px;
     display: flex;
     flex-direction: column;
@@ -197,12 +220,16 @@ body{
 }
 
 .rightTop  button{
-    width: 100px;
+    width: 140px;
     height: 80px;
+    background-color: #8c818a;
     color: white;
-    font-weight:bold;
-    background-color: skyblue;
-    border:none;
+    margin: 8px 5px;
+    padding: 3px;
+    border: 0;
+    border-radius: 8px;
+    transition: all 200ms;
+    font-size: medium;
 }
 
 /*.rightTop  button:hover{*/
