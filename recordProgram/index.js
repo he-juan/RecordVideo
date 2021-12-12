@@ -416,40 +416,45 @@ function localVideoButton(){
     /**开始上传视频**/
     if(localVideoBtn.textContent === '上传视频'){
 
-        if(localStreams.slides){
-            stopCategory({type: 'shareScreen'})
-            localStreams.slides = null
-         }
+        // if(localStreams.slides){
+        //     stopCategory({type: 'shareScreen'})
+        //     localStreams.slides = null
+        //  }
 
-         if(localStreams.audio){
-            stopCategory({type: 'audio'})
-            localStreams.audio = null
-         }
+        //  if(localStreams.audio){
+        //     stopCategory({type: 'audio'})
+        //     localStreams.audio = null
+        //  }
          window.cancelAnimationFrame(switchTimeOut)
          window.cancelAnimationFrame(shareTimeOut)
 
 
-        // if(window.record.currentRecoderType === 'areaVideo'){
-        //      if(localStreams.slides){
-        //         stopCategory({type: 'shareScreen'})
-        //         localStreams.slides = null
-        //      }
+        if(window.record.currentRecoderType === 'areaVideo'){
+             if(localStreams.slides){
+                stopCategory({type: 'shareScreen'})
+                localStreams.slides = null
+             }
 
-        //      if(localStreams.audio){
-        //         stopCategory({type: 'audio'})
-        //         localStreams.audio = null
-        //      }
-        // }else if(window.record.currentRecoderType === 'video'){
-        //     if(localStreams.slides){
-        //         stopCategory({type: 'shareScreen'})
-        //         localStreams.slides = null
-        //      }
+             if(localStreams.audio){
+                stopCategory({type: 'audio'})
+                localStreams.audio = null
+             }
+        }else if(window.record.currentRecoderType === 'video'){
+            if(localStreams.slides){
+                stopCategory({type: 'shareScreen'})
+                localStreams.slides = null
+             }
 
-        //      if(localStreams.audio){
-        //         stopCategory({type: 'audio'})
-        //         localStreams.audio = null
-        //      }
-        // }
+             if(localStreams.main){
+                stopCategory({type: 'main'})
+                localStreams.slides = null
+             }
+
+             if(localStreams.audio){
+                stopCategory({type: 'audio'})
+                localStreams.audio = null
+             }
+        }
         videoInput.click();
     }
 }
@@ -467,10 +472,6 @@ videoInput.setAttribute('id', 'localVideoInput');
 videoInput.setAttribute('style', 'visibility: hidden');
 document.body.appendChild(videoInput);
 
-
-// async function shareLocalVideo() {
-//     videoInput.click();
-// }
 
 shareVideo.oncanplay = async function(){
     if(isUploadVideo ){
@@ -492,11 +493,6 @@ localVideo.onloadedmetadata = function(){
     localStreams.localVideo = localVideo.captureStream(60) 
 
     videoToCanvas(localVideo, vtcanvas, context, vtcanvas.width, vtcanvas.height)
-    // if(isUploadVideo){
-    //     handleCanPlay({elem: localVideo})
-         
-    // }
-
 }
 
 function videoToCanvas(video,canvas,ctx,rangeW,rangeH){
