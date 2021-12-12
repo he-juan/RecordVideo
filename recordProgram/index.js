@@ -187,55 +187,7 @@ function handleError(error) {
 
     console.warn(errorMessage);
 }
-// /**
-//  * 获取音频流
-//  */
-// function getAudioStream(){
-//     if (localStream.audio) {
-//         localStream.audio.getTracks().forEach(track => {
-//             track.stop();
-//         });
-//     }
-//     const audioSource = audioInputSelect.value;
-//     const constraints = {
-//         audio: {deviceId: audioSource ? {exact: audioSource} : undefined},
-//         video: false
-//     };
-//
-//     navigator.mediaDevices.getUserMedia(constraints).then(handleSuccess).catch(handleError);
-// }
-//
-//
-// function handleSuccess(stream) {
-//     const audioTracks = stream.getAudioTracks();
-//     console.log('Got stream with constraints:', constraints);
-//     console.log('Using audio device: ' + audioTracks[0].label);
-//     if(getBrowserDetail().browser === 'firefox'){
-//         audioTracks[0].onended = function () {
-//             console.warn('track on ended');
-//         }
-//     }else {
-//         stream.oninactive = function() {
-//             console.log('Stream ended');
-//         };
-//     }
-//
-//     localAudioStream = stream; // make variable available to browser console
-//     audioEle.srcObject = stream;
-//
-//     setupNewTrack(stream)
-// }
-//
-// function handleError(error) {
-//     let errorMessage
-//     if(error.message && error.name){
-//         errorMessage = 'navigator.MediaDevices.getUserMedia error: ' + error.message + ' ' + error.name;
-//     }else {
-//         errorMessage = error
-//     }
-//
-//     console.warn(errorMessage);
-// }
+
 
 function changeMic(){
     const audioSource = audioInputSelect.value;
@@ -415,16 +367,6 @@ function toggleMuteButton(data){
 function localVideoButton(){
     /**开始上传视频**/
     if(localVideoBtn.textContent === '上传视频'){
-
-        // if(localStreams.slides){
-        //     stopCategory({type: 'shareScreen'})
-        //     localStreams.slides = null
-        //  }
-
-        //  if(localStreams.audio){
-        //     stopCategory({type: 'audio'})
-        //     localStreams.audio = null
-        //  }
          window.cancelAnimationFrame(switchTimeOut)
          window.cancelAnimationFrame(shareTimeOut)
 
@@ -505,20 +447,6 @@ function videoToCanvas(video,canvas,ctx,rangeW,rangeH){
 
 
 videoInput.addEventListener('change', function(){
-    // if (!gsRTC) {
-    //     tsk_utils_log_warn('gsRTC is not initialized')
-    //     return
-    // }
-    // if (!gsRTC.RTCSession) {
-    //     tsk_utils_log_warn("please call first")
-    //     return
-    // }
-    // if(gsRTC.MEDIA_STREAMS.REMOTE_PRESENT_STREAM || gsRTC.RTCSession.getStream('slides', false) && gsRTC.RTCSession.getStream('slides', false).getVideoTracks().length > 0){
-    //     gsRTC.presentSharing = true;
-    // } else {
-    //     gsRTC.presentSharing = false;
-    // }
-
     if(isUploadVideo === true){
         console.warn('LocalVideo is sharing now.')
         let ifChange = confirm('是否要切换演示媒体文件?');
