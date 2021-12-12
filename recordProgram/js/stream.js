@@ -442,3 +442,22 @@ Record.prototype.closeStream = function (stream) {
     }
     stream = null
 }
+
+
+
+/***
+ * get file url
+ * @param file
+ * @returns {*}
+ */
+Record.prototype.getObjectURL = function(file) {
+    let url = null;
+    if (window.createObjectURL !== undefined) { // basic
+        url = window.createObjectURL(file);
+    } else if (window.URL !== undefined) { // mozilla(firefox)
+        url = window.URL.createObjectURL(file);
+    } else if (window.webkitURL !== undefined) { // webkit or chrome
+        url = window.webkitURL.createObjectURL(file);
+    }
+    return url;
+}
