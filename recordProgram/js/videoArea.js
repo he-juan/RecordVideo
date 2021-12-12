@@ -185,6 +185,10 @@
         let shareTip = document.getElementById("container")
         let videoContainer = document.getElementsByClassName("shareVideo")[0]
         this.$rangeEl.bind('mousedown', function (event) {
+            if(window.record.currentRecoderType !== 'areaVideo'){
+                console.warn("current recoderType is not areaVvideo")
+                return
+            }
             console.warn("mousedown", event)
             console.warn("offsetWidth: ", event.offsetX);
             console.warn("offsetHeight: ", event.offsetY);

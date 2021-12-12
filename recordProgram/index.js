@@ -516,7 +516,10 @@ function handleCanPlay(data){
         if (isUploadVideo === true){
             console.warn('switch local sharing source')
                 if(ifMediaChange){
-                    switchLocalVideoShare()
+                    let rect = document.getElementsByClassName('rect')[0]
+                    rect.style.display = "none"
+                    ctx.clearRect(0, 0, shareCanvas.width, shareCanvas.height)
+                    window.cancelAnimationFrame(stopTimeout)
                 }
         } else {
             function callback(data) {
@@ -779,6 +782,10 @@ function stopCategory(data){
                 if(event.codeType === 999){
                     console.warn("stop shareScreen success: " , event )
                     toggleShareBtn.textContent = "开启共享"
+                    let rect = document.getElementsByClassName('rect')[0]
+                    rect.style.display = "none"
+                    ctx.clearRect(0, 0, shareCanvas.width, shareCanvas.height)
+                    window.cancelAnimationFrame(stopTimeout)
                     if(localStreams && localStreams.slides){
                         window.record.closeStream(localStreams.slides)
 
@@ -977,7 +984,10 @@ function switchToCanvas(type, video, sx, sy, swidth, sheight, x, y, width, heigh
 // *********************************************区域录制获取区域阶段**************************************************************
 // let shareCanvas = document.getElementsByClassName("shareCanvas")[0]
 function finish() {
-
+    if(window.record.currentRecoderType !== 'areaVideo'){
+        console.warn("current recoderType is not areaVvideo")
+        return
+    }
     var videoHeight = shareVideo.videoHeight;
     var videoWidth = shareVideo.videoWidth;
     shareVideo.width = videoWidth
@@ -1124,6 +1134,8 @@ function stopRecord() {
                 console.warn("stop record success:", event)
                 window.cancelAnimationFrame(stopTimeout)
                 ctx.clearRect(0, 0, shareCanvas.width, shareCanvas.height)
+                ctx.clearRect(0, 0, shareCanvas.width, shareCanvas.height)
+                window.cancelAnimationFrame(stopTimeout)
                 isRecording = false
                 let buffer = event.stream.recordedBlobs
                 shareRecord.srcObject = event.stream.stream
@@ -1156,6 +1168,8 @@ function stopRecord() {
                 // })
                 let rect = document.getElementsByClassName('rect')[0]
                 rect.style.display = "none"
+                ctx.clearRect(0, 0, shareCanvas.width, shareCanvas.height)
+                window.cancelAnimationFrame(stopTimeout)
 
                 /***录制内容返回播放***/
                 let blob = new Blob(buffer, {'type': 'video/webm'});
@@ -1338,6 +1352,8 @@ function restartRecord(){
         shareRecord.style.display = 'none'
         let rect = document.getElementsByClassName('rect')[0]
         rect.style.display = "none"
+        ctx.clearRect(0, 0, shareCanvas.width, shareCanvas.height)
+        window.cancelAnimationFrame(stopTimeout)
     } else if (window.record.currentRecoderType === 'video') {
         vtcanvas.style.display = 'none'
         canvasRecord.style.display = "none"
