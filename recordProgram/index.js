@@ -51,7 +51,7 @@ let isRecording = false
 let isUploadVideo = false
 let currentMic = null
 let currentSpeaker = null
-let currentCamrea = null
+let currentCamera = null
 
 
 /**************** 绘制canvas定时器********************/
@@ -222,8 +222,8 @@ function changeAudioDestination() {
 
 function changeCamera(){
     const camera = cameraSelect.value;
-    currentCamrea = camera
-    console.warn("currentCamrea:",currentCamrea)
+    currentCamera = camera
+    console.warn("currentCamera:",currentCamera)
 
     if(localStreams.main){
         switchLcoalCamera()
@@ -809,7 +809,7 @@ function getCategory(data){
                    console.warn(" open video failed")
                }
            }
-           data.deviceId =  currentCamrea || devices.cameras[0].deviceId
+           data.deviceId =  currentCamera || devices.cameras[0].deviceId
            openVideo(data)
        }else if(data.type === 'shareScreen'){
            data.callback = function(event){

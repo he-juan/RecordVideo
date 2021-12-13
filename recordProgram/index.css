@@ -161,7 +161,7 @@ body{
     border: 5px solid #F35252;
 }
 .btn.active{
-    background-color: skyblue;
+    background-color: purple ;
 }
 .midMiddle .show{
     display:block;
