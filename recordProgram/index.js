@@ -1,5 +1,5 @@
 let audio = document.createElement("audio")
-
+let container = document.getElementById("container")
 
 /************************************正文左边按钮******************/
 let videoBtn = document.getElementsByClassName("toggleVideoButton")[0]
@@ -28,6 +28,7 @@ let shareCanvas = document.getElementsByClassName("shareCanvas")[0]
 let ctx = shareCanvas.getContext('2d')
 
 let video_Area = document.getElementsByClassName("videoArea")[0]
+let input = document.createElement('textarea')
 
 
 // let mainVideo = document.getElementsByClassName("mainVideo")[0]
@@ -53,8 +54,8 @@ let currentCamrea = null
 
 
 /**************** 绘制canvas定时器********************/
-let switchTimeOut
-let shareTimeOut
+let switchTimeout
+let shareTimeout
 let stopTimeout
 
 /** ******************像素匹配位置*******************/
@@ -62,6 +63,17 @@ let setX
 let setY
 let setWidth
 let setHeight
+
+let sx
+let sy
+let rangeH
+let rangeW
+let text
+
+/*********************获取canvas匹配位置**********************/
+let canvasX
+let canvasY
+
 
 
 
@@ -194,7 +206,11 @@ function changeMic(){
     currentMic = audioSource
     console.warn("currentSpeaker:",currentMic)
 
-    switchlocalMic()
+    if(localStreams.audio){
+        switchlocalMic()
+    }else{
+        console.warn("only switch localMicDeviceId")
+    }
 }
 
 function changeAudioDestination() {
@@ -205,14 +221,15 @@ function changeAudioDestination() {
 }
 
 function changeCamera(){
-    if (localStreams.main) {
-        stopCategory({type: 'main'})
-    }
     const camera = cameraSelect.value;
-    // attachSinkId(audio, camera);
-     currentCamrea = camera
+    currentCamrea = camera
     console.warn("currentCamrea:",currentCamrea)
-    switchLcoalCamera()
+
+    if(localStreams.main){
+        switchLcoalCamera()
+    }else{
+        console.warn("only switch localCamera")
+    }
 }
 
 function switchlocalMic (){
@@ -228,11 +245,8 @@ function switchlocalMic (){
 
 
 function switchLcoalCamera(){
-    if (localStreams.main) {
-        stopCategory({type: 'main'})
-    }
-
     if(window.record.currentRecoderType === 'areaVideo' || window.record.currentRecoderType === 'video'){
+        stopCategory({type: 'main'})
         getCategory({type: 'main'})
     }
 }
@@ -367,8 +381,8 @@ function toggleMuteButton(data){
 function localVideoButton(){
     /**开始上传视频**/
     if(localVideoBtn.textContent === '上传视频'){
-         window.cancelAnimationFrame(switchTimeOut)
-         window.cancelAnimationFrame(shareTimeOut)
+         window.cancelAnimationFrame(switchTimeout)
+         window.cancelAnimationFrame(shareTimeout)
 
 
         if(window.record.currentRecoderType === 'areaVideo'){
@@ -517,7 +531,9 @@ function handleCanPlay(data){
             console.warn('switch local sharing source')
                 if(ifMediaChange){
                     let rect = document.getElementsByClassName('rect')[0]
-                    rect.style.display = "none"
+                    if(rect){
+                        rect.style.display = "none"
+                    }
                     ctx.clearRect(0, 0, shareCanvas.width, shareCanvas.height)
                     window.cancelAnimationFrame(stopTimeout)
                 }
@@ -647,10 +663,11 @@ function writeTextOnCanvas(cns, lh, rw, text) {
     }
 }
 
-writeTextOnCanvas("mycanvas", 22, 40, document.getElementById("input").value);
-document.getElementById("input").onkeyup = function() {
-    writeTextOnCanvas("mycanvas", 22, 40, this.value);
-}
+
+// writeTextOnCanvas("mycanvas", 22, 40, document.getElementById("input").value);
+// document.getElementById("input").onkeyup = function() {
+//     writeTextOnCanvas("mycanvas", 22, 40, this.value);
+// }
 
 
 /**
@@ -845,7 +862,9 @@ function stopCategory(data){
                     console.warn("stop shareScreen success: " , event )
                     toggleShareBtn.textContent = "开启共享"
                     let rect = document.getElementsByClassName('rect')[0]
-                    rect.style.display = "none"
+                    if(rect){
+                        rect.style.display = "none"
+                    }
                     ctx.clearRect(0, 0, shareCanvas.width, shareCanvas.height)
                     window.cancelAnimationFrame(stopTimeout)
                     if(localStreams && localStreams.slides){
@@ -871,7 +890,7 @@ function stopCategory(data){
                     console.warn(" stop video success: ", event )
                     videoBtn.textContent = "开启视频"
                     isOpenVideo = false
-                    window.cancelAnimationFrame(switchTimeOut)
+                    window.cancelAnimationFrame(switchTimeout)
                     context.clearRect(setX, setY, setWidth, setHeight)
                     draw()
 
@@ -886,7 +905,7 @@ function stopCategory(data){
                     console.warn(" open shareScreen success: ", event)
                     shareBtn.textContent = "开启共享"
                     isOpenShareScreen = false
-                    window.cancelAnimationFrame(shareTimeOut)
+                    window.cancelAnimationFrame(shareTimeout)
                     context.clearRect(setX, setY, setWidth, setHeight)
                     draw()
                 }else{
@@ -938,8 +957,8 @@ function getVideoType(data){
 function draw(data){
     /*处理canvas绘制video像素模糊问题*/
     let videoType = getVideoType(data)
-    window.cancelAnimationFrame(switchTimeOut)
-    window.cancelAnimationFrame(shareTimeOut)
+    window.cancelAnimationFrame(switchTimeout)
+    window.cancelAnimationFrame(shareTimeout)
 
     // let videoHeight = mainVideo.videoHeight ||slidesVideo.videoHeight;
     // let videoWidth = mainVideo.videoWidth || slidesVideo.videoWidth;
@@ -1016,7 +1035,7 @@ function shareToCanvas(type, video, sx, sy, swidth, sheight, x, y, width, height
         context.drawImage(video, sx, sy, swidth, sheight, x, y, width, height);
     }
 
-    shareTimeOut = window.requestAnimationFrame(() => {
+    shareTimeout = window.requestAnimationFrame(() => {
         shareToCanvas(type,video, sx, sy, swidth, sheight, x, y, width, height);
     })
     // video.style.display = "none"
@@ -1034,7 +1053,7 @@ function switchToCanvas(type, video, sx, sy, swidth, sheight, x, y, width, heigh
         context.drawImage(video, x, y, width, height)
     }
 
-    switchTimeOut = window.requestAnimationFrame(() => {
+    switchTimeout = window.requestAnimationFrame(() => {
         switchToCanvas(type, video, sx, sy, swidth, sheight, x, y, width, height);
     })
 
@@ -1229,7 +1248,9 @@ function stopRecord() {
                 //     }
                 // })
                 let rect = document.getElementsByClassName('rect')[0]
-                rect.style.display = "none"
+                if(rect){
+                    rect.style.display = "none"
+                }
                 ctx.clearRect(0, 0, shareCanvas.width, shareCanvas.height)
                 window.cancelAnimationFrame(stopTimeout)
 
@@ -1413,7 +1434,9 @@ function restartRecord(){
         shareCanvas.style.display = 'none'
         shareRecord.style.display = 'none'
         let rect = document.getElementsByClassName('rect')[0]
-        rect.style.display = "none"
+        if(rect){
+            rect.style.display = "none"
+        }
         ctx.clearRect(0, 0, shareCanvas.width, shareCanvas.height)
         window.cancelAnimationFrame(stopTimeout)
     } else if (window.record.currentRecoderType === 'video') {
