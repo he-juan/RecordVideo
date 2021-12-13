@@ -723,7 +723,7 @@ function getCategory(data){
 
                    shareBtn.textContent = "关闭共享"
                    shareVideo.style.display = 'inline-block'
-                   shareCanvas.style.display = 'inline-block'
+                   // shareCanvas.style.display = 'inline-block'
                    toggleShareBtn.textContent = "关闭共享"
 
                    video_Area.height = shareVideo.videoHeight
@@ -1080,6 +1080,7 @@ function finish() {
     let rangeH = videoHeight * (height / shareVideo.offsetHeight);
     console.warn("rangeW:",rangeW)
     console.warn("rangeH:",rangeH)
+    shareCanvas.style.display = 'inline-block'
     shareCanvas.height = rangeH ;
     shareCanvas.width  = rangeW ;
     // shareTip_bottom.width = rangeW

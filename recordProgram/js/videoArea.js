@@ -222,7 +222,6 @@
             self.createElToDom();
 
             self.$rangeEl.bind('mousemove', function (e) {
-                console.warn("11111")
                 var end = new Point(e.pageX, e.pageY);
 
                 //绘制
