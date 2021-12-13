@@ -28,8 +28,9 @@ let shareCanvas = document.getElementsByClassName("shareCanvas")[0]
 let ctx = shareCanvas.getContext('2d')
 
 let video_Area = document.getElementsByClassName("videoArea")[0]
-let input = document.createElement('textarea')
-
+let textContrainter = document.getElementsByClassName("textContrainter")[0]
+let input = document.getElementsByClassName("input")[0]
+let textBtn = document.getElementsByClassName("textBtn")[0]
 
 // let mainVideo = document.getElementsByClassName("mainVideo")[0]
 // let slidesVideo = document.getElementsByClassName("slidesVideo")[0]
@@ -649,6 +650,8 @@ function writeTextOnCanvas(ctx, lh, rw, text) {
         }
         return tlen;
     }
+    // ctx.fillText(text, canvasX, canvasY );
+    /**************处理添加文字自动换行******************/
     for (let i = 1; getTrueLength(text) > 0; i++) {
         let tl = cutString(text, 40);
         // ctx.fillText(text.substr(0, tl).replace(/^\s+|\s+$/, ""), 10, i * lineheight + 50);
@@ -658,42 +661,36 @@ function writeTextOnCanvas(ctx, lh, rw, text) {
 }
 
 shareCanvas.addEventListener("mousedown",function(e){
-    let { top, left } = shareCanvas.getBoundingClientRect();
-    // let con = container.getBoundingClientRect()
-    // let midContent = document.getElementsByClassName("midContent")[0]
-    // canvasX = e.clientX - left - con.left;
-    // canvasY = e.clientY - top  - con.top;
-
-    // canvasX = e.clientX - shareCanvas.offsetLeft - container.offsetLeft + document.body.scrollLeft;
-    // canvasY = e.clientY - shareCanvas.offsetTop - container.offsetTop + document.body.scrollTop;
+    let inputHeight = e.pageX - container.offsetLeft ;
+    let inputWidth = e.pageY - container.offsetTop ;
+    console.warn("mouseDown position:", canvasX  + '  *  ' + canvasY)
 
     canvasX = e.offsetX
     canvasY = e.offsetY
 
-    let inputHeight = e.pageX - container.offsetLeft + document.body.scrollLeft;
-    let inputWidth = e.pageY - container.offsetTop + document.body.scrollTop;
-
-    console.warn("mouseDown position:", canvasX  + '  *  ' + canvasY)
-    count = 0
-    // let input = document.createElement('textarea')
-    input.id = 'input'
-    input.style.position = "absolute"
-    input.style.zIndex = '1000';
-    input.style.left = inputHeight + 'px';
-    input.style.top = inputWidth + 'px';
+    textContrainter.style.position = 'absolute'
+    textContrainter.style.zIndex = '1000';
+    textContrainter.style.left = inputHeight + 'px';
+    textContrainter.style.top = inputWidth + 'px';
+    textContrainter.style.width = '300px'
+    textContrainter.style.height = '100px';
+    textContrainter.style.display = 'block'
     input.style.width = '300px'
     input.style.height = '100px';
-    input.style.borderColor = "red"
-    input.style.display = 'block'
-    document.body.appendChild(input)
-    input.value = ''
-    input.onkeyup = function(){
-        text = input.value
-        count ++
-        finish()
-        // playCanvas(shareVideo, shareCanvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, input.value)
-    }
 })
+
+input.onkeyup = function(){
+    text = input.value
+    finish()
+    // playCanvas(shareVideo, shareCanvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, input.value)
+}
+
+textBtn.onclick = function(){
+    textContrainter.style.display = 'none'
+    input.value = ''
+    text = ' '
+    finish()
+}
 
 
 // writeTextOnCanvas("mycanvas", 22, 40, document.getElementById("input").value);
@@ -1146,9 +1143,6 @@ function playCanvas(video,canvas,ctx,sx,sy,rangeW,rangeH, canvasX, canvasY, text
     canvas.style.border = "none";
     if(text ){
         writeTextOnCanvas(ctx, 22,40,text)
-        // if(count === 1){
-        //
-        // }
     }
 
     stopTimeout = requestAnimationFrame(() => {

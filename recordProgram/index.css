@@ -168,6 +168,22 @@ body{
 
 }
 
+.textContrainter{
+    display: none;
+    /*width:0px;*/
+    /*height: 0px;*/
+}
+.textBtn{
+   position: relative;
+   top: -20px;
+   left: -20px;
+   border-radius: 3px;
+   background-color: white;
+}
+.textBtn:hover{
+    background-color: #8c818a;
+}
+
 
 /****************关于音视频录制、区域录制处理************************/
 
