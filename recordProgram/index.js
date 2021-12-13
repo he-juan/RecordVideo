@@ -1193,6 +1193,18 @@ function beginRecord() {
             if (event.codeType === 999) {
                 console.warn("begin Record success:",event)
                 isRecording = true
+
+                startRecordBtn.disabled = true
+                stopRecordBtn.disabled = false
+                pauseRecordBtn.disabled = false
+                resumeRecordBtn.disabled = true
+                downloadBtn.disabled = false
+                startRecordBtn.style.backgroundColor = '#8c818a'
+                stopRecordBtn.style.backgroundColor = 'skyblue'
+                pauseRecordBtn.style.backgroundColor = 'skyblue'
+                resumeRecordBtn.style.backgroundColor = '#8c818a'
+                downloadBtn.style.backgroundColor = '#8c818a'
+
                 shareRecord.style.display = "inline-block"
                 shareRecord.width = shareCanvas.width ;
                 shareRecord.height = shareCanvas.height;
@@ -1210,6 +1222,18 @@ function beginRecord() {
             if (event.codeType === 999) {
                 console.warn("begin Record success:",event)
                 isRecording = true
+
+                startRecordBtn.disabled = true
+                stopRecordBtn.disabled = false
+                pauseRecordBtn.disabled = false
+                resumeRecordBtn.disabled = true
+                downloadBtn.disabled = false
+                startRecordBtn.style.backgroundColor = '#8c818a'
+                stopRecordBtn.style.backgroundColor = 'skyblue'
+                pauseRecordBtn.style.backgroundColor = 'skyblue'
+                resumeRecordBtn.style.backgroundColor = '#8c818a'
+                downloadBtn.style.backgroundColor = '#8c818a'
+
                 canvasRecord.style.display = 'inline-block'
                 canvasRecord.width = vtcanvas.width;
                 canvasRecord.height = vtcanvas.height;
@@ -1243,6 +1267,10 @@ function stopRecord() {
         data.callback = function (event) {
             if (event.codeType === 999) {
                 console.warn("stop record success:", event)
+                isRecording = false
+                let buffer = event.stream.recordedBlobs
+                shareRecord.srcObject = event.stream.stream
+
                 ctx.clearRect(0, 0, shareCanvas.width, shareCanvas.height)
                 ctx.clearRect(0, 0, shareCanvas.width, shareCanvas.height)
                 let rect = document.getElementsByClassName('rect')[0]
@@ -1256,14 +1284,16 @@ function stopRecord() {
                 shareVideo.style.width = '0px'
                 shareVideo.style.height = '0px'
 
-                isRecording = false
-                let buffer = event.stream.recordedBlobs
-                shareRecord.srcObject = event.stream.stream
-                // share_startRecord.disabled = false
-                // share_stopRecord.disabled = true
-                // share_pauseRecord.disabled = true
-                // share_resumeRecord.disabled = true
-                // share_download.disabled = false
+                startRecordBtn.disabled = false
+                stopRecordBtn.disabled = true
+                pauseRecordBtn.disabled = true
+                resumeRecordBtn.disabled = true
+                downloadBtn.disabled = false
+                startRecordBtn.style.backgroundColor = 'skyblue'
+                stopRecordBtn.style.backgroundColor = '#8c818a'
+                pauseRecordBtn.style.backgroundColor = '#8c818a'
+                resumeRecordBtn.style.backgroundColor = '#8c818a'
+                downloadBtn.style.backgroundColor = 'skyblue'
 
                 /**停止录制后需要关闭流**/
                 let tracks = shareRecord.srcObject.getTracks();
@@ -1313,11 +1343,16 @@ function stopRecord() {
                 context.clearRect(0, 0, vtcanvas.width, vtcanvas.height)
                 vtcanvas.style.display = 'none'
 
-                // share_startRecord.disabled = false
-                // share_stopRecord.disabled = true
-                // share_pauseRecord.disabled = true
-                // share_resumeRecord.disabled = true
-                // share_download.disabled = false
+                startRecordBtn.disabled = false
+                stopRecordBtn.disabled = true
+                pauseRecordBtn.disabled = true
+                resumeRecordBtn.disabled = true
+                downloadBtn.disabled = false
+                startRecordBtn.style.backgroundColor = 'skyblue'
+                stopRecordBtn.style.backgroundColor = '#8c818a'
+                pauseRecordBtn.style.backgroundColor = '#8c818a'
+                resumeRecordBtn.style.backgroundColor = '#8c818a'
+                downloadBtn.style.backgroundColor = 'skyblue'
 
                 /**停止录制后需要关闭流**/
                 let tracks = canvasRecord.srcObject.getTracks();
@@ -1370,6 +1405,16 @@ function pauseRecord(){
     console.warn("pause record...")
 
     let data = {}
+    startRecordBtn.disabled = true
+    stopRecordBtn.disabled = false
+    pauseRecordBtn.disabled = true
+    resumeRecordBtn.disabled = false
+    downloadBtn.disabled = false
+    startRecordBtn.style.backgroundColor = '#8c818a'
+    stopRecordBtn.style.backgroundColor = 'skyblue'
+    pauseRecordBtn.style.backgroundColor = '#8c818a'
+    resumeRecordBtn.style.backgroundColor = 'skyblue'
+    downloadBtn.style.backgroundColor = '#8c818a'
 
     if (window.record.currentRecoderType === 'areaVideo') {
         data.callback = function (event) {
@@ -1411,7 +1456,16 @@ function resumeRecord(){
     console.warn("resume record...")
 
     let data = {}
-
+    startRecordBtn.disabled = true
+    stopRecordBtn.disabled = false
+    pauseRecordBtn.disabled = false
+    resumeRecordBtn.disabled = true
+    downloadBtn.disabled = true
+    startRecordBtn.style.backgroundColor = '#8c818a'
+    stopRecordBtn.style.backgroundColor = 'skyblue'
+    pauseRecordBtn.style.backgroundColor = 'skyblue'
+    resumeRecordBtn.style.backgroundColor = '#8c818a'
+    downloadBtn.style.backgroundColor = '#8c818a'
     if (window.record.currentRecoderType === 'areaVideo') {
         data.callback = function (event) {
             if (event.codeType === 999) {
