@@ -872,76 +872,81 @@ function stopCategory(data){
     }
     if(window.record.currentRecoderType === 'areaVideo' || window.record.currentRecoderType === 'video'){
         if(data.type === 'audio'){
-            data.callback = function(event){
-                if(event.codeType === 999){
-                    console.warn("open audio success")
-                }else{
-                    console.warn("open audio failed")
+            if(localStreams.audio){
+                data.callback = function(event){
+                    if(event.codeType === 999){
+                        console.warn("open audio success")
+                    }else{
+                        console.warn("open audio failed")
+                    }
                 }
+                stopAudio(data)
             }
         }
-
-        stopAudio(data)
     }
 
     if(window.record.currentRecoderType === 'areaVideo'){
         if(data.type === 'shareScreen' || data.type === 'localVideo'){
-            data.callback = function(event){
-                if(event.codeType === 999){
-                    console.warn("stop shareScreen success: " , event )
-                    toggleShareBtn.textContent = "开启共享"
-                    let rect = document.getElementsByClassName('rect')[0]
-                    if(rect){
-                        rect.style.display = "none"
-                    }
-                    ctx.clearRect(0, 0, shareCanvas.width, shareCanvas.height)
-                    window.cancelAnimationFrame(stopTimeout)
-                    if(localStreams && localStreams.slides){
-                        window.record.closeStream(localStreams.slides)
+            if(localStreams.slides){
+                data.callback = function(event){
+                    if(event.codeType === 999){
+                        console.warn("stop shareScreen success: " , event )
+                        toggleShareBtn.textContent = "开启共享"
+                        let rect = document.getElementsByClassName('rect')[0]
+                        if(rect){
+                            rect.style.display = "none"
+                        }
+                        ctx.clearRect(0, 0, shareCanvas.width, shareCanvas.height)
+                        window.cancelAnimationFrame(stopTimeout)
+                        if(localStreams && localStreams.slides){
+                            window.record.closeStream(localStreams.slides)
 
+                        }
+
+                        localStreams.slides = null
+                        shareVideo.style.display = 'none'
+                        shareCanvas.style.display = 'none'
+                    }else{
+                        console.warn("stop shareScreen failed")
                     }
-                    
-                    localStreams.slides = null
-                    shareVideo.style.display = 'none'
-                    shareCanvas.style.display = 'none'
-                }else{
-                    console.warn("stop shareScreen failed")
                 }
+                stopShare(data)
             }
-            stopShare(data)
-        }else if(data.type === 'audio'){
-
         }
     }else if(window.record.currentRecoderType === 'video') {
         if(data.type === 'main' || data.type === 'localVideo'){
-            data.callback = function(event){
-                if(event.codeType === 999){
-                    console.warn(" stop video success: ", event )
-                    videoBtn.textContent = "开启视频"
-                    isOpenVideo = false
-                    window.cancelAnimationFrame(switchTimeout)
-                    context.clearRect(setX, setY, setWidth, setHeight)
-                    draw()
+           if(localStreams.main){
+               data.callback = function(event){
+                   if(event.codeType === 999){
+                       console.warn(" stop video success: ", event )
+                       videoBtn.textContent = "开启视频"
+                       isOpenVideo = false
+                       window.cancelAnimationFrame(switchTimeout)
+                       context.clearRect(setX, setY, setWidth, setHeight)
+                       draw()
 
-                }else{
-                    console.warn(" stop video failed")
-                }
-            }
-            stopVideo(data)
+                   }else{
+                       console.warn(" stop video failed")
+                   }
+               }
+               stopVideo(data)
+           }
         }else if(data.type === 'shareScreen'){
-            data.callback = function(event){
-                if(event.codeType === 999){
-                    console.warn(" open shareScreen success: ", event)
-                    shareBtn.textContent = "开启共享"
-                    isOpenShareScreen = false
-                    window.cancelAnimationFrame(shareTimeout)
-                    context.clearRect(setX, setY, setWidth, setHeight)
-                    draw()
-                }else{
-                    console.warn(" open shareScreen failed")
+            if(localStreams.slides){
+                data.callback = function(event){
+                    if(event.codeType === 999){
+                        console.warn(" open shareScreen success: ", event)
+                        shareBtn.textContent = "开启共享"
+                        isOpenShareScreen = false
+                        window.cancelAnimationFrame(shareTimeout)
+                        context.clearRect(setX, setY, setWidth, setHeight)
+                        draw()
+                    }else{
+                        console.warn(" open shareScreen failed")
+                    }
                 }
+                stopShare(data)
             }
-            stopShare(data)
         }
     }else if(window.record.currentRecoderType === 'audio'){
 
@@ -1295,6 +1300,7 @@ function stopRecord() {
             }
         }
         window.record.stopVideoRecord(data)
+        // window.record.videoMediaRecorder.stop()
     } else if (window.record.currentRecoderType === 'video') {
         data.callback = function (event) {
             if (event.codeType === 999) {
@@ -1348,6 +1354,7 @@ function stopRecord() {
             }
         }
         window.record.stopVideoRecord(data)
+        // window.record.videoMediaRecorder.stop()
     }
 }
 
@@ -1373,9 +1380,21 @@ function pauseRecord(){
                 console.warn("pause record failed")
             }
         }
-        window.record.pauseVideoRecord(data)
+        // window.record.pauseVideoRecord(data)
+        window.record.videoMediaRecorder.pause()
+        shareRecord.pause();
     } else if (window.record.currentRecoderType === 'video') {
-
+        data.callback = function (event) {
+            if (event.codeType === 999) {
+                console.warn("pause record success:", event)
+                canvasRecord.pause();
+            } else {
+                console.warn("pause record failed")
+            }
+        }
+        // window.record.pauseVideoRecord(data)
+        window.record.videoMediaRecorder.pause()
+        canvasRecord.pause();
     }
 }
 
@@ -1402,9 +1421,21 @@ function resumeRecord(){
                 console.warn("resume record failed")
             }
         }
-        window.record.resumeVideoRecord(data)
+        // window.record.resumeVideoRecord(data)
+        window.record.videoMediaRecorder.resume()
+        shareRecord.play()
     } else if (window.record.currentRecoderType === 'video') {
-
+        data.callback = function (event) {
+            if (event.codeType === 999) {
+                console.warn("resume record success:", event)
+                canvasRecord.play();
+            } else {
+                console.warn("resume record failed")
+            }
+        }
+        // window.record.resumeVideoRecord(data)
+        window.record.videoMediaRecorder.resume()
+        canvasRecord.play()
     }
 }
 

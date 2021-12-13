@@ -352,6 +352,27 @@ Record.prototype.videoRecord = function(data){
         }
     }
 
+    This.videoMediaRecorder.onstop = function(){
+        if(This.videoMediaRecorder.state === 'inactive'){
+            console.warn("********* stop success***********")
+            data.callback && data.callback({ codeType: 999, stream: This.videoMediaRecorder})
+        }
+    }
+
+    This.videoMediaRecorder.onpause = function(){
+        if(This.videoMediaRecorder.state === 'paused'){
+            console.warn("********* pause success***********")
+            data.callback && data.callback({ codeType: 999, stream: This.videoMediaRecorder})
+        }
+    }
+
+    This.videoMediaRecorder.onresume = function(){
+        if(This.videoMediaRecorder.state  === 'recording'){
+            console.warn("********* resume success ***********")
+            data.callback && data.callback({ codeType: 999, stream: This.videoMediaRecorder})
+        }
+    }
+
 }
 
 Record.prototype.stopVideoRecord = function(data){
@@ -380,7 +401,6 @@ Record.prototype.stopVideoRecord = function(data){
         console.warn("********* stop success***********")
         data.callback && data.callback({ codeType: 999, stream: This.videoMediaRecorder})
     }
-
 }
 
 

@@ -61,7 +61,7 @@ function openShare(data){
 }
 
 function stopShare(data){
-    console.warn("stopAreaVideo:"+ JSON.stringify(data, null, '    ') )
+    console.warn("stopShare:"+ JSON.stringify(data, null, '    ') )
     if(!data || !data.callback){
         console.warn("stopVideo: invalid parameters")
     }
