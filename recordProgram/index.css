@@ -174,11 +174,13 @@ body{
     /*height: 0px;*/
 }
 .textBtn{
-   position: relative;
-   top: -20px;
-   left: -20px;
-   border-radius: 3px;
-   background-color: white;
+    position: relative;
+    top: -104px;
+    left: 268px;
+    border-radius: 3px;
+    border: none;
+    width: 30px;
+    height: 30px;
 }
 .textBtn:hover{
     background-color: #8c818a;
