@@ -1238,10 +1238,19 @@ function stopRecord() {
         data.callback = function (event) {
             if (event.codeType === 999) {
                 console.warn("stop record success:", event)
-                window.cancelAnimationFrame(stopTimeout)
                 ctx.clearRect(0, 0, shareCanvas.width, shareCanvas.height)
                 ctx.clearRect(0, 0, shareCanvas.width, shareCanvas.height)
+                let rect = document.getElementsByClassName('rect')[0]
+                if(rect){
+                    rect.style.display = "none"
+                }
+                ctx.clearRect(0, 0, shareCanvas.width, shareCanvas.height)
                 window.cancelAnimationFrame(stopTimeout)
+                shareVideo.style.display = 'none'
+                shareCanvas.style.display = 'none'
+                shareVideo.style.width = '0px'
+                shareVideo.style.height = '0px'
+
                 isRecording = false
                 let buffer = event.stream.recordedBlobs
                 shareRecord.srcObject = event.stream.stream
@@ -1256,28 +1265,23 @@ function stopRecord() {
                 tracks.forEach(track => {
                     track.stop()
                 });
-                // Object.keys(localStreams).forEach(function (key) {
-                //     if(key === 'audio'){
-                //         stopCategory({type: 'audio'})
-                //     }else if (key === 'main'){
-                //         stopCategory({type: 'main'})
-                //     }else if(key ==='localVideo'){
-                //         stopCategory({type: 'localVideo'})
-                //     } else if(key === 'slides'){
-                //         stopCategory({type: 'shareScreen'})
-                //     }
-                //     let stream = localStreams[key]
-                //     if (stream) {
-                //         window.record.closeStream(stream)
-                //         localStreams[key] = null
-                //     }
-                // })
-                let rect = document.getElementsByClassName('rect')[0]
-                if(rect){
-                    rect.style.display = "none"
-                }
-                ctx.clearRect(0, 0, shareCanvas.width, shareCanvas.height)
-                window.cancelAnimationFrame(stopTimeout)
+                Object.keys(localStreams).forEach(function (key) {
+                    if(key === 'audio'){
+                        stopCategory({type: 'audio'})
+                    }else if (key === 'main'){
+                        stopCategory({type: 'main'})
+                    }else if(key ==='localVideo'){
+                        stopCategory({type: 'localVideo'})
+                    } else if(key === 'slides'){
+                        stopCategory({type: 'shareScreen'})
+                    }
+                    let stream = localStreams[key]
+                    if (stream) {
+                        window.record.closeStream(stream)
+                        localStreams[key] = null
+                    }
+                })
+
 
                 /***录制内容返回播放***/
                 let blob = new Blob(buffer, {'type': 'video/webm'});
@@ -1298,6 +1302,11 @@ function stopRecord() {
                 isRecording = false
                 let buffer = event.stream.recordedBlobs
                 canvasRecord.srcObject = event.stream.stream
+                window.cancelAnimationFrame(switchTimeout)
+                window.cancelAnimationFrame(shareTimeout)
+                context.clearRect(0, 0, vtcanvas.width, vtcanvas.height)
+                vtcanvas.style.display = 'none'
+
                 // share_startRecord.disabled = false
                 // share_stopRecord.disabled = true
                 // share_pauseRecord.disabled = true
@@ -1310,23 +1319,22 @@ function stopRecord() {
                     track.stop()
                 });
 
-                // Object.keys(localStreams).forEach(function (key) {
-                //     if(key === 'audio'){
-                //         stopCategory({type: 'audio'})
-                //     }else if (key === 'main'){
-                //         stopCategory({type: 'main'})
-                //     }else if(key ==='localVideo'){
-                //         stopCategory({type: 'localVideo'})
-                //     } else if(key === 'slides'){
-                //         stopCategory({type: 'shareScreen'})
-                //     }
-                //     let stream = localStreams[key]
-                //     if (stream) {
-                //         window.record.closeStream(stream)
-                //         localStreams[key] = null
-                //     }
-                // })
-                // canvasRecord.style.marginTop = '-400px'
+                Object.keys(localStreams).forEach(function (key) {
+                    if(key === 'audio'){
+                        stopCategory({type: 'audio'})
+                    }else if (key === 'main'){
+                        stopCategory({type: 'main'})
+                    }else if(key ==='localVideo'){
+                        stopCategory({type: 'localVideo'})
+                    } else if(key === 'slides'){
+                        stopCategory({type: 'shareScreen'})
+                    }
+                    let stream = localStreams[key]
+                    if (stream) {
+                        window.record.closeStream(stream)
+                        localStreams[key] = null
+                    }
+                })
 
                 /***录制内容返回播放***/
                 let blob = new Blob(buffer, {'type': 'video/webm'});
