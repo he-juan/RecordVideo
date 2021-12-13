@@ -69,12 +69,11 @@ let sy
 let rangeH
 let rangeW
 let text
+let count
 
 /*********************获取canvas匹配位置**********************/
 let canvasX
 let canvasY
-
-
 
 
 areaVideoArea.addEventListener("click",function(){
@@ -607,23 +606,17 @@ function stopShareLocalVideo() {
 
 
 /***************************************************区域录制添加文字********************************************************* */
-function writeTextOnCanvas(cns, lh, rw, text) {
-    var cns = document.getElementById(cns);
-    var ctx = cns.getContext("2d");
-    var lineheight = lh;
-    var text = text;
-
-    ctx.width = cns.width;
-    ctx.height = cns.height;
+function writeTextOnCanvas(ctx, lh, rw, text) {
+    let lineheight = lh;
 
     ctx.clearRect(0, 0, ctx.width, ctx.height);
     ctx.font = "16px 微软雅黑";
     ctx.fillStyle = "#f00";
 
     function getTrueLength(str) { //获取字符串的真实长度（字节长度）
-        var len = str.length,
+        let len = str.length,
             truelen = 0;
-        for (var x = 0; x < len; x++) {
+        for (let x = 0; x < len; x++) {
             if (str.charCodeAt(x) > 128) {
                 truelen += 2;
             } else {
@@ -634,10 +627,10 @@ function writeTextOnCanvas(cns, lh, rw, text) {
     }
 
     function cutString(str, leng) { //按字节长度截取字符串，返回substr截取位置
-        var len = str.length,
+        let len = str.length,
             tlen = len,
             nlen = 0;
-        for (var x = 0; x < len; x++) {
+        for (let x = 0; x < len; x++) {
             if (str.charCodeAt(x) > 128) {
                 if (nlen + 2 < leng) {
                     nlen += 2;
@@ -656,12 +649,51 @@ function writeTextOnCanvas(cns, lh, rw, text) {
         }
         return tlen;
     }
-    for (var i = 1; getTrueLength(text) > 0; i++) {
-        var tl = cutString(text, rw);
-        ctx.fillText(text.substr(0, tl).replace(/^\s+|\s+$/, ""), 10, i * lineheight + 50);
+    for (let i = 1; getTrueLength(text) > 0; i++) {
+        let tl = cutString(text, 40);
+        // ctx.fillText(text.substr(0, tl).replace(/^\s+|\s+$/, ""), 10, i * lineheight + 50);
+        ctx.fillText(text.substr(0, tl).replace(/^\s+|\s+$/, ""), canvasX, i * canvasY + 10);
         text = text.substr(tl);
     }
 }
+
+shareCanvas.addEventListener("mousedown",function(e){
+    let { top, left } = shareCanvas.getBoundingClientRect();
+    // let con = container.getBoundingClientRect()
+    // let midContent = document.getElementsByClassName("midContent")[0]
+    // canvasX = e.clientX - left - con.left;
+    // canvasY = e.clientY - top  - con.top;
+
+    // canvasX = e.clientX - shareCanvas.offsetLeft - container.offsetLeft + document.body.scrollLeft;
+    // canvasY = e.clientY - shareCanvas.offsetTop - container.offsetTop + document.body.scrollTop;
+
+    canvasX = e.offsetX
+    canvasY = e.offsetY
+
+    let inputHeight = e.pageX - container.offsetLeft + document.body.scrollLeft;
+    let inputWidth = e.pageY - container.offsetTop + document.body.scrollTop;
+
+    console.warn("mouseDown position:", canvasX  + '  *  ' + canvasY)
+    count = 0
+    // let input = document.createElement('textarea')
+    input.id = 'input'
+    input.style.position = "absolute"
+    input.style.zIndex = '1000';
+    input.style.left = inputHeight + 'px';
+    input.style.top = inputWidth + 'px';
+    input.style.width = '300px'
+    input.style.height = '100px';
+    input.style.borderColor = "red"
+    input.style.display = 'block'
+    document.body.appendChild(input)
+    input.value = ''
+    input.onkeyup = function(){
+        text = input.value
+        count ++
+        finish()
+        // playCanvas(shareVideo, shareCanvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, input.value)
+    }
+})
 
 
 // writeTextOnCanvas("mycanvas", 22, 40, document.getElementById("input").value);
@@ -1057,7 +1089,6 @@ function switchToCanvas(type, video, sx, sy, swidth, sheight, x, y, width, heigh
         switchToCanvas(type, video, sx, sy, swidth, sheight, x, y, width, height);
     })
 
-
 }
 
 
@@ -1069,6 +1100,10 @@ function finish() {
         console.warn("current recoderType is not areaVvideo")
         return
     }
+    // if(text){
+    //     window.cancelAnimationFrame(stopTimeout)
+    // }
+    window.cancelAnimationFrame(stopTimeout)
     var videoHeight = shareVideo.videoHeight;
     var videoWidth = shareVideo.videoWidth;
     shareVideo.width = videoWidth
@@ -1097,7 +1132,7 @@ function finish() {
     console.warn("sy:",sy)
     console.warn("rangeW:",rangeW)
     console.warn("rangeH:",rangeH)
-    playCanvas(shareVideo,shareCanvas, ctx,sx,sy,rangeW,rangeH);
+    playCanvas(shareVideo, shareCanvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
 }
 
 
@@ -1105,24 +1140,19 @@ function finish() {
 /*
 * video视频转换到canvas中
 * */
-function playCanvas(video,canvas,ctx,sx,sy,rangeW,rangeH){
+function playCanvas(video,canvas,ctx,sx,sy,rangeW,rangeH, canvasX, canvasY, text){
 
-    // data = div.value;
-    // data1 = text.value;
-    // console.log("data:",data);
-    // console.log("data1:",data1);
-    // var tw1 = ctx.measureText(data1).width;
-    // var tw = ctx.measureText(data).width;
     ctx.drawImage(video, sx, sy, rangeW, rangeH, 0, 0, canvas.width, canvas.height);
     canvas.style.border = "none";
-    ctx.fillStyle = "#05a0ff";
-    ctx.font = "italic 30px 黑体";
-    ctx.textBaseline = 'middle';//更改字号后，必须重置对齐方式，否则居中麻烦。设置文本的垂直对齐方式
-    ctx.textAlign = 'center';
-
+    if(text ){
+        writeTextOnCanvas(ctx, 22,40,text)
+        // if(count === 1){
+        //
+        // }
+    }
 
     stopTimeout = requestAnimationFrame(() => {
-        playCanvas(video,canvas,ctx,sx,sy,rangeW,rangeH);
+        playCanvas(video, canvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
     })
 }
 

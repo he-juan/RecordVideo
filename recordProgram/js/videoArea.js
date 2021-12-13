@@ -201,8 +201,8 @@
             // var loc = windowTovideo(share_video) ;//获取鼠标点击在video的坐标
             event.preventDefault();
 
-            window.startPositionX = event.clientX - shareTip.offsetLeft - videoContainer.offsetLeft;
-            window.startPositionY = event.clientY - shareTip.offsetTop - videoContainer.offsetTop;
+            window.startPositionX = event.pageX - shareTip.offsetLeft - videoContainer.offsetLeft ;
+            window.startPositionY = event.pageY - shareTip.offsetTop - videoContainer.offsetTop ;
             window.lefts = event.offsetX
             window.tops = event.offsetY;
             window.mouseDownLeft = event.clientX
@@ -242,8 +242,8 @@
             // console.warn("window.recttop:",window.rectTop)
             // console.warn("window rectLeft:",window.rectLeft)
 
-            window.endPositionX = e.clientX  - shareTip.offsetLeft -  videoContainer.offsetLeft;
-            window.endPositionY = e.clientY  - shareTip.offsetTop - videoContainer.offsetTop;
+            window.endPositionX = e.pageX  - shareTip.offsetLeft -  videoContainer.offsetLeft ;
+            window.endPositionY = e.pageY  - shareTip.offsetTop - videoContainer.offsetTop ;
 
 
 

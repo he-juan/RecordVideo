@@ -32,8 +32,13 @@
       <file leaf-file-name="index.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/recordProgram/index.js">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< Updated upstream
             <state relative-caret-position="489">
               <caret line="1082" column="46" selection-start-line="1082" selection-start-column="46" selection-end-line="1082" selection-end-column="46" />
+=======
+            <state relative-caret-position="381">
+              <caret line="665" column="98" selection-start-line="665" selection-start-column="74" selection-end-line="665" selection-end-column="98" />
+>>>>>>> Stashed changes
             </state>
           </provider>
         </entry>
@@ -101,11 +106,28 @@
           </provider>
         </entry>
       </file>
+<<<<<<< Updated upstream
       <file leaf-file-name="videoArea.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/recordProgram/js/videoArea.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="606">
               <caret line="223" column="58" selection-start-line="223" selection-start-column="58" selection-end-line="223" selection-end-column="58" />
+=======
+      <file leaf-file-name="demo5.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/getPosition/demo5.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="633">
+              <caret line="56" column="13" selection-start-line="56" selection-start-column="13" selection-end-line="56" selection-end-column="13" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="videoArea.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/recordProgram/js/videoArea.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="228">
+              <caret line="197" lean-forward="true" selection-start-line="197" selection-end-line="197" />
+>>>>>>> Stashed changes
             </state>
           </provider>
         </entry>
@@ -150,6 +172,7 @@
       <find>onchange</find>
       <find>draw</find>
       <find>shareTimeOut</find>
+      <find>finish</find>
       <find>rect</find>
       <find>shareContrainter</find>
       <find>finish</find>
@@ -331,7 +354,11 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
+<<<<<<< Updated upstream
     <option name="totallyTimeSpent" value="289810000" />
+=======
+    <option name="totallyTimeSpent" value="290353000" />
+>>>>>>> Stashed changes
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -667,6 +694,7 @@
         </state>
       </provider>
     </entry>
+<<<<<<< Updated upstream
     <entry file="file://$PROJECT_DIR$/recordProgram/js/stream.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="148">
@@ -674,6 +702,8 @@
         </state>
       </provider>
     </entry>
+=======
+>>>>>>> Stashed changes
     <entry file="file://$PROJECT_DIR$/recordProgram/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-945">
@@ -683,15 +713,25 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/recordProgram/index.js">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< Updated upstream
         <state relative-caret-position="489">
           <caret line="1082" column="46" selection-start-line="1082" selection-start-column="46" selection-end-line="1082" selection-end-column="46" />
+=======
+        <state relative-caret-position="381">
+          <caret line="665" column="98" selection-start-line="665" selection-start-column="74" selection-end-line="665" selection-end-column="98" />
+>>>>>>> Stashed changes
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/recordProgram/js/videoArea.js">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< Updated upstream
         <state relative-caret-position="606">
           <caret line="223" column="58" selection-start-line="223" selection-start-column="58" selection-end-line="223" selection-end-column="58" />
+=======
+        <state relative-caret-position="228">
+          <caret line="197" lean-forward="true" selection-start-line="197" selection-end-line="197" />
+>>>>>>> Stashed changes
         </state>
       </provider>
     </entry>
