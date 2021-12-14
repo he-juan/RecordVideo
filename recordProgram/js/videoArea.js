@@ -180,25 +180,26 @@
      */
     FrameSelection.prototype.bind = function () {
         var self = this;
-        // var canvas = document.getElementById("canvas");
-        //var ctx =canvas.getContext("2d");
         let shareTip = document.getElementById("container")
         let videoContainer = document.getElementsByClassName("shareVideo")[0]
+
         this.$rangeEl.bind('mousedown', function (event) {
             if(window.record.currentRecoderType !== 'areaVideo'){
                 console.warn("current recoderType is not areaVvideo")
                 return
             }
+            if(window.record.isUploadVideo){
+                console.warn("上传视频文件")
+                videoContainer =  document.getElementsByClassName("shareLocalVideo")[0]
+            }
             console.warn("mousedown", event)
             console.warn("offsetWidth: ", event.offsetX);
             console.warn("offsetHeight: ", event.offsetY);
 
-            console.warn("containerTop:",window.containerTop);
-            console.warn("containerLeft:",window.containerLeft);
+            console.warn("videoContainer.offsetLeft:",videoContainer.offsetLeft);
+            console.warn("videoContainer.offsetTop:",videoContainer.offsetTop);
 
-            console.warn(" containerWidth:", window.containerWidth);
-            console.warn(" containerHeight", window.containerHeight);
-            // var loc = windowTovideo(share_video) ;//获取鼠标点击在video的坐标
+
             event.preventDefault();
 
             window.startPositionX = event.pageX - shareTip.offsetLeft - videoContainer.offsetLeft ;
@@ -233,6 +234,10 @@
         // window.rectTop = $rect.css("top");
         // window.rectLeft = $rect.css("left");
         this.$rangeEl.bind('mouseup', function (e) {
+            if(window.record.isUploadVideo){
+                console.warn("上传视频文件...")
+                videoContainer =  document.getElementsByClassName("shareLocalVideo")[0]
+            }
 
             console.warn("mouseup", e)
             console.warn("offsetWidth: ", e.offsetX)
@@ -245,12 +250,9 @@
             window.endPositionX = e.pageX  - shareTip.offsetLeft -  videoContainer.offsetLeft ;
             window.endPositionY = e.pageY  - shareTip.offsetTop - videoContainer.offsetTop ;
 
-
-
             finish()
             self.$rangeEl.off('mousemove');
         })
-
 
     }
 

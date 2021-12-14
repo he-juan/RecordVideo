@@ -17,7 +17,8 @@ Record.prototype.preInit = function() {
      // 录制内容
      this.mediaRecorder = null;
      this.recordedBlobs = null;
-     this.currentRecoderType = null
+     this.currentRecoderType = null;
+     this.isUploadVideo = false
 
      this.localStreams = {
          audio: null,

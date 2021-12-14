@@ -163,9 +163,16 @@ body{
 .btn.active{
     background-color: purple ;
 }
+
 .midMiddle .show{
     display:block;
+}
 
+.videoArea{
+    display: none;
+}
+.shareContrainter .show{
+    display:block;
 }
 
 .textContrainter{
