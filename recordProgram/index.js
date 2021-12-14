@@ -806,7 +806,6 @@ function getCategory(data){
             data.deviceId = currentMic || devices.microphones[0].deviceId
             openAudio(data)
         }
-
     }
 
 
@@ -854,6 +853,9 @@ function getCategory(data){
                    videoBtn.textContent = "关闭视频"
                    isOpenVideo = true
 
+                   startRecordBtn.disabled = false
+                   startRecordBtn.style.backgroundColor = 'skyblue'
+
                    vtcanvas.style.display = 'inline-block'
                    canvasRecord.style.display = "none"
                    toggleShareBtn.style.backgroundColor = "skyblue"
@@ -889,6 +891,9 @@ function getCategory(data){
                    console.warn(" open shareScreen success: ", event)
                    shareBtn.textContent = "关闭共享"
                    isOpenShareScreen = true
+
+                   startRecordBtn.disabled = false
+                   startRecordBtn.style.backgroundColor = 'skyblue'
 
                    vtcanvas.style.display = 'inline-block'
                    canvasRecord.style.display = "none"
