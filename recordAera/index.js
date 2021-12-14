@@ -818,8 +818,10 @@ function beginRecord(data){
             shareTip_bottom.style.marginTop = '-360px';
             shareTip_bottom.style.zIndex = "999"
             let rect = document.getElementsByClassName("rect")[0]
-            // rect.style.border = "none";
-            rect.style.display = "none"
+            if(rect){
+                rect.style.display = "none"
+            }
+
             canvasStream = share_canvas.captureStream(60)
         }
         let canvasTrack =  canvasStream.getTracks()[0]
@@ -866,11 +868,11 @@ function beginRecord(data){
                        share_record.play()
                     }
 
-                    share_startRecord.disabled = true
-                    share_stopRecord.disabled = false
-                    share_pauseRecord.disabled = false
-                    share_resumeRecord.disabled = false
-                    share_download.disabled = true
+                    // share_startRecord.disabled = true
+                    // share_stopRecord.disabled = false
+                    // share_pauseRecord.disabled = false
+                    // share_resumeRecord.disabled = false
+                    // share_download.disabled = true
                 }
             }
             window.record.videoRecord(data)
@@ -895,7 +897,13 @@ function pauseVideoRecord(data){
              share_record.pause()
          }
       }
-      window.record.pauseVideoRecord(data)
+      // window.record.pauseVideoRecord(data)
+       window.record.videoMediaRecorder.pause()
+       // share_pauseRecord.disabled = true
+       // share_resumeRecord.disabled = false
+       // share_download.disabled = true
+       // share_record.srcObject = Blobs
+       share_record.pause()
    }
 }
 
@@ -914,7 +922,13 @@ function resumeVideoRecord(data){
                 share_record.play()
             }
         }
-        window.record.resumeVideoRecord(data)
+        // window.record.resumeVideoRecord(data)
+        window.record.videoMediaRecorder.resume()
+        // share_pauseRecord.disabled = false
+        // share_resumeRecord.disabled = true
+        // share_download.disabled = true
+        // share_record.srcObject = Blobs
+        share_record.play()
     }
 }
 
@@ -973,11 +987,11 @@ function stopVideoRecord(data){
                  if(event.codeType === 999){
                      buffer = event.stream.recordedBlobs
                      shareButton.textContent = '开启共享'
-                     share_startRecord.disabled = false
-                     share_stopRecord.disabled = true
-                     share_pauseRecord.disabled = true
-                     share_resumeRecord.disabled = true
-                     share_download.disabled = false
+                     // share_startRecord.disabled = false
+                     // share_stopRecord.disabled = true
+                     // share_pauseRecord.disabled = true
+                     // share_resumeRecord.disabled = true
+                     // share_download.disabled = false
 
                      /**停止录制后需要关闭流**/
                      let tracks = share_record.srcObject.getTracks();
