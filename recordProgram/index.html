@@ -54,12 +54,12 @@
                    <div class="midContent show">
                        <div class="shareContrainter">
                            <div class="videoArea show">
-                               <video class="shareVideo"></video>
+                               <video class="shareVideo" style="transform: scale(1)" ></video>
                            </div>
                            <div class="videoArea">
-                               <video class="shareLocalVideo"></video>
+                               <video class="shareLocalVideo" style="transform: scale(1)"></video>
                            </div>
-                           <canvas class="shareCanvas"></canvas>
+                           <canvas class="shareCanvas" style="transform: scale(1)" ></canvas>
                            <video class="shareRecord"></video>
                        </div>
                    </div>
@@ -68,8 +68,15 @@
                        <div class="videoContrainter">
                            <!--<video class="mainVideo"></video>-->
                            <!--<video class="slidesVideo"></video>-->
-                           <canvas class="videoToCanvas"></canvas>
-                           <video  class="canvasRecord"></video>
+                           <div class="p-video_recorder_canvas__container">
+                               <canvas class="p-video_recorder_canvas" style="transform: scale(1)" width="1920" height="1080"></canvas>
+                           </div>
+
+                           <hr/>
+
+                           <div class="p-video_recorder_canvas__container video_container">
+                               <video class="canvasRecord" style="transform: scale(1)" width="1920" height="1080"></video>
+                           </div>
                            <p>页面一要显示的内容</p>
                            <input type="text" placeholder="页面一内容"/>
                        </div>
@@ -96,7 +103,7 @@
                    <button class="pauseRecord"  onclick="pauseRecord()" >暂停录制</button>
                    <button class="resumeRecord"  onclick="resumeRecord()" >恢复录制</button>
                    <button class="stopRecord"  onclick="stopRecord()" >停止录制</button>
-                   <!--<button class="restartRecord"  onclick="restartRecord()" >重新录制</button>-->
+                   <button class="restartRecord"  onclick="restartRecord()" disabled>重新录制</button>
                    <button class="download" onclick ="download()" >下载</button>
                </div>
            </div>

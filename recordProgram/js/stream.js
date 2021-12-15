@@ -391,7 +391,7 @@ Record.prototype.setConstraintsOfGetStream = function(data,constraints) {
                     delete constraints.video.width.exact
                     delete constraints.video.height.exact
                 } else {
-                    log.warn(" The constraints parameter is not satisfied ")
+                    console.warn(" The constraints parameter is not satisfied ")
                     data.callback({error: data.error})
                 }
                 setConstraints = constraints

@@ -204,6 +204,30 @@ body{
 .videoContrainer{
     margin: 0 auto;
 }
+
+.p-video_recorder_canvas__container, .shareVideo_container{
+    position: relative;
+    background: rgba(var(--sk_foreground_min,29,28,29),.04);
+    border-radius: 8px;
+    overflow: hidden;
+    width: 525px;
+    height: 296px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.p-video_recorder_canvas__container--screen_share {
+    width: 600px;
+    height: 338px;
+    border-radius: 0;
+}
+.p-video_recorder_canvas, .canvasRecord{
+    width: 100%;
+    height: 100%;
+}
+
 .shareCanvas{
     /*width:720px;*/
     /*height:360px;*/
@@ -217,14 +241,14 @@ body{
 
 
 
-.mainVideo, .slidesVideo{
-    /*width: 720px;*/
-    /*height: 360px;*/
+/*.mainVideo, .slidesVideo, .localVideo, .videoToCanvas, .canvasRecord{*/
+    /*width: '1920';*/
+    /*height: '1080';*/
     /*border-radius: 2px;*/
     /*border: 1px solid #F0EFDA;*/
     /*display:none;*/
     /*z-index:-1;*/
-}
+/*}*/
 
 /*.videoToCanvas, .canvasRecord{*/
     /*width: 720px;*/

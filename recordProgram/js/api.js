@@ -141,8 +141,14 @@ Record.prototype.openVideo = function (data) {
             parameters.error = event.error
             parameters.isFirefox = Record.prototype.getBrowserDetail().browser === 'firefox'
             getStreamCount++
-            if(event.constraints && (event.error.name === 'OverconstrainedError' || event.error.name === 'ConstraintNotSatisfiedError' ) && getStreamCount < 2){
-                let constraints = This.setConstraintsOfGetStream(parameters, event.constraints)
+            if(event.constraints && (event.error.name === 'OverconstrainedError' || event.error.name === 'ConstraintNotSatisfiedError' ) && getStreamCount < 5){
+                let constraints
+                if(getStreamCount < 2){
+                    constraints = This.setConstraintsOfGetStream(parameters, event.constraints)
+                }else{
+                    data.action = 'switchLocalVideoDevice'
+                    constraints = This.setConstraintsOfGetStream(parameters, event.constraints)
+                }
                 This.getMedia(parameters, constraints)
             }else{
                 data.callback && data.callback({
