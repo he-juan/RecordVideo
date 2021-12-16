@@ -68,8 +68,8 @@
      */
     FrameSelection.prototype.renderMask = function (p1, p2) {
         var $rect = this.$rangeEl.find('div.rect');
-        // var videoContainer = document.getElementsByClassName("shareTip_middle")[0]
-        // var shareTip = document.getElementById("shareTip")
+        // var shareVideo = document.getElementsByClassName("container_middle")[0]
+        // var container = document.getElementById("container")
         // window.rectWidth = $rect.outerWidth();
         // window.rectHeight = $rect.outerHeight();
         // var $top = this.$rangeEl.find('div.mask:eq(0)'),
@@ -84,8 +84,8 @@
         //     // left: this.$rangeEl.css('left') ,
         //     // width: this.$rangeEl.width(),
         //     // height:this.$rangeEl.height(),
-        //     top: videoContainer.offsetTop,
-        //     left: videoContainer.offsetLeft ,
+        //     top: shareVideo.offsetTop,
+        //     left: shareVideo.offsetLeft ,
         //     width: this.$rangeEl.width(),
         //     height:  window.tops
         //
@@ -97,14 +97,14 @@
         // $left.css({
         //     // top: $rect.css('top'),
         //     top: $top.height()  ,
-        //     left:  window.lefts - videoContainer.offsetLeft - shareTip.offsetLeft,
+        //     left:  window.lefts - shareVideo.offsetLeft - container.offsetLeft,
         //     width: $rect.css('left'),
         //     // width: window.startPositionX- window.startLeftX,
         //     height: $rect.height()
         // });
         //
         // $right.css({
-        //     top: $top.height() + videoContainer.offsetTop,
+        //     top: $top.height() + shareVideo.offsetTop,
         //     left:  window.mouseDownLeft + $rect.width(),
         //     width: this.$rangeEl.width() - ($left.width() + $rect.width()),
         //     height: $left.height()
@@ -113,7 +113,7 @@
         // $bottom.css({
         //     // top: $top.height() + $left.height(),
         //     // left: this.$rangeEl.css('left'),
-        //     top: $top.height() + $left.height() + videoContainer.offsetTop,
+        //     top: $top.height() + $left.height() + shareVideo.offsetTop,
         //     left:this.$rangeEl.css('left'),
         //     width: $top.width(),
         //     height: this.$rangeEl.height() - ($top.height() + $left.height())
@@ -126,10 +126,7 @@
      */
     FrameSelection.prototype.renderRect = function (p1, p2) {
         var $rect = this.$rangeEl.find('div.rect');
-        // let  videoContainer = document.getElementsByClassName("shareTip_middle")[0]
-
         var container = document.getElementById("container")
-        // var start = new Point(event.clientX - videoContainer.offsetLeft, event.clientY - videoContainer.offsetTop);
 
         $rect.css({
             top: Math.min(p1.y, p2.y) - container.offsetTop,
@@ -163,25 +160,13 @@
         typeof this.options.callback === 'function' && this.options.callback();
     }
 
-
-    // 事件位置获取
-
-    function windowTovideo(videoElem,){
-        var bbox = videoElem.getBoundingClientRect();
-        return {
-            x:bbox.left,
-            y:bbox.top
-        }
-    }
-
-
     /**
      * 注册事件绑定
      */
     FrameSelection.prototype.bind = function () {
         var self = this;
-        let shareTip = document.getElementById("container")
-        let videoContainer = document.getElementsByClassName("shareVideo")[0]
+        let container = document.getElementById("container")
+        let shareVideo = document.getElementsByClassName("shareVideo")[0]
 
         this.$rangeEl.bind('mousedown', function (event) {
             if(window.record.currentRecoderType !== 'areaVideo'){
@@ -190,31 +175,20 @@
             }
             if(window.record.isUploadVideo){
                 console.warn("上传视频文件")
-                videoContainer =  document.getElementsByClassName("shareLocalVideo")[0]
+                shareVideo =  document.getElementsByClassName("shareLocalVideo")[0]
             }
-            console.warn("mousedown", event)
-            console.warn("offsetWidth: ", event.offsetX);
-            console.warn("offsetHeight: ", event.offsetY);
-
-            console.warn("videoContainer.offsetLeft:",videoContainer.offsetLeft);
-            console.warn("videoContainer.offsetTop:",videoContainer.offsetTop);
 
 
             event.preventDefault();
 
-            window.startPositionX = event.pageX - shareTip.offsetLeft - videoContainer.offsetLeft ;
-            window.startPositionY = event.pageY - shareTip.offsetTop - videoContainer.offsetTop ;
+            window.startPositionX = event.pageX - container.offsetLeft - shareVideo.offsetLeft ;
+            window.startPositionY = event.pageY - container.offsetTop - shareVideo.offsetTop ;
             window.lefts = event.offsetX
             window.tops = event.offsetY;
             window.mouseDownLeft = event.clientX
             window.mouseDownTop  = event.clientY
 
-            console.warn(" window.lefts :", window.lefts )
-            console.warn("window.tops:",window.tops)
 
-
-            // window.startLeftX = loc.x;
-            // window.startTopY = loc.y;
 
             var start = new Point(event.pageX, event.pageY);
 
@@ -231,24 +205,20 @@
             })
 
         });
-        // window.rectTop = $rect.css("top");
-        // window.rectLeft = $rect.css("left");
+
         this.$rangeEl.bind('mouseup', function (e) {
             if(window.record.isUploadVideo){
                 console.warn("上传视频文件...")
-                videoContainer =  document.getElementsByClassName("shareLocalVideo")[0]
+                shareVideo =  document.getElementsByClassName("shareLocalVideo")[0]
             }
 
-            console.warn("mouseup", e)
-            console.warn("offsetWidth: ", e.offsetX)
-            console.warn("offsetHeight: ", e.offsetY)
-            console.warn("window.rectWidth:",window.rectWidth);
-            console.warn("window.rectHeight:",window.rectHeight)
-            // console.warn("window.recttop:",window.rectTop)
-            // console.warn("window rectLeft:",window.rectLeft)
 
-            window.endPositionX = e.pageX  - shareTip.offsetLeft -  videoContainer.offsetLeft ;
-            window.endPositionY = e.pageY  - shareTip.offsetTop - videoContainer.offsetTop ;
+            window.endPositionX = e.pageX  - container.offsetLeft -  shareVideo.offsetLeft  ;
+            window.endPositionY = e.pageY  - container.offsetTop - shareVideo.offsetTop  ;
+
+
+            window.endLeft = e.offsetX
+            window.endTop = e.offsetY
 
             finish()
             self.$rangeEl.off('mousemove');

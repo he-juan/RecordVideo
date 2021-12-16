@@ -275,6 +275,7 @@ Record.prototype.getStreamFromDevice = function (data){
             }else {
                 constraints = {
                     audio: Record.prototype.isSystemAudioShareSupport(),
+                    // video: data.constraints.video.mediaSource,
                     video: {
                         width: { max: data.constraints.video.width ? data.constraints.video.width : 1920 },
                         height: { max: data.constraints.video.height ? data.constraints.video.height : 1080 },

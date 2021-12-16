@@ -205,7 +205,7 @@ body{
     margin: 0 auto;
 }
 
-.p-video_recorder_canvas__container, .shareVideo_container{
+.p-video_recorder_canvas__container{
     position: relative;
     background: rgba(var(--sk_foreground_min,29,28,29),.04);
     border-radius: 8px;
@@ -218,42 +218,30 @@ body{
     align-items: center;
 }
 
+.shareVideo_container, .shareRecord_container{
+    /*position: relative;*/
+    background: rgba(var(--sk_foreground_min,29,28,29),.04);
+    border-radius: 8px;
+    /*overflow: hidden;*/
+    width: 525px;
+    height: 296px;
+    margin: 0 auto;
+    /*display: flex;*/
+    /*justify-content: center;*/
+    /*align-items: center;*/
+}
+
 .p-video_recorder_canvas__container--screen_share {
     width: 600px;
     height: 338px;
     border-radius: 0;
 }
-.p-video_recorder_canvas, .canvasRecord{
+.p-video_recorder_canvas, .canvasRecord, /*.shareVideo, .shareCanvas,*/ .shareRecord {
     width: 100%;
     height: 100%;
 }
 
-.shareCanvas{
-    /*width:720px;*/
-    /*height:360px;*/
-    /*border: 1px solid red;*/
-}
 
-/*.shareVideo{*/
-    /*width: 0px;*/
-    /*height:0px;*/
-/*}*/
-
-
-
-/*.mainVideo, .slidesVideo, .localVideo, .videoToCanvas, .canvasRecord{*/
-    /*width: '1920';*/
-    /*height: '1080';*/
-    /*border-radius: 2px;*/
-    /*border: 1px solid #F0EFDA;*/
-    /*display:none;*/
-    /*z-index:-1;*/
-/*}*/
-
-/*.videoToCanvas, .canvasRecord{*/
-    /*width: 720px;*/
-    /*height: 360px;*/
-/*}*/
 
 /**************************************正文右边内容*************************************/
 

@@ -53,19 +53,30 @@
                <div class="midMiddle">
                    <div class="midContent show">
                        <div class="shareContrainter">
-                           <div class="videoArea show">
-                               <video class="shareVideo" style="transform: scale(1)" ></video>
+                           <div class="videoArea show shareVideo_container">
+                               <!--<div class="shareVideo_container">-->
+                                   <video class="shareVideo" style="transform: scale(1)" ></video>
+                               <!--</div>-->
                            </div>
+
                            <div class="videoArea">
-                               <video class="shareLocalVideo" style="transform: scale(1)"></video>
+                               <video class="shareLocalVideo" style="transform: scale(1)" ></video>
                            </div>
-                           <canvas class="shareCanvas" style="transform: scale(1)" ></canvas>
-                           <video class="shareRecord"></video>
+                           <!--<hr/>-->
+                           <!--<div class="shareVideo_container">-->
+                               <canvas class="shareCanvas" ></canvas>
+                           <!--</div>-->
+                           <!--<hr/>-->
+                           <div class="shareRecord_container">
+                               <video class="shareRecord" style="transform: scale(1)" ></video>
+                           </div>
+
                        </div>
                    </div>
 
                    <div class="midContent ">
                        <div class="videoContrainter">
+                           <console.warn("123")
                            <!--<video class="mainVideo"></video>-->
                            <!--<video class="slidesVideo"></video>-->
                            <div class="p-video_recorder_canvas__container">
@@ -77,8 +88,6 @@
                            <div class="p-video_recorder_canvas__container video_container">
                                <video class="canvasRecord" style="transform: scale(1)" width="1920" height="1080"></video>
                            </div>
-                           <p>页面一要显示的内容</p>
-                           <input type="text" placeholder="页面一内容"/>
                        </div>
 
                    </div>

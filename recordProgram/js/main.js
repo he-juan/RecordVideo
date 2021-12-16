@@ -28,8 +28,8 @@ function openVideo(data){
         data.constraints = {
             audio:  false,
             video: {
-                width: 720,   // 必须
-                height: 360,  // 必须
+                width: 1920,   // 必须
+                height: 1080,  // 必须
                 frameRate: 15,  // 可缺省，默认15fps
                 deviceId: data && data.deviceId ? data.deviceId : ''
             }
@@ -38,8 +38,8 @@ function openVideo(data){
         data.constraints = {
             audio:  false,
             video: {
-                width: 1920,   // 必须
-                height: 1080,  // 必须
+                width: 1080,   // 必须
+                height: 720,  // 必须
                 frameRate: 15,  // 可缺省，默认15fps
                 deviceId: data && data.deviceId ? data.deviceId : ''
             }
@@ -66,9 +66,10 @@ function openShare(data){
     if(window.record.currentRecoderType === 'areaVideo'){
         data.constraints = {
             audio: false ,
+            // video: {mediaSource: 'screen'}
             video: {
-                width: 720,   // 必须
-                height: 360,  // 必须
+                width: 1920,   // 必须
+                height: 1080,  // 必须
                 frameRate: 15,  // 可缺省，默认15fps
             }
         }

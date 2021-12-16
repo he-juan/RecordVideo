@@ -27,6 +27,8 @@ let shareLocalVideo = document.getElementsByClassName("shareLocalVideo")[0]
 let shareRecord = document.getElementsByClassName("shareRecord")[0]
 let shareCanvas = document.getElementsByClassName("shareCanvas")[0]
 let ctx = shareCanvas.getContext('2d')
+let virtualVideo = document.createElement("video")
+    virtualVideo.id = 'virtualVideo'
 
 let video_Area = document.getElementsByClassName("videoArea")[0]
 let textContrainter = document.getElementsByClassName("textContrainter")[0]
@@ -807,8 +809,20 @@ function getCategory(data){
                    shareVideo.onloadedmetadata = function(){
                        shareVideo.play()
                        shareVideo.controls = true
+
+                       shareVideo.style.width = shareVideo.videoWidth / 3 + 'px'
+                       shareVideo.style.height = shareVideo.videoHeight / 3  + 'px'
                    }
 
+                   virtualVideo.srcObject = localStreams.slides
+                   virtualVideo.onloadedmetadata = function(){
+                       virtualVideo.play()
+                       virtualVideo.controls = true
+
+                       virtualVideo.style.width = shareVideo.videoWidth  + 'px'
+                       virtualVideo.style.height = shareVideo.videoHeight  + 'px'
+                       console.warn("virtualVideo: " + virtualVideo.videoWidth + "  *  " + virtualVideo.videoHeight)
+                   }
                }else{
                    console.warn("open shareScreen failed")
                }
@@ -1068,41 +1082,6 @@ function draw(data){
     window.cancelAnimationFrame(switchTimeout)
     window.cancelAnimationFrame(shareTimeout)
 
-    // let videoHeight = mainVideo.videoHeight ||slidesVideo.videoHeight;
-    // let videoWidth = mainVideo.videoWidth || slidesVideo.videoWidth;
-    // let offsetWidth = mainVideo.offsetWidth ||slidesVideo.offsetWidth
-    // let offsetHeight = mainVideo.offsetHeight ||slidesVideo.offsetHeight
-    // let rangeW = videoWidth * (720 / (offsetWidth -2));   //offsetWidth包括border、padding
-    // let rangeH = videoHeight * (360 / (offsetHeight -2));
-    // vtcanvas.height = rangeH;
-    // vtcanvas.width  = rangeW;
-
-
-    // let rangeH = mainVideo.videoHeight ||slidesVideo.videoHeight;
-    // let rangeW = mainVideo.videoWidth || slidesVideo.videoWidth;
-    // vtcanvas.height = rangeH;
-    // vtcanvas.width  = rangeW;
-    // mainVideo.style.objectFit = "contain"
-    // slidesVideo.style.objectFit = 'contain'
-
-    /**************求取比例**************/
-    // let videoHeght  = ((slidesVideo.videoHeight || mainVideo.videoHeight )  * 800) / (slidesVideo.videoWidth || mainVideo.videoWidth)
-
-
-    // let rangeH = videoHeght
-    // let rangeW = 800
-    //
-    // vtcanvas.height = rangeH;
-    // vtcanvas.width  = rangeW;
-    // vtcanvas.style.objectFit = 'contain'
-
-    // console.warn("video.videoWidth:",mainVideo.videoWidth)
-    // console.warn("video.videoHeight:",mainVideo.videoHeight)
-    // // console.warn("offsetWidth:",offsetWidth)
-    // // console.warn("offsetHeight:",offsetHeight)
-    // console.warn(" canvas.height:", rangeH)
-    // console.warn(" canvas.width  :", rangeW  )
-
     rangeH = vtcanvas.height
     rangeW = vtcanvas.width
 
@@ -1214,19 +1193,29 @@ function finish() {
         ctx.clearRect(0, 0, videoWidth, videoHeight);
         playCanvas(shareLocalVideo, shareCanvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
     }else{
+        let widthRatio = shareVideo.offsetWidth / shareVideo.videoWidth
+        let heightRatio = shareVideo.offsetHeight / shareVideo.videoHeight
         videoHeight = shareVideo.videoHeight ;
         videoWidth = shareVideo.videoWidth ;
-        width = Math.abs(window.endPositionX - window.startPositionX);
-        height = Math.abs( window.endPositionY - window.startPositionY);
-        rangeW = videoWidth * (width / shareVideo.offsetWidth);
+        console.warn("shareVideo:" + videoWidth + " * " + videoHeight)
+        width = Math.abs(window.endPositionX    - window.startPositionX );
+        height = Math.abs( window.endPositionY   - window.startPositionY );
+        rangeW = videoWidth * (width / shareVideo.offsetWidth) ;
         rangeH = videoHeight * (height / shareVideo.offsetHeight);
-        shareVideo.width = videoWidth
-        shareVideo.height = videoHeight
+
+        sx = window.startPositionX * 3
+        sy = window.startPositionY * 3
         shareCanvas.style.display = 'inline-block'
-        shareCanvas.height = rangeH ;
-        shareCanvas.width  = rangeW ;
+        // let rect = document.getElementsByClassName('rect')[0].getBoundingClientRect()
+        // shareCanvas.height = rect.height ;
+        // shareCanvas.width  = rect.width ;
+        // shareCanvas.style.height = rect.width + 'px';
+        // shareCanvas.style.width  = rect.height + 'px';
+        shareCanvas.height = rangeH  ;
+        shareCanvas.width  = rangeW  ;
         ctx.clearRect(0, 0, videoWidth, videoHeight);
-        playCanvas(shareVideo, shareCanvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
+        playCanvas(virtualVideo, shareCanvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
+        // playCanvas(shareVideo, shareCanvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
     }
 
     console.warn("rangeH:",rangeH)
@@ -1302,8 +1291,8 @@ function beginRecord() {
                 downloadBtn.style.backgroundColor = '#8c818a'
 
                 shareRecord.style.display = "inline-block"
-                shareRecord.width = shareCanvas.width ;
-                shareRecord.height = shareCanvas.height;
+                // shareRecord.width = shareCanvas.width ;
+                // shareRecord.height = shareCanvas.height;
                 shareRecord.srcObject = event.stream.stream
 
                 shareRecord.onloadedmetadata = function (e) {
@@ -1353,8 +1342,8 @@ function beginRecord() {
 
 
                 canvasRecord.style.display = 'inline-block'
-                canvasRecord.width = vtcanvas.width;
-                canvasRecord.height = vtcanvas.height
+                // canvasRecord.width = vtcanvas.width;
+                // canvasRecord.height = vtcanvas.height
 
                 let attribute = document.getElementsByClassName("video_container")[0].getAttribute('class').split(" ")
                 if(attribute.length <= 2){
@@ -1394,7 +1383,6 @@ function stopRecord() {
                 let buffer = event.stream.recordedBlobs
                 shareRecord.srcObject = event.stream.stream
 
-                ctx.clearRect(0, 0, shareCanvas.width, shareCanvas.height)
                 ctx.clearRect(0, 0, shareCanvas.width, shareCanvas.height)
                 let rect = document.getElementsByClassName('rect')[0]
                 if(rect){
@@ -1455,7 +1443,6 @@ function stopRecord() {
             }
         }
         window.record.stopVideoRecord(data)
-        // window.record.videoMediaRecorder.stop()
     } else if (window.record.currentRecoderType === 'video') {
         data.callback = function (event) {
             if (event.codeType === 999) {
@@ -1516,7 +1503,6 @@ function stopRecord() {
             }
         }
         window.record.stopVideoRecord(data)
-        // window.record.videoMediaRecorder.stop()
     }
 }
 
