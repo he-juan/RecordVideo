@@ -215,7 +215,7 @@ function changeMic(){
     console.warn("currentSpeaker:",currentMic)
 
     if(localStreams.audio){
-        switchlocalMic()
+        switchAudioDeviced()
     }else{
         console.warn("only switch localMicDeviceId")
     }
@@ -237,25 +237,6 @@ function changeCamera(){
         switchLcoalCamera()
     }else{
         console.warn("only switch localCamera")
-    }
-}
-
-function switchlocalMic (){
-    if (localStreams.audio) {
-        stopCategory({type: 'audio'})
-    }
-
-    if(window.record.currentRecoderType === 'areaVideo' || window.record.currentRecoderType === 'video'){
-        getCategory({type: 'audio'})
-    }
-
-}
-
-
-function switchLcoalCamera(){
-    if(window.record.currentRecoderType === 'areaVideo' || window.record.currentRecoderType === 'video'){
-        stopCategory({type: 'main'})
-        getCategory({type: 'main'})
     }
 }
 
@@ -458,6 +439,8 @@ document.body.appendChild(videoInput);
 
 shareLocalVideo.oncanplay = async function(){
     if(isUploadVideo ){
+        shareLocalVideo.width = shareLocalVideo.videoWidth
+        shareLocalVideo.Height = shareLocalVideo.videoHeight
         localStreams.localVideo = shareLocalVideo.captureStream(60)
         handleCanPlay({elem: shareLocalVideo})
     }
@@ -509,7 +492,6 @@ videoInput.addEventListener('change', function(){
             if(fileType === 'audio' || fileType === 'video'){
                 if(window.record.currentRecoderType === 'areaVideo'){
                     shareLocalVideo.controls = 'controls'
-                    shareLocalVideo.style.display = 'inline-block'
                     shareLocalVideo.style.display = 'inline-block'
                     shareLocalVideo.setAttribute('src', fileURL);
                 }
@@ -644,7 +626,7 @@ function writeTextOnCanvas(ctx, lh, rw, text) {
     let lineheight = lh;
 
     ctx.clearRect(0, 0, ctx.width, ctx.height);
-    ctx.font = "16px 微软雅黑";
+    ctx.font = "40px Arial";
     ctx.fillStyle = "#f00";
 
     function getTrueLength(str) { //获取字符串的真实长度（字节长度）
@@ -700,16 +682,17 @@ shareCanvas.addEventListener("mousedown",function(e){
 
     canvasX = e.offsetX
     canvasY = e.offsetY
-
-    textContrainter.style.position = 'absolute'
-    textContrainter.style.zIndex = '1000';
-    textContrainter.style.left = inputHeight + 'px';
-    textContrainter.style.top = inputWidth + 'px';
-    textContrainter.style.width = '300px'
-    textContrainter.style.height = '100px';
     textContrainter.style.display = 'block'
-    input.style.width = '300px'
-    input.style.height = '100px';
+    input.placeholder = '请输入文字添加到canvas...'
+
+    // textContrainter.style.position = 'absolute'
+    // textContrainter.style.zIndex = '1000';
+    // textContrainter.style.left = inputHeight + 'px';
+    // textContrainter.style.top = inputWidth + 'px';
+    // textContrainter.style.width = '300px'
+    // textContrainter.style.height = '100px';
+    // input.style.width = '300px'
+    // input.style.height = '100px';
 })
 
 input.onkeyup = function(){
@@ -755,7 +738,7 @@ function getCategory(data){
     }
 
     if(window.record.currentRecoderType === 'areaVideo' || window.record.currentRecoderType === 'video'){
-        if(data.type === 'audio'){
+        if(data.type === 'audio' ){
             data.callback = function(event){
                 if(event.codeType === 999){
                     console.warn("open audio success")
@@ -1042,8 +1025,65 @@ function stopCategory(data){
 }
 
 
+/*********************************************************切换麦克风和摄像头***********************************************************************/
+function switchAudioDeviced(){
+    if(!record){
+        console.warn('record is not initialized')
+        return
+    }
 
-// *************************************************音视频录制canvas 获取画面内容******************************************************************
+    if (localStreams.audio) {
+        stopCategory({type: 'audio'})
+    }
+
+    if(window.record.currentRecoderType === 'areaVideo' || window.record.currentRecoderType === 'video'){
+        let data ={}
+        data.deviceId = currentMic
+        data.callback = function(event){
+            if(event.codeType === 999){
+                console.warn("switch local audioDeviced success")
+                localStreams.audio = event.stream
+            }else{
+                console.warn("switch local audioDeviced failed")
+            }
+        }
+        switchLocalAudioDeviced()
+    }else if(window.record.currentRecoderType === 'audio'){
+
+    }
+}
+
+
+function switchLcoalCamera(){
+    if(!record){
+        console.warn('record is not initialized')
+        return
+    }
+
+    if (localStreams.main) {
+        stopCategory({type: 'main'})
+    }
+
+    if(window.record.currentRecoderType === 'areaVideo' || window.record.currentRecoderType === 'video'){
+        let data ={}
+        data.deviceId = currentCamera
+        data.callback = function(event){
+            if(event.codeType === 999){
+                console.warn("switch local audioDeviced success")
+                localStreams.main = event.stream
+            }else{
+                console.warn("switch local audioDeviced failed")
+            }
+        }
+        switchLocalVideoDeviced()
+    }else if(window.record.currentRecoderType === 'audio'){
+
+    }
+}
+
+
+
+/*************************************************音视频录制canvas 获取画面内容******************************************************************/
 
 function getVideoType(data){
     let videoType = null

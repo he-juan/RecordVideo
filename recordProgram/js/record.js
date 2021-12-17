@@ -19,6 +19,7 @@ Record.prototype.preInit = function() {
      this.recordedBlobs = null;
      this.currentRecoderType = null;
      this.isUploadVideo = false
+     this.isMute = false
 
      this.localStreams = {
          audio: null,

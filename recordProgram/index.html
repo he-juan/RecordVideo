@@ -53,7 +53,7 @@
                <div class="midMiddle">
                    <div class="midContent show">
                        <div class="shareContrainter">
-                           <div class="videoArea show shareVideo_container">
+                           <div class="videoArea show">
                                <!--<div class="shareVideo_container">-->
                                    <video class="shareVideo" style="transform: scale(1)" ></video>
                                <!--</div>-->
@@ -63,8 +63,8 @@
                                <video class="shareLocalVideo" style="transform: scale(1)" ></video>
                            </div>
                            <!--<hr/>-->
-                           <!--<div class="shareVideo_container">-->
-                               <canvas class="shareCanvas" ></canvas>
+                           <!--<div class="shareCanvas_container">-->
+                               <canvas class="shareCanvas" style="transform: scale(1)" ></canvas>
                            <!--</div>-->
                            <!--<hr/>-->
                            <div class="shareRecord_container">
@@ -100,11 +100,6 @@
                    </div>
                </div>
            </div>
-
-           <div class="textContrainter">
-               <textarea class="input"></textarea>
-               <button class="textBtn"> X </button>
-           </div>
            <!--**************************************页面右边（右侧边栏）**************************************-->
            <div class="right-group">
                <div class="rightTop">
@@ -114,6 +109,10 @@
                    <button class="stopRecord"  onclick="stopRecord()" >停止录制</button>
                    <button class="restartRecord"  onclick="restartRecord()" disabled>重新录制</button>
                    <button class="download" onclick ="download()" >下载</button>
+               </div>
+               <div class="textContrainter">
+                   <textarea class="input"></textarea>
+                   <button class="textBtn"> X </button>
                </div>
            </div>
        </div>

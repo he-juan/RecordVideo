@@ -18,6 +18,7 @@ body{
 
 /************************************头部**************************************************************/
 #header{
+    width: auto;
     height:100px;
     text-align: center;
     font-weight: 200;
@@ -35,7 +36,7 @@ body{
 #container{
     position: absolute;
     width: 100%;
-    height:1000px;
+    height: 100%;
     display: flex;
     top: 100px;
     bottom: 100px;
@@ -54,7 +55,7 @@ body{
 .mid-group{
     flex: 1;
     text-align: center;
-    border:1px solid #cbcbcb;
+    /*border:1px solid #cbcbcb;*/
 }
 .foot{
     position: absolute;
@@ -152,13 +153,14 @@ body{
 .midMiddle{
     width: auto;
     height:1000px;
+    /*border: 5px solid #F35252*/
 }
 
 .midContent{
-    height: 940px;
+    height: auto;
     width: auto;
     display: none;
-    border: 5px solid #F35252;
+    /*border: 5px solid #F35252;*/
 }
 .btn.active{
     background-color: purple ;
@@ -174,25 +176,6 @@ body{
 .shareContrainter .show{
     display:block;
 }
-
-.textContrainter{
-    display: none;
-    /*width:0px;*/
-    /*height: 0px;*/
-}
-.textBtn{
-    position: relative;
-    top: -104px;
-    left: 268px;
-    border-radius: 3px;
-    border: none;
-    width: 30px;
-    height: 30px;
-}
-.textBtn:hover{
-    background-color: #8c818a;
-}
-
 
 /****************关于音视频录制、区域录制处理************************/
 
@@ -219,16 +202,19 @@ body{
 }
 
 .shareVideo_container, .shareRecord_container{
-    /*position: relative;*/
     background: rgba(var(--sk_foreground_min,29,28,29),.04);
     border-radius: 8px;
-    /*overflow: hidden;*/
     width: 525px;
     height: 296px;
     margin: 0 auto;
-    /*display: flex;*/
-    /*justify-content: center;*/
-    /*align-items: center;*/
+}
+
+.shareCanvas_container{
+    background: rgba(var(--sk_foreground_min,29,28,29),.04);
+    border-radius: 8px;
+    width: auto;
+    height: 700px;
+    margin: 0 auto;
 }
 
 .p-video_recorder_canvas__container--screen_share {
@@ -256,7 +242,7 @@ body{
     align-content:space-between;
 }
 
-.rightTop  button{
+.rightTop  button, .rightTop .textContrainter{
     width: 140px;
     height: 80px;
     background-color: #8c818a;
@@ -267,6 +253,32 @@ body{
     border-radius: 8px;
     transition: all 200ms;
     font-size: medium;
+}
+
+.textContrainter{
+    display: none;
+    width:140px;
+    height: 90px;
+}
+.input{
+    /*margin: 8px 5px;*/
+    margin-left: 5px;
+    width:140px;
+    height:90px;
+}
+.textBtn{
+    position: relative;
+    top: -95px;
+    left: 60px;
+    border-radius: 3px;
+    border: none;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center
+}
+.textBtn:hover{
+    background-color: #8c818a;
 }
 
 /*.rightTop  button:hover{*/

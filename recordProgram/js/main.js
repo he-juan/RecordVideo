@@ -9,6 +9,16 @@ function openAudio(data){
     window.record.openAudio(data)
 }
 
+function switchLocalAudioDeviced(data){
+    console.warn("switchAudio:"+ JSON.stringify(data, null, '    ') )
+    if(!data || !data.callback){
+        console.warn("switchAudio: invalid parameters")
+    }
+    data.constraints ={
+        audio: {deviceId: data && data.deviceId} || true
+    }
+    window.record.switchLocalAudioDevice(data)
+}
 
 function stopAudio(data){
     console.warn("stopAudio:"+ JSON.stringify(data, null, '    ') )
@@ -21,7 +31,7 @@ function stopAudio(data){
 function openVideo(data){
     console.warn("openVideo:"+ JSON.stringify(data, null, '    ') )
     if(!data || !data.callback){
-        console.warn("openAreaVideo: invalid parameters")
+        console.warn("openVideo: invalid parameters")
     }
 
     if(window.record.currentRecoderType === 'areaVideo'){
@@ -45,9 +55,38 @@ function openVideo(data){
             }
         }
     }
-
-
     window.record.openVideo(data)
+}
+
+
+function switchLocalVideoDeviced(){
+    console.warn("switchVideo:"+ JSON.stringify(data, null, '    ') )
+    if(!data  || !data.deviceId || !data.callback){
+        console.warn("switchVideo: invalid parameters")
+    }
+
+    if(window.record.currentRecoderType === 'areaVideo'){
+        data.constraints = {
+            audio:  false,
+            video: {
+                width: 1920,   // 必须
+                height: 1080,  // 必须
+                frameRate: 15,  // 可缺省，默认15fps
+                deviceId: data && data.deviceId ? data.deviceId : ''
+            }
+        }
+    }else {
+        data.constraints = {
+            audio:  false,
+            video: {
+                width: 1080,   // 必须
+                height: 720,  // 必须
+                frameRate: 15,  // 可缺省，默认15fps
+                deviceId: data && data.deviceId ? data.deviceId : ''
+            }
+        }
+    }
+    window.record.switchLocalVideoDevice(data)
 }
 
 function stopVideo(data) {

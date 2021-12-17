@@ -50,6 +50,53 @@ Record.prototype.openAudio = function(data){
 }
 
 
+Record.prototype.switchLocalAudioDevice = function (data) {
+    console.info('switch audio device: ' + JSON.stringify(data, null, '    '))
+    let This = this
+    if(!data || !data.constraints || !data.constraints.audio || !data.constraints.audio.deviceId){
+        console.warn('deviceId mandatory')
+        This.trigger('onError', {codeType: This.CODE_TYPE.PARAMETER_ERROR})
+        return
+    }
+
+    let type = 'audio'
+
+    let switchAudioSourceResult = function (event){
+        console.info('switch audio result ' + JSON.stringify(event, null, '    '))
+        if(event.codeType === 999){
+            console.info('switch audio result success')
+        }else {
+            console.warn('switch audio result failed')
+        }
+        data.callback && data.callback({ codeType: event.codeType,  stream: event.stream})
+    }
+    // For firefox, delete the previous stream first, and then get stream again according to the device
+    // bug error: Concurrent mic process limit
+    let preStream = This.getStream(type, true)
+    if(preStream){
+        This.closeStream(preStream)
+    }
+
+    function getMediaCallBack(event) {
+        let This = this
+        if (event.stream) {
+            let stream = event.stream
+            if(This.isMute){
+                This.streamMuteSwitch({stream: stream, type: 'audio', mute: true})
+            }
+            This.setStream(stream, type, true)
+            switchAudioSourceResult({codeType: This.CODE_TYPE.ACTION_SUCCESS, stream: stream })
+        } else {
+            console.info('switch Local audio Device get stream failed')
+            console.warn(event.error)
+            switchAudioSourceResult({codeType: 201})
+        }
+    }
+    let parameters = { streamType: 'audio', constraints: data.constraints, callback: getMediaCallBack }
+    This.getStreamFromDevice(parameters )
+}
+
+
 Record.prototype.stopAudio = function (data) {
     let This = this
     console.info("stopShareAudio: " + JSON.stringify(data, null, '    '))
@@ -164,6 +211,66 @@ Record.prototype.openVideo = function (data) {
         callback: getMediaCallBack
     }
 
+    This.getStreamFromDevice(parameters)
+}
+
+
+Record.prototype.switchLocalVideoDevice = function (data){
+    console.info('switch Local video Device: ' + JSON.stringify(data, null, '   '))
+    let This = this
+    if(!data|| !data.lineId || !data.constraints || !data.constraints.video || !data.constraints.video.deviceId){
+        console.warn('switchLocalVideoDevice: invalid parameters')
+        data && data.callback && data.callback({codeType: This.CODE_TYPE.PARAMETER_ERROR})
+        return
+    }
+    let getStreamCount = 0
+
+    let switchVideoCallback = function(evt){
+        console.info('switch video callback data: ' + JSON.stringify(evt, null, '    '))
+        if(evt.codeType === 999){
+            console.info('video switch success')
+            This.setVideoUpResolution(evt.constraints)
+            This.videoUpResolution = data.constraints.video
+        }else {
+            console.info('video switch failed')
+        }
+        data.callback && data.callback({ codeType: evt.codeType, stream: event.stream})
+    }
+
+    let getMediaCallBack = async function (event) {
+        if (event.stream) {
+            console.info('get stream success')
+            let type = 'main'
+            let preVideoStream = This.getStream(type, true)
+            if(preVideoStream){
+                console.info('clear before video stream: ' + preVideoStream.id)
+                This.closeStream(preVideoStream)
+            }
+
+            let stream = event.stream
+            This.setStream(stream, type, true)
+            switchVideoCallback({codeType: This.CODE_TYPE.ACTION_SUCCESS, constraints: event.constraints, stream: stream})
+        } else {
+            console.info('switch Local video Device get stream failed')
+            parameters.error = event.error
+            let versionInfo = This.getBrowserDetail()
+            parameters.isFirefox = versionInfo.browser === 'firefox'
+            parameters.action = 'switchLocalVideoDevice'
+            getStreamCount++
+            if(event.constraints && (event.error.name === 'OverconstrainedError' || event.error.name === 'ConstraintNotSatisfiedError' || (event.error.name === 'Error' && versionInfo.browser === 'safari' && versionInfo.UIVersion == '12.1.2')) && getStreamCount < 2){
+                let constraints = This.setConstraintsOfGetStream(parameters, event.constraints)
+                This.getMedia(parameters, constraints)
+            }else{
+                switchVideoCallback({codeType: 201})
+            }
+        }
+    }
+
+    let  parameters = {
+        streamType: 'video',
+        constraints: data.constraints,
+        callback: getMediaCallBack
+    }
     This.getStreamFromDevice(parameters)
 }
 
@@ -340,11 +447,11 @@ Record.prototype.videoRecord = function(data){
         This.videoMediaRecorder = new MediaRecorder(data.stream, options)
         This.videoMediaRecorder.recordedBlobs = []
     }catch(e){
-        console.log('Unable to create MediaRecorder with options Object: ', e);
+        console.warn('Unable to create MediaRecorder with options Object: ', e);
     }
 
     This.videoMediaRecorder.start(10); // collect 10ms of data
-    console.log('MediaRecorder started', This.videoMediaRecorder);
+    console.warn('MediaRecorder started', This.videoMediaRecorder);
     This.videoMediaRecorder.ondataavailable = handleDataAvailable;
     if(This.videoMediaRecorder){
         recordingCallback({codeType: 999, stream: This.videoMediaRecorder})

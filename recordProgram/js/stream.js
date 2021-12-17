@@ -105,20 +105,6 @@ Record.prototype.setStream = function (stream, type, isLocal, msid) {
             }
         }
     }
-
-    // let changeStream = stream
-    // if(isLocal && type === 'main' && stream && gsRTC.backgroundEnabled()){
-    //     changeStream = This.localStreams.effectStream
-    // }
-    //
-    // gsRTC.trigger('onStreamChange',  {
-    //     stream: changeStream,
-    //     type: type,
-    //     isLocal: isLocal,
-    //     msid: msid,
-    //     peerAccount: This.peerAccount,
-    //     lineId: This.lineId
-    // })
 }
 
 
@@ -295,7 +281,6 @@ Record.prototype.getStreamFromDevice = function (data){
         // isFirefox: GsRTC.prototype.getBrowserDetail().browser === 'firefox',
         callback: data.callback
     }
-    // record.device.getMedia(parameters, constraints)
     record.getMedia(parameters, constraints)
 }
 
