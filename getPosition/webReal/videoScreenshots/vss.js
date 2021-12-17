@@ -153,7 +153,7 @@ $(function () {
         //创建一个video对象
         var $addVideo = $('.addVideo');
         video = document.createElement("video");
-        $(video).css({width: '100%', height: '100%', position: 'absolut'}).attr('controls', 'controls');
+        $(video).css({width: '100%', height: '100%', position: 'absolute'}).attr('controls', 'controls');
 
         //拖放的形式添加视频
         $addVideo[0].ondragover = function (e) {
