@@ -59,7 +59,7 @@ function openVideo(data){
 }
 
 
-function switchLocalVideoDeviced(){
+function switchLocalVideoDeviced(data){
     console.warn("switchVideo:"+ JSON.stringify(data, null, '    ') )
     if(!data  || !data.deviceId || !data.callback){
         console.warn("switchVideo: invalid parameters")

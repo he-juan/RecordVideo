@@ -94,7 +94,7 @@ body{
     font-size: medium;
 }
 
-.leftContrainterButton .toggleShareButton, .leftContrainterButton .localVideoButton, .leftContrainterButton .toggleMuteButton{
+.leftContrainterButton .toggleShareButton, .leftContrainterButton .localVideoButton, .leftContrainterButton .toggleMuteButton, .leftContrainterButton .toggleVideoButton{
     background-color: skyblue;
 }
 
@@ -137,17 +137,17 @@ body{
     align-content:space-between;
 }
 
-.midTop button{
-    width: 120px;
-    height:40px;
+.midTop div{
+    width: 150px;
+    height: 40px;
     background-color: #8c818a;
     color: white;
     margin: 8px 5px;
     padding: 3px;
-    border: 0;
-    border-radius: 8px;
     transition: all 200ms;
     font-size: medium;
+    text-align: center;
+    line-height: 40px;
 }
 
 .midMiddle{
@@ -170,12 +170,12 @@ body{
     display:block;
 }
 
-.videoArea{
-    display: none;
-}
-.shareContrainter .show{
-    display:block;
-}
+/*.videoArea{*/
+    /*display: none;*/
+/*}*/
+/*.shareContrainter .show{*/
+    /*display:block;*/
+/*}*/
 
 /****************关于音视频录制、区域录制处理************************/
 
@@ -225,6 +225,10 @@ body{
 .p-video_recorder_canvas, .canvasRecord, /*.shareVideo, .shareCanvas,*/ .shareRecord {
     width: 100%;
     height: 100%;
+}
+
+.shareVideo, .shareLocalVideo{
+    display:none;
 }
 
 

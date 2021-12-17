@@ -18,10 +18,10 @@
            <!--***************************************页面左边（左边侧边栏）*********************************************-->
            <div class="left-group">
                <div class="leftContrainterButton">
-                   <button class="toggleVideoButton" onclick="toggleVideoButton({type:'main'})" disabled>开启视频</button>
+                   <button class="toggleVideoButton" onclick="toggleVideoButton({type:'main'})" >开启视频</button>
                    <button class="toggleShareButton" onclick="toggleShareButton({type: 'shareScreen'})">开启共享</button>
                    <button class="localVideoButton" onclick="localVideoButton()">上传视频</button>
-                   <button class="toggleMuteButton" onclick="toggleMuteButton({type: 'audio'})">静音</button>
+                   <button class="toggleMuteButton" onclick="toggleMuteButton({type: 'audio'})">非静音</button>
                    <button class="setDeviceds">设置</button>
                </div>
 
@@ -43,9 +43,9 @@
            <!--**************************************页面中间******************************************************-->
            <div class="mid-group">
                <div class="midTop">
-                   <button  class="btn active  areaVideoBtn" >区域录制</button>
-                   <button  class="btn videoBtn">录制音视频</button>
-                   <button  class="btn audioBtn">录制音频</button>
+                   <div  class="btn active  areaVideoBtn" >区域录制类型</div>
+                   <div  class="btn videoBtn">混合录制类型</div>
+                   <div  class="btn audioBtn">音频录制类型</div>
                </div>
 
 
@@ -53,15 +53,16 @@
                <div class="midMiddle">
                    <div class="midContent show">
                        <div class="shareContrainter">
-                           <div class="videoArea show">
+                           <div class="videoArea shareVideo_container">
                                <!--<div class="shareVideo_container">-->
-                                   <video class="shareVideo" style="transform: scale(1)" ></video>
+                                  <video class="shareVideo" style="transform: scale(1)" ></video>
+                                  <video class="shareLocalVideo" style="transform: scale(1)" ></video>
                                <!--</div>-->
                            </div>
 
-                           <div class="videoArea">
-                               <video class="shareLocalVideo" style="transform: scale(1)" ></video>
-                           </div>
+                           <!--<div class="videoArea">-->
+                               <!--<video class="shareLocalVideo" style="transform: scale(1)" ></video>-->
+                           <!--</div>-->
                            <!--<hr/>-->
                            <!--<div class="shareCanvas_container">-->
                                <canvas class="shareCanvas" style="transform: scale(1)" ></canvas>

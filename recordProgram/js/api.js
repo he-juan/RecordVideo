@@ -78,7 +78,6 @@ Record.prototype.switchLocalAudioDevice = function (data) {
     }
 
     function getMediaCallBack(event) {
-        let This = this
         if (event.stream) {
             let stream = event.stream
             if(This.isMute){
@@ -218,7 +217,7 @@ Record.prototype.openVideo = function (data) {
 Record.prototype.switchLocalVideoDevice = function (data){
     console.info('switch Local video Device: ' + JSON.stringify(data, null, '   '))
     let This = this
-    if(!data|| !data.lineId || !data.constraints || !data.constraints.video || !data.constraints.video.deviceId){
+    if(!data || !data.constraints || !data.constraints.video || !data.constraints.video.deviceId){
         console.warn('switchLocalVideoDevice: invalid parameters')
         data && data.callback && data.callback({codeType: This.CODE_TYPE.PARAMETER_ERROR})
         return
@@ -234,7 +233,7 @@ Record.prototype.switchLocalVideoDevice = function (data){
         }else {
             console.info('video switch failed')
         }
-        data.callback && data.callback({ codeType: evt.codeType, stream: event.stream})
+        data.callback && data.callback({ codeType: evt.codeType, stream: evt.stream})
     }
 
     let getMediaCallBack = async function (event) {
@@ -416,17 +415,29 @@ Record.prototype.stopShare = function (data) {
 Record.prototype.videoRecord = function(data){
     console.info('recording video camera: ' + JSON.stringify(data, null, '    '))
     let This = this
+    let options
     if (!data && !data.stream) {
         console.warn('shareVideo: invalid parameters')
         data && data.callback && data.callback({codeType: This.CODE_TYPE.PARAMETER_ERROR})
         return
     }
-    let options = {
-        mimeType: 'video/webm;codecs=vp9;',
-        audioBitsPerSecond : 128000,  // 音频码率
-        videoBitsPerSecond : 500000,  // 视频码率
-        ignoreMutedMedia: true
-    };
+
+    if(Record.prototype.getBrowserDetail().browser === 'firefox'){
+        options = {
+            mimeType: 'video/wav;codecs=vp9;',
+            audioBitsPerSecond : 128000,  // 音频码率
+            videoBitsPerSecond : 500000,  // 视频码率
+            ignoreMutedMedia: true
+        };
+    }else{
+        options = {
+            mimeType: 'video/webm;codecs=vp9;',
+            audioBitsPerSecond : 128000,  // 音频码率
+            videoBitsPerSecond : 500000,  // 视频码率
+            ignoreMutedMedia: true
+        };
+    }
+
 
     // MediaRecorder.isTypeSupported 判断是否支持设置的视频格式
     if (!MediaRecorder.isTypeSupported(options.mimeType)) {
