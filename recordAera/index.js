@@ -348,7 +348,7 @@ function openAudio(data){
                 isMuteButton.textContent = '静音'
 
                 /**处理audioStream**/
-                // audioRecord()
+                audioRecord()
 
             }else{
                 console.warn("获取音频失败")

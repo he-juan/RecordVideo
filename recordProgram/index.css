@@ -232,6 +232,21 @@ body{
 }
 
 
+/***********************************关于音频录制内容 *****************************************/
+.audio_contrainter{
+    margin:0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.localAudio{
+    display: none;
+    height: 50px;
+    width: 300px;
+    magrin: 0 auto;
+}
+
 
 /**************************************正文右边内容*************************************/
 

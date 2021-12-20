@@ -422,9 +422,9 @@ Record.prototype.videoRecord = function(data){
         return
     }
 
-    if(Record.prototype.getBrowserDetail().browser === 'firefox'){
+    if(This.currentRecoderType === 'audio'){
         options = {
-            mimeType: 'video/wav;codecs=vp9;',
+            mimeType: 'audio/webm;codecs=opus;',
             audioBitsPerSecond : 128000,  // 音频码率
             videoBitsPerSecond : 500000,  // 视频码率
             ignoreMutedMedia: true
@@ -486,14 +486,12 @@ Record.prototype.videoRecord = function(data){
     This.videoMediaRecorder.onpause = function(){
         if(This.videoMediaRecorder.state === 'paused'){
             console.warn("********* pause success***********")
-            // data.callback && data.callback({ codeType: 999, stream: This.videoMediaRecorder})
         }
     }
 
     This.videoMediaRecorder.onresume = function(){
         if(This.videoMediaRecorder.state  === 'recording'){
             console.warn("********* resume success ***********")
-            // data.callback && data.callback({ codeType: 999, stream: This.videoMediaRecorder})
         }
     }
 
@@ -527,49 +525,15 @@ Record.prototype.stopVideoRecord = function(data){
     }
 }
 
-
-Record.prototype.pauseVideoRecord = function(data){
-    console.warn("pause video record")
-    let This = this
-    This.videoMediaRecorder.pause()
-    This.videoMediaRecorder.onpause = function(){
-
-    }
-    This.videoMediaRecorder.addEventListener('dataavailable', function(event) {
-        if (event.data && event.data.size > 0) {
-            This.videoMediaRecorder.recordedBlobs.push(event.data);
-        }
-    })
-
-    if(This.videoMediaRecorder.state === 'paused'){
-        console.warn("********* pause success***********")
-        data.callback && data.callback({ codeType: 999, stream: This.videoMediaRecorder})
-    }
-}
-
-
-Record.prototype.resumeVideoRecord = function(data){
-    console.log('Recorder stopped: ', data);
-    let This = this
-    This.videoMediaRecorder.resume()
-    This.videoMediaRecorder.onresume = function(){
-
-    }
-    This.videoMediaRecorder.addEventListener('dataavailable', function(event) {
-        if (event.data && event.data.size > 0) {
-            This.videoMediaRecorder.recordedBlobs.push(event.data);
-        }
-    })
-    if(This.videoMediaRecorder.state  === 'recording'){
-        console.warn("********* resume success ***********")
-        data.callback && data.callback({ codeType: 999, stream: This.videoMediaRecorder})
-    }
-}
-
-
 Record.prototype.videoDownload = function(data){
     let This = this
-    var blob = new Blob(This.videoMediaRecorder.recordedBlobs, {type: 'video/webm'});
+    let type
+    if(window.record.currentRecoderType === 'audio'){
+        type = {type: 'audio/webm'}
+    }else{
+        type = {type: 'video/webm'}
+    }
+    var blob = new Blob(This.videoMediaRecorder.recordedBlobs, type);
     var url = window.URL.createObjectURL(blob);
     var a = document.createElement('a');
     a.target = "_blank";

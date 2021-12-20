@@ -93,7 +93,9 @@
                    </div>
                    <div class="midContent">
                        <div class="audioContrainter">
-                           <p>页面二要显示的内容</p>
+                           <div class="audio_contrainter">
+                               <audio class="localAudio" controls></audio>
+                           </div>
                            <input type="text" placeholder="页面二内容" />
                        </div>
 
@@ -103,12 +105,12 @@
            <!--**************************************页面右边（右侧边栏）**************************************-->
            <div class="right-group">
                <div class="rightTop">
-                   <button class="startRecord"  onclick="beginRecord()" >开始录制</button>
-                   <button class="pauseRecord"  onclick="pauseRecord()" >暂停录制</button>
-                   <button class="resumeRecord"  onclick="resumeRecord()" >恢复录制</button>
-                   <button class="stopRecord"  onclick="stopRecord()" >停止录制</button>
+                   <button class="startRecord"  onclick="beginRecord()" disabled>开始录制</button>
+                   <button class="pauseRecord"  onclick="pauseRecord()" disabled>暂停录制</button>
+                   <button class="resumeRecord"  onclick="resumeRecord()" disabled>恢复录制</button>
+                   <button class="stopRecord"  onclick="stopRecord()" disabled>停止录制</button>
                    <button class="restartRecord"  onclick="restartRecord()" disabled>重新录制</button>
-                   <button class="download" onclick ="download()" >下载</button>
+                   <button class="download" onclick ="download()" disabled>下载</button>
                </div>
                <div class="textContrainter">
                    <textarea class="input"></textarea>
