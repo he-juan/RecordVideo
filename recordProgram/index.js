@@ -437,11 +437,6 @@ shareLocalVideo.oncanplay = async function(){
         shareLocalVideo.width = shareLocalVideo.videoWidth
         shareLocalVideo.Height = shareLocalVideo.videoHeight
         localStreams.localVideo = shareLocalVideo.captureStream(60)
-        if(localStreams.audio && localStreams.localVideo.getAudioTracks().length > 0){
-            console.warn("1111111111111111111111111")
-            let mixStream = window.record.mixingStream(localStreams.localVideo, localStreams.audio)
-            localStreams.mixAudio = mixStream
-        }
         handleCanPlay({elem: shareLocalVideo})
     }
    
@@ -457,7 +452,10 @@ localVideo.onloadedmetadata = function(){
     localVideo.play()
     localVideo.autoplay = true
     localVideo.loop = true
-    localStreams.localVideo = localVideo.captureStream(60) 
+    localStreams.localVideo = localVideo.captureStream(60)
+    startRecordBtn.disabled = false
+    startRecordBtn.style.backgroundColor = 'skyblue'
+
 
     videoToCanvas(localVideo, vtcanvas, context, vtcanvas.width, vtcanvas.height)
 }
@@ -556,11 +554,6 @@ function handleCanPlay(data){
             function callback(data) {
                 console.warn('local video share on call back: ', data)
                 if (data.codeType === 999){
-                    // shareScreenBtn.disabled = true
-                    // shareScreenBtn.style.background = "#8c818a"
-                    // stopShareLoVidBtn.disabled = false
-                    // stopShareLoVidBtn.style.background = "#3789a4"
-                    // localShareVideoMuteBtn.hidden = false
                     isUploadVideo = true
 
                     
@@ -573,13 +566,6 @@ function handleCanPlay(data){
 
                 }
             }
-            // let data = {
-            //     type:'slides',
-            //     captureElem:data.elem,
-            //     shareType:'localVideo',
-            //     callback:callback
-            // }
-            // window.record.openShare(data)
         }
     }
 }
@@ -741,9 +727,6 @@ function getCategory(data){
                    shareVideo.style.display = 'inline-block'
                    // shareCanvas.style.display = 'inline-block'
 
-                   // video_Area.height = shareVideo.videoHeight
-                   // video_Area.width = shareVideo.videoWidth
-
                    shareBtn.style.backgroundColor = "skyBlue"
                    localVideoBtn.style.backgroundColor = "skyBlue"
 
@@ -828,11 +811,6 @@ function getCategory(data){
                    localVideoBtn.style.backgroundColor = "skyblue"
                    videoBtn.style.backgroundColor = "skyblue"
 
-                   // document.body.appendChild(mainVideo);
-                   // mainVideo.style.marginLeft = "280px";
-                   // mainVideo.style.marginTop = "10px"
-                   // mainVideo.style.display = "inline-block"
-
                    let attribute = document.getElementsByClassName("p-video_recorder_canvas__container")[0].getAttribute('class').split(" ")
                    if(attribute.length <= 1){
                        document.getElementsByClassName("p-video_recorder_canvas__container")[0].classList.add('p-video_recorder_canvas__container--screen_share')
@@ -841,9 +819,6 @@ function getCategory(data){
                    mainVideo.srcObject = localStreams.main
                    mainVideo.onloadedmetadata = function(){
                        console.info("mainVideo: "+ mainVideo.videoWidth + " * " + mainVideo.videoHeight)
-                       // mainVideo.width = mainVideo.videoWidth
-                       // mainVideo.height = mainVideo.videoHeight
-
                        mainVideo.play()
                        if(isOpenShareScreen){
                            draw({openShare:true})
@@ -873,11 +848,6 @@ function getCategory(data){
                    localVideoBtn.style.backgroundColor = "skyBlue"
                    videoBtn.style.backgroundColor = "skyBlue"
 
-                   // document.body.appendChild(slidesVideo);
-                   // slidesVideo.style.marginLeft = "480px";
-                   // slidesVideo.style.marginTop = "80px"
-                   // slidesVideo.style.display = "inline-block"
-
                    let attribute = document.getElementsByClassName("p-video_recorder_canvas__container")[0].getAttribute('class').split(" ")
                    if(attribute.length <= 1){
                        document.getElementsByClassName("p-video_recorder_canvas__container")[0].classList.add('p-video_recorder_canvas__container--screen_share')
@@ -886,9 +856,6 @@ function getCategory(data){
                    slidesVideo.srcObject = localStreams.slides
                    slidesVideo.onloadedmetadata = function(){
                        console.info("slidesVideo: "+ slidesVideo.videoWidth + " * " + slidesVideo.videoHeight)
-                       // slidesVideo.width = slidesVideo.videoWidth
-                       // slidesVideo.height = slidesVideo.videoHeight
-
                        slidesVideo.play()
                        if(isOpenVideo){
                            draw({openVideo:true})
