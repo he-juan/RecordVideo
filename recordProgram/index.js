@@ -1,4 +1,4 @@
-let audio = document.createElement("audio")
+// let audio = document.createElement("audio")
 let container = document.getElementById("container")
 
 /************************************正文左边按钮******************/
@@ -128,6 +128,7 @@ videoArea.addEventListener("click",function () {
     shareBtn.disabled = false
     muteBtn.disabled = false
     window.record.currentRecoderType = "video"
+    getCategory({type: 'audio'})
 })
 
 audioArea.addEventListener("click",function () {
@@ -408,10 +409,10 @@ function localVideoButton(){
         localStreams.localVideo = null
         }
 
-        if(localStreams.audio){
-            stopCategory({type: 'audio'})
-            localStreams.audio = null
-        }
+        // if(localStreams.audio){
+        //     stopCategory({type: 'audio'})
+        //     localStreams.audio = null
+        // }
         videoInput.click();
     }else if(localVideoBtn.textContent === '关闭上传视频'){
           stopCategory({type: 'localVideo'})
@@ -431,10 +432,16 @@ document.body.appendChild(videoInput);
 
 
 shareLocalVideo.oncanplay = async function(){
+    console.info("localVideo: "+ shareLocalVideo.videoWidth + " * " + shareLocalVideo.videoHeight)
     if(isUploadVideo ){
         shareLocalVideo.width = shareLocalVideo.videoWidth
         shareLocalVideo.Height = shareLocalVideo.videoHeight
         localStreams.localVideo = shareLocalVideo.captureStream(60)
+        if(localStreams.audio && localStreams.localVideo.getAudioTracks().length > 0){
+            console.warn("1111111111111111111111111")
+            let mixStream = window.record.mixingStream(localStreams.localVideo, localStreams.audio)
+            localStreams.mixAudio = mixStream
+        }
         handleCanPlay({elem: shareLocalVideo})
     }
    
@@ -653,9 +660,13 @@ shareCanvas.addEventListener("mousedown",function(e){
 })
 
 input.onkeyup = function(){
-    text = input.value
-    finish()
-    // playCanvas(shareVideo, shareCanvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, input.value)
+    if(window.record.currentRecoderType === 'areaVideo'){
+        text = input.value
+        finish()
+        // playCanvas(shareVideo, shareCanvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, input.value)
+    }else if(window.record.currentRecoderType === 'video'){
+
+    }
 }
 
 textBtn.onclick = function(){
@@ -696,10 +707,10 @@ function getCategory(data){
                     localStreams.audio = event.stream
                     muteBtn.textContent = "静音"
                     // let audio = document.createElement("audio")
-                    audio.srcObject = localStreams.audio
-                    audio.onloadedmetadata = function(){
-                        audio.play()
-                    }
+                    // audio.srcObject = localStreams.audio
+                    // audio.onloadedmetadata = function(){
+                    //     audio.play()
+                    // }
                 }else{
                     console.warn("open audio failed")
                 }
@@ -1398,6 +1409,8 @@ function beginRecord() {
         return
     }
     console.warn("start record...")
+    let audioTrack
+    let mixAudioStream
     let mixStream = []
     let data = {}
     let canvasStream
@@ -1411,10 +1424,26 @@ function beginRecord() {
     if (canvasTrack) {
         mixStream.push(canvasTrack)
     }
-    if (localStreams.audio) {
-        let audioTrack = localStreams.audio.getTracks()[0]
+    if(localStreams.localVideo){
+        if(localStreams.audio && localStreams.localVideo.getAudioTracks().length > 0){
+            mixAudioStream = window.record.mixingStream(localStreams.localVideo, localStreams.audio)
+            audioTrack = mixAudioStream.getTracks()[0]
+            mixStream.push(audioTrack)
+        }
+    }else if(localStreams.slides){
+        if(localStreams.audio && localStreams.slides.getAudioTracks().length > 0){
+            mixAudioStream = window.record.mixingStream(localStreams.slides, localStreams.audio)
+            audioTrack = mixAudioStream.getTracks()[0]
+            mixStream.push(audioTrack)
+        }else{
+            audioTrack = localStreams.audio.getAudioTracks()[0]
+            mixStream.push(audioTrack)
+        }
+    }else{
+        audioTrack = localStreams.audio.getTracks()[0]
         mixStream.push(audioTrack)
     }
+
     data.stream = new MediaStream(mixStream)
     console.warn("RecordStream:", data.stream)
 
@@ -1839,6 +1868,8 @@ function restartRecord(){
     }else if(window.record.currentRecoderType === 'audio'){
 
     }
+
+    getCategory({type: 'audio'})
 }
 
 
@@ -1850,7 +1881,6 @@ window.addEventListener('load', async function () {
     if (Record) {
         Record.prototype.preInit()
     }
-
     await navigator.mediaDevices.enumerateDevices().then(gotDevices).catch(handleError);
     window.record.currentRecoderType = 'areaVideo'
     getCategory({type: 'audio'})
