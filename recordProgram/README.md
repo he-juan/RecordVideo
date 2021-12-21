@@ -26,5 +26,11 @@
   2. 混合录制：
      - 主要是两个屏幕的摆放位置问题以及开启视频喝开启摄像头来回切换的逻辑处理流程； 
      - 主要是如何对获取到的流放到固定的canvas中且像素保持不变或者画质清晰     
-   
+ 
+ 
+ -------------
+ 
+ # 参考：
+  1. gif：https://github.com/imgss/gif_rain_code
+  2. gif：http://jnordberg.github.io/gif.js/
    
