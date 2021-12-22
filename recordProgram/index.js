@@ -1,6 +1,21 @@
 // let audio = document.createElement("audio")
 let container = document.getElementById("container")
 
+/***************************gif 动图***********************************/
+let canvasTimer
+let inter
+let t = 4
+let recorder
+let allChunks = []
+let format = 'video/webm;codecs=vp9';
+let repeat;
+let button, capture,info, gif, sample, sampleInterval, sampleUpdate, startTime, timer, start, load, go, begin;
+// let gifCanvas = document.createElement("canvas")
+let gifCanvas = document.getElementsByClassName("gifCanvas")[0]
+let gifCtx = gifCanvas .getContext("2d")
+// let gifVideo = document.createElement("video")
+let gifVideo = document.getElementsByClassName("gifVideo")[0]
+
 /************************************正文左边按钮******************/
 let videoBtn = document.getElementsByClassName("toggleVideoButton")[0]
 let shareBtn = document.getElementsByClassName("toggleShareButton")[0]
@@ -34,9 +49,9 @@ let video_Area = document.getElementsByClassName("videoArea")[0]
 let textContrainter = document.getElementsByClassName("textContrainter")[0]
 let input = document.getElementsByClassName("input")[0]
 let textBtn = document.getElementsByClassName("textBtn")[0]
+let gif_container_videoArea = document.getElementsByClassName("gif_container")[0]
+let gifVideoOfAreaVideo = document.getElementsByClassName("gifVideoOfAreaVideo")[0]
 
-// let mainVideo = document.getElementsByClassName("mainVideo")[0]
-// let slidesVideo = document.getElementsByClassName("slidesVideo")[0]
 /***************************************音视频录制元素*********************************************/
 let mainVideo = document.createElement("video")
 let slidesVideo = document.createElement('video')
@@ -46,6 +61,7 @@ let vtcanvas = document.getElementsByClassName("p-video_recorder_canvas")[0]
 let context = vtcanvas.getContext('2d')
 
 let canvasRecord = document.getElementsByClassName("canvasRecord")[0]
+let gifContainer = document.getElementsByClassName("gifContainer")[0]
 
 /************************************音频录制元素***************************************************/
 let localAudio = document.getElementsByClassName("localAudio")[0]
@@ -869,10 +885,10 @@ function getCategory(data){
                    localVideoBtn.style.backgroundColor = "skyblue"
                    videoBtn.style.backgroundColor = "skyblue"
 
-                   let attribute = document.getElementsByClassName("p-video_recorder_canvas__container")[0].getAttribute('class').split(" ")
-                   if(attribute.length <= 1){
-                       document.getElementsByClassName("p-video_recorder_canvas__container")[0].classList.add('p-video_recorder_canvas__container--screen_share')
-                   }
+                   // let attribute = document.getElementsByClassName("p-video_recorder_canvas__container")[0].getAttribute('class').split(" ")
+                   // if(attribute.length <= 1){
+                   //     document.getElementsByClassName("p-video_recorder_canvas__container")[0].classList.add('p-video_recorder_canvas__container--screen_share')
+                   // }
                    localStreams.main = event.stream
                    mainVideo.srcObject = localStreams.main
                    mainVideo.onloadedmetadata = function(){
@@ -906,10 +922,10 @@ function getCategory(data){
                    localVideoBtn.style.backgroundColor = "skyBlue"
                    videoBtn.style.backgroundColor = "skyBlue"
 
-                   let attribute = document.getElementsByClassName("p-video_recorder_canvas__container")[0].getAttribute('class').split(" ")
-                   if(attribute.length <= 1){
-                       document.getElementsByClassName("p-video_recorder_canvas__container")[0].classList.add('p-video_recorder_canvas__container--screen_share')
-                   }
+                   // let attribute = document.getElementsByClassName("p-video_recorder_canvas__container")[0].getAttribute('class').split(" ")
+                   // if(attribute.length <= 1){
+                   //     document.getElementsByClassName("p-video_recorder_canvas__container")[0].classList.add('p-video_recorder_canvas__container--screen_share')
+                   // }
                    localStreams.slides = event.stream
                    slidesVideo.srcObject = localStreams.slides
                    slidesVideo.onloadedmetadata = function(){
@@ -1215,10 +1231,10 @@ function switchLcoalCamera(){
                 // mainVideo.style.marginTop = "10px"
                 // mainVideo.style.display = "inline-block"
 
-                let attribute = document.getElementsByClassName("p-video_recorder_canvas__container")[0].getAttribute('class').split(" ")
-                if(attribute.length <= 1){
-                    document.getElementsByClassName("p-video_recorder_canvas__container")[0].classList.add('p-video_recorder_canvas__container--screen_share')
-                }
+                // let attribute = document.getElementsByClassName("p-video_recorder_canvas__container")[0].getAttribute('class').split(" ")
+                // if(attribute.length <= 1){
+                //     document.getElementsByClassName("p-video_recorder_canvas__container")[0].classList.add('p-video_recorder_canvas__container--screen_share')
+                // }
                 localStreams.main = event.stream
                 mainVideo.srcObject = localStreams.main
                 mainVideo.onloadedmetadata = function(){
@@ -1430,8 +1446,8 @@ function finish() {
         // shareCanvas.width  = rect.width ;
         // shareCanvas.style.height = rect.width + 'px';
         // shareCanvas.style.width  = rect.height + 'px';
-        shareCanvas.height = rangeH  ;
-        shareCanvas.width  = rangeW  ;
+        // shareCanvas.height = rangeH  ;
+        // shareCanvas.width  = rangeW  ;
         ctx.clearRect(0, 0, videoWidth, videoHeight);
         playCanvas(virtualVideo, shareCanvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
         // playCanvas(shareVideo, shareCanvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
@@ -1529,8 +1545,6 @@ function beginRecord() {
                 downloadBtn.style.backgroundColor = '#8c818a'
 
                 shareRecord.style.display = "inline-block"
-                // shareRecord.width = shareCanvas.width ;
-                // shareRecord.height = shareCanvas.height;
                 shareRecord.srcObject = event.stream.stream
 
                 shareRecord.onloadedmetadata = function (e) {
@@ -1714,10 +1728,10 @@ function stopRecord() {
                 isRecording = false
                 let buffer = event.stream.recordedBlobs
                 canvasRecord.srcObject = event.stream.stream
-                window.cancelAnimationFrame(switchTimeout)
-                window.cancelAnimationFrame(shareTimeout)
-                context.clearRect(0, 0, vtcanvas.width, vtcanvas.height)
-                vtcanvas.style.display = 'none'
+                // window.cancelAnimationFrame(switchTimeout)
+                // window.cancelAnimationFrame(shareTimeout)
+                // context.clearRect(0, 0, vtcanvas.width, vtcanvas.height)
+                // vtcanvas.style.display = 'none'
 
                 startRecordBtn.disabled = false
                 stopRecordBtn.disabled = true
@@ -1738,18 +1752,18 @@ function stopRecord() {
                     track.stop()
                 });
 
-                Object.keys(localStreams).forEach(function (key) {
-                    if(key === 'audio'){
-                        stopCategory({type: 'audio'})
-                    }else if (key === 'main'){
-                        stopCategory({type: 'main'})
-                    }else if(key ==='localVideo'){
-                        stopCategory({type: 'localVideo'})
-                    } else if(key === 'slides'){
-                        stopCategory({type: 'shareScreen'})
-                    }
-                    localStreams[key] = null
-                })
+                // Object.keys(localStreams).forEach(function (key) {
+                //     if(key === 'audio'){
+                //         stopCategory({type: 'audio'})
+                //     }else if (key === 'main'){
+                //         stopCategory({type: 'main'})
+                //     }else if(key ==='localVideo'){
+                //         stopCategory({type: 'localVideo'})
+                //     } else if(key === 'slides'){
+                //         stopCategory({type: 'shareScreen'})
+                //     }
+                //     localStreams[key] = null
+                // })
 
                 /***录制内容返回播放***/
                 let blob = new Blob(buffer, {'type': 'video/webm'});
@@ -1918,10 +1932,6 @@ function download(){
         console.warn('record is not initialized')
         return
     }
-    // if (!(localStreams.audio || localStreams.main || localStreams.slides || localStreams.localVideo)) {
-    //     console.warn("localStream is null")
-    //     return
-    // }
 
     let data = {}
     data.callback = function (event) {
@@ -2022,10 +2032,320 @@ function restartRecord(){
 
 }
 
+/**********************************生成gif 动图********************************************/
+
+async function gifImg(){
+    if(window.record.currentRecoderType === 'areaVideo'){
+        // gif_container_videoArea.innerHTML = '<p>\n' +
+        //     '                                   <!--<input disabled id="sample" type="range" step="1" min="20" max="500" value="400">-->\n' +
+        //     '                                   <button id="go" disabled>Generate gif animation </button>\n' +
+        //     '                                   <button id="start" >change screen</button>\n' +
+        //     '                               <p id="info">Loading...</p>\n' +
+        //     '                               </p>\n' +
+        //     '\n' +
+        //     '                               <div class="canvas_gif_container">\n' +
+        //     '                                   <canvas class="gifCanvas" style="transform: scale(1)" width="1920" height="1080" ></canvas>\n' +
+        //     '                               </div>\n' +
+        //     '\n' +
+        //     '                               <br />\n' +
+        //     '\n' +
+        //     '                               <div class="p-video_recorder_canvas__container video_container">\n' +
+        //     '                                   <video class="gifVideo" style="transform: scale(1)" width="1920" height="1080"></video>\n' +
+        //     '                               </div>\n' +
+        //     '\n' +
+        //     '                               <br/>\n' +
+        //     '\n' +
+        //     '                               <div class="p-video_recorder_canvas__container video_container">\n' +
+        //     '                                   <img id="result"  style="transform: scale(1)" width="1920" height="1080" />\n' +
+        //     '                               </div>'
+        drawCanvas(shareCanvas)
+    }else if(window.record.currentRecoderType === 'video'){
+        drawCanvas(vtcanvas)
+    }
+    setFormatSelect(format)
+    await handleGIF()
+}
+
+function handleGIF(){
+    let imgWidth
+    let imgHeight
+    if(window.record.currentRecoderType === 'areaVideo'){
+        imgWidth = shareRecord.videoWidth
+        imgHeight = shareRecord.videoHeight
+        if(gifVideoOfAreaVideo.srcObject){
+            gifCtx.clearRect(0, 0, gifCanvas.width, gifCanvas.height);
+            let tracks = gifVideoOfAreaVideo.srcObject.getTracks();
+            tracks.forEach(track => {
+                track.stop()
+            });
+            gifVideoOfAreaVideo.srcObject = null
+            gifVideoOfAreaVideo.src = ''
+            drawCanvas(vtcanvas)
+            gif.abort();
+            gif.frames = [];
+        }
+    }else if(window.record.currentRecoderType === 'video'){
+        imgWidth = canvasRecord.videoWidth
+        imgHeight = canvasRecord.videoHeight
+        if(gifVideo.srcObject){
+            gifCtx.clearRect(0, 0, gifCanvas.width, gifCanvas.height);
+            let tracks = gifVideo.srcObject.getTracks();
+            tracks.forEach(track => {
+                track.stop()
+            });
+            gifVideo.srcObject = null
+            gifVideo.src = ''
+            drawCanvas(vtcanvas)
+            gif.abort();
+            gif.frames = [];
+        }
+    }
+
+    recorder.start(10);
+    inter = setInterval(fun, 1000)
+
+    console.warn("img size:", imgWidth+ "  *  " + imgHeight)
+    gif = new GIF({
+        workers: 4,
+        workerScript: './gif.worker.js',
+        width: imgWidth,
+        height: imgHeight
+    });
+
+    gif.on('start', function() {
+        console.warn("gif on start...")
+        return startTime = new Date().getTime();
+    });
+    gif.on('progress', function(p) {
+        console.warn("gif on progress...")
+        return info.textContent =  "rendering: " + (Math.round(p * 100)) + "%" ;
+    });
+    gif.on('finished', function(blob) {
+        console.warn("gif on finished...", blob)
+        var delta, img
+        if(window.record.currentRecoderType === 'areaVideo'){
+            img = document.getElementById('imgResult');
+        }else if(window.record.currentRecoderType === 'video'){
+            img = document.getElementById('result');
+        }
+
+        img.src = URL.createObjectURL(blob);
+        delta = new Date().getTime() - startTime;
+        return info.textContent =  "done in\n" + ((delta / 1000).toFixed(2)) + "sec,\nsize " + ((blob.size / 1000).toFixed(2)) + "kb";
+    });
+}
+
+
+function fun() {
+    t--;
+    if(t <= 0) {
+        recorder.stop()
+        // window.cancelAnimationFrame(timers)
+        clearInterval(inter)
+        t = 4
+    }else{
+        console.warn("t: ", t)
+    }
+}
+/*********************canvas 绘制 video ********************************/
+function drawCanvas(canvas){
+    gifCtx.drawImage(canvas, 0, 0, gifCanvas.width, gifCanvas.height);
+    canvasTimer = window.requestAnimationFrame(() => {
+        drawCanvas(canvas)
+    })
+}
+/********************************录制canvas*************************************/
+function setFormatSelect(format){
+    if(!MediaRecorder.isTypeSupported(format)){
+        alert(format)
+        alert("当前浏览器不支持该编码类型");
+        return;
+    }
+    setRecorder(format)
+}
+
+function setRecorder(format) {
+    let canvasStream = gifCanvas.captureStream(60); // 60 FPS recording
+    console.warn("canvasStream:",canvasStream)
+    recorder = new MediaRecorder(canvasStream, {
+        mimeType: format
+    });
+
+    recorder.ondataavailable = e => {
+        allChunks.push(
+            e.data
+        );
+    }
+
+    recorder.onstop = function () {
+        if(window.record.currentRecoderType === 'areaVideo'){
+            /****停止后刪除video流****/
+            if(gifVideoOfAreaVideo.srcObject){
+                let tracks = gifVideoOfAreaVideo.srcObject.getTracks();
+                tracks.forEach(track => {
+                    track.stop()
+                });
+            }
+            gifVideoOfAreaVideo.srcObject = null;
+
+            /***录制内容返回播放***/
+            console.warn("recorder stop...")
+            let blob = new Blob(allChunks, {'type': 'video/webm'});
+            let url = window.URL.createObjectURL(blob);
+            gifVideoOfAreaVideo.src = url;
+            // gifVideo.play();
+            // gifVideo.pause()
+
+        }else if(window.record.currentRecoderType === 'video'){
+            if(gifVideo.srcObject){
+                let tracks = gifVideo.srcObject.getTracks();
+                tracks.forEach(track => {
+                    track.stop()
+                });
+            }
+            gifVideo.srcObject = null;
+            /***录制内容返回播放***/
+            console.warn("recorder stop...")
+            let blob = new Blob(allChunks, {'type': 'video/webm'});
+            let url = window.URL.createObjectURL(blob);
+            gifVideo.src = url;
+            // gifVideo.play();
+            // gifVideo.pause()
+        }
+        gif.abort();
+        gif.frames = []
+    }
+}
+
+function blobDownload(format) {
+    const link = document.createElement('a');
+    link.style.display = 'none';
+    const fullBlob = new Blob(allChunks);
+    const downloadUrl = window.URL.createObjectURL(fullBlob);
+    link.href = downloadUrl;
+    link.download = 'media - '+format+'.mp4';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+}
+
+/*************************关于gif 生成*****************************/
+
+// sample = document.getElementById("sample")
+load = document.getElementById("load")
+go = document.getElementById("goes")
+begin = document.getElementById("begin")
+
+info = document.getElementById("info")
+button = document.getElementById("go")
+start = document.getElementById("start")
+
+startTime = null;
+sampleInterval = null;
+timer = null;
+// sample.addEventListener('change', sampleUpdate);
+gifVideo.addEventListener('canplay', listenCanPlayofGif);
+button.addEventListener('click', listenClickofGif);
+gifVideo.addEventListener('play', listenPlayofGif);
+gifVideo.addEventListener('ended', listenVideoEnded);
 
 
 
-// *****************************************初始化阶段****************************************************
+gifVideoOfAreaVideo.addEventListener('canplay', listenCanPlayofGif);
+go.addEventListener('click', listenClickofAreaVideoGif);
+gifVideoOfAreaVideo.addEventListener('play', listenPlayofAreaVideoGif);
+gifVideoOfAreaVideo.addEventListener('ended', listenVideoEnded);
+
+/***************************************更新代码**********************************************/
+function listenCanPlayofGif(){
+    console.warn("video can play...")
+    button.disabled = false;
+    go.disabled = false
+    // sample.disabled = false;
+    if(window.record.currentRecoderType === 'areaVideo'){
+        return  update();
+    }else if(window.record.currentRecoderType === 'video'){
+        return  updateOfAeraVideo();
+    }
+}
+
+
+function listenPlayofGif(){
+    console.warn("video play...")
+    clearInterval(timer);
+    return timer = setInterval(addFrame, sampleInterval);
+}
+
+
+function listenPlayofAreaVideoGif(){
+    console.warn("video play...")
+    clearInterval(timer);
+    return timer = setInterval(addFrameOfAreaVideo, sampleInterval);
+}
+
+function listenVideoEnded(){
+    console.warn("video ended ...")
+    clearInterval(timer);
+    gif.setOption('repeat', 0);
+    gif.abort()
+    return gif.render();
+}
+
+function addFrame(){
+    console.warn("gif addframe...")
+    info.textContent =  "capturing at " + gifVideo.currentTime
+    return gif.addFrame(gifVideo, {
+        copy: true,
+        delay: sampleInterval
+    });
+}
+
+
+function addFrameOfAreaVideo(){
+    console.warn("gif addframe...")
+    info.textContent =  "capturing at " + gifVideoOfAreaVideo.currentTime
+    return gif.addFrame(gifVideoOfAreaVideo, {
+        copy: true,
+        delay: sampleInterval
+    });
+}
+
+function listenClickofGif(){
+    console.warn("button ready to click")
+    gifVideo.pause();
+    gifVideo.currentTime = 0;
+    gif.abort();
+    gif.frames = [];
+    return gifVideo.play();
+}
+
+
+function listenClickofAreaVideoGif(){
+    console.warn("button ready to click")
+    gifVideoOfAreaVideo.pause()
+    gifVideoOfAreaVideo.currentTime = 0
+    gif.abort();
+    gif.frames = [];
+    return gifVideoOfAreaVideo.play();
+}
+
+function update(){
+    console.warn("sampleUpdate...")
+    sampleInterval =  400;
+    // sampleInterval = parseInt(sample.value) ||
+    gif.abort();
+    return info.textContent = "ready to start with a sample interval of " + sampleInterval + "ms";
+}
+
+
+function updateOfAeraVideo(){
+    console.warn("sampleUpdate...")
+    sampleInterval =  400;
+    // sampleInterval = parseInt(sample.value) ||
+    gif.abort();
+    return  load.textContent = "ready to start with a sample interval of " + sampleInterval + "ms";
+}
+/*****************************************初始化阶段****************************************************/
 
 window.addEventListener('load', async function () {
     if (Record) {

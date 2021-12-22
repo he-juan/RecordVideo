@@ -4135,7 +4135,7 @@ provides: [Element.Dimensions]
             console.warn("video:",video)
             gif = new GIF({
                 workers: 4,
-                workerScript: './Worker.js',
+                workerScript: './gif.worker.js',
                 width: 600,
                 height: 337
             });

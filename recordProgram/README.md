@@ -12,10 +12,11 @@
       -  音频录制只进行音频录制的功能，相对比较简单；
   - 功能说明：
       - 录制中都添加了输入文字的功能
-      - 上传视频录制也添加了声音录制功能； 
-      - 添加静音和非静音处理；
+      - 上传视频录制添加声音录制功能； 
+      - 添加静音和非静音功能；
       - 添加切换摄像头和切换麦克风处理；   
       - 添加混音录制功能
+      - 添加gif动图功能
    
   -------
   
@@ -33,4 +34,6 @@
  # 参考：
   1. gif：https://github.com/imgss/gif_rain_code
   2. gif：http://jnordberg.github.io/gif.js/
+  3. gif: https://npmmirror.com/package/gif.jsify
+  4. gif: https://yahoo.github.io/gifshot/demo.html
    
