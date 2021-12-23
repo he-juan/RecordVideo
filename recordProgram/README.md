@@ -36,4 +36,11 @@
   2. gif：http://jnordberg.github.io/gif.js/
   3. gif: https://npmmirror.com/package/gif.jsify
   4. gif: https://yahoo.github.io/gifshot/demo.html
-   
+  
+ -------------
+ 
+ # demo
+  1. demo地址：[demo 录屏大小](https://he-juan.github.io/RecordVideo/getPosition/demo_record.html) 
+  2. demo地址：[demo 截图](https://he-juan.github.io/RecordVideo/getPosition/demo4.html)  
+  3. demo地址：[demo 图片获取颜色](https://he-juan.github.io/RecordVideo/getPosition/demo5.html)
+  4. demo地址：[demo 截取视频图片](https://he-juan.github.io/RecordVideo/webReal/videoScreenshots/vss.html)
