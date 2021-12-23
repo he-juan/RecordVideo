@@ -2304,7 +2304,6 @@ gifVideoOfAreaVideo.addEventListener('ended', listenVideoEnded);
 
 /***************************************更新代码**********************************************/
 function listenCanPlayofGif(){
-    console.warn("video can play...")
     button.disabled = false;
     go.disabled = false
     // sample.disabled = false;
@@ -2317,7 +2316,6 @@ function listenCanPlayofGif(){
 
 
 function listenPlayofGif(){
-    console.warn("video play...")
     clearInterval(timer);
     return timer = setInterval(addFrame, sampleInterval);
 }
@@ -2330,7 +2328,6 @@ function listenPlayofAreaVideoGif(){
 }
 
 function listenVideoEnded(){
-    console.warn("video ended ...")
     clearInterval(timer);
     gif.setOption('repeat', 0);
     gif.abort()
@@ -2338,7 +2335,6 @@ function listenVideoEnded(){
 }
 
 function addFrame(){
-    console.warn("gif addframe...")
     info.textContent =  "capturing at " + gifVideo.currentTime
     return gif.addFrame(gifVideo, {
         copy: true,
@@ -2348,7 +2344,6 @@ function addFrame(){
 
 
 function addFrameOfAreaVideo(){
-    console.warn("gif addframe...")
     load.textContent =  "capturing at " + gifVideoOfAreaVideo.currentTime
     return gif.addFrame(gifVideoOfAreaVideo, {
         copy: true,
@@ -2357,7 +2352,6 @@ function addFrameOfAreaVideo(){
 }
 
 function listenClickofGif(){
-    console.warn("button ready to click")
     gifVideo.pause();
     gifVideo.currentTime = 0;
     gif.abort();
@@ -2367,7 +2361,6 @@ function listenClickofGif(){
 
 
 function listenClickofAreaVideoGif(){
-    console.warn("button ready to click")
     gifVideoOfAreaVideo.pause()
     gifVideoOfAreaVideo.currentTime = 0
     gif.abort();
@@ -2376,7 +2369,6 @@ function listenClickofAreaVideoGif(){
 }
 
 function update(){
-    console.warn("sampleUpdate...")
     sampleInterval =  400;
     gif.abort();
     return info.textContent = "ready to start with a sample interval of " + sampleInterval + "ms";
@@ -2384,7 +2376,6 @@ function update(){
 
 
 function updateOfAeraVideo(){
-    console.warn("sampleUpdate...")
     sampleInterval =  400;
     gif.abort();
     return  load.textContent = "ready to start with a sample interval of " + sampleInterval + "ms";
