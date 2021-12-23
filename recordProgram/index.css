@@ -223,20 +223,24 @@ body{
     height: 338px;
     border-radius: 0;
 }
-.p-video_recorder_canvas, .canvasRecord, .gifVideo, .gifCanvas, #result, /*.shareVideo, */.shareCanvas, .shareRecord, .gifVideoOfAreaVideo, #imgResult{
+.p-video_recorder_canvas, .canvasRecord, .gifVideo, .gifCanvas, #result, /*.shareVideo, */.shareLocalVideo, .shareCanvas, .shareRecord, .gifVideoOfAreaVideo, #imgResult{
     width: 100%;
     height: 100%;
 }
 
-.shareRecord, .canvasRecord, .gifVideo, .gifVideoOfAreaVideo{
+.shareRecord, .canvasRecord, .gifVideo, .gifVideoOfAreaVideo, .shareLocalVideo{
     object-fit: cover;
+}
+
+.shareCanvas{
+    border-radius: 8px;
 }
 /*#result{*/
     /*width: 100%;*/
     /*height: 100%;*/
 /*}*/
 
-.shareVideo, .shareLocalVideo, .canvas_gif_container{
+.shareVideo, .shareLocalVideo, .canvas_gif_container, .gifContainer, .gif_container{
     display:none;
 }
 
@@ -271,7 +275,7 @@ body{
     align-content:space-between;
 }
 
-.rightTop  button, .rightTop .textContrainter{
+.rightTop  button, .rightTop .textContrainter, .downloadBtn{
     width: 140px;
     height: 80px;
     background-color: #8c818a;
@@ -282,6 +286,21 @@ body{
     border-radius: 8px;
     transition: all 200ms;
     font-size: medium;
+}
+.downloadBtn{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content:center;
+    align-items: center;
+    align-content:space-between;
+}
+.downloadBtn .download, .downloadBtn  .downloadImg{
+    width: 60px;
+    height: 70px;
+    border: 1px solid white;
+    border-radius: 8px;
+    font-size: small;
 }
 
 .textContrainter{

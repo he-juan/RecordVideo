@@ -17,6 +17,7 @@ function switchLocalAudioDeviced(data){
     data.constraints ={
         audio: {deviceId: data && data.deviceId} || true
     }
+    delete data.deviceId
     window.record.switchLocalAudioDevice(data)
 }
 

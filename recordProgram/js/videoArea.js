@@ -25,8 +25,6 @@
      * @param {*} options 选择项
      */
     function FrameSelection($rangeEl, options) {
-        console.warn("$rangeEl:",$rangeEl)
-        console.warn("options:",options)
         this.$rangeEl = $rangeEl;
         this.options = options;
 

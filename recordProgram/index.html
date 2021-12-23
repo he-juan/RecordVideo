@@ -121,7 +121,7 @@
                            <div class="gifContainer">
                                <p>
                                    <!--<input disabled id="sample" type="range" step="1" min="20" max="500" value="400">-->
-                                   <button id="go" disabled>Generate gif animation </button>
+                                   <button id="go" disabled onclick="listenClickofGif()">Generate gif animation </button>
                                    <button id="start" onclick="handleGIF()">change screen</button>
                                <p id="info">Loading...</p>
                                </p>
@@ -133,7 +133,7 @@
                                <br />
 
                                <div class="p-video_recorder_canvas__container video_container">
-                                   <video class="gifVideo" style="transform: scale(1)" width="1920" height="1080"></video>
+                                   <video class="gifVideo" style="transform: scale(1)" width="1920" height="1080" oncanplay="listenCanPlayofGif()"  onended="listenVideoEnded()" onplay="listenPlayofGif()"></video>
                                </div>
 
                                <br/>
@@ -160,12 +160,15 @@
            <div class="right-group">
                <div class="rightTop">
                    <button class="startRecord"  onclick="beginRecord()" disabled>开始录制</button>
+                   <button class="gifImg" onclick ="gifImg()" >gif 动图</button>
                    <button class="pauseRecord"  onclick="pauseRecord()" disabled>暂停录制</button>
                    <button class="resumeRecord"  onclick="resumeRecord()" disabled>恢复录制</button>
                    <button class="stopRecord"  onclick="stopRecord()" disabled>停止录制</button>
                    <button class="restartRecord"  onclick="restartRecord()" disabled>重新录制</button>
-                   <button class="gifImg" onclick ="gifImg()" >gif 动图</button>
-                   <button class="download" onclick ="download()" disabled>下载</button>
+                   <div class="downloadBtn">
+                       <button class="download" onclick ="download()" disabled>下载视频</button>
+                       <button class="downloadImg" onclick ="downloadImg()" disabled>下载图片</button>
+                   </div>
                </div>
                <div class="textContrainter">
                    <textarea class="input"></textarea>

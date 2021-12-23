@@ -86,8 +86,7 @@ Record.prototype.switchLocalAudioDevice = function (data) {
             This.setStream(stream, type, true)
             switchAudioSourceResult({codeType: This.CODE_TYPE.ACTION_SUCCESS, stream: stream })
         } else {
-            console.info('switch Local audio Device get stream failed')
-            console.warn(event.error)
+            console.info('switch Local audio Device get stream failed', event.error)
             switchAudioSourceResult({codeType: 201})
         }
     }

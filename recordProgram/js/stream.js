@@ -1,7 +1,7 @@
 
 
 Record.prototype.getMedia = async function (data, constraints) {
-    console.warn('getMedia')
+    console.warn(' getMedia ')
     function onGetStreamSuccess (stream) {
         console.info('get stream success constraints: ' + JSON.stringify(constraints, null, '  '))
         data.callback({stream: stream ||data.stream})

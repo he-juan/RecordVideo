@@ -311,7 +311,6 @@
                     }
                 }
                 GIF.prototype.setOption = function(key, value) {
-                    console.warn("key:", key + '  value: ', value)
                     this.options[key] = value;
                     if (this._canvas != null && (key === "width" || key === "height")) {
                         return this._canvas[key] = value
@@ -328,7 +327,6 @@
                     return results
                 };
                 GIF.prototype.addFrame = function(image, options) {
-                    console.warn("image:", image.width + " * " + image.height)
                     var frame, key;
                     if (options == null) {
                         options = {}
@@ -461,7 +459,6 @@
                     }
                     len += frame.pageSize - frame.cursor;
                     this.log("rendering finished - filesize " + Math.round(len / 1e3) + "kb");
-                    console.log("rendering finished - filesize " + Math.round(len / 1e3) + "kb");
                     data = new Uint8Array(len);
                     offset = 0;
                     ref1 = this.imageParts;
@@ -499,9 +496,6 @@
                     return worker.postMessage(task)
                 };
                 GIF.prototype.getContextData = function(ctx) {
-                    console.warn("options:", this.options ,  this.options.width + '  *  ' + this.options.height)
-                    // let data = ctx.getImageData(0, 0, this.options.width, this.options.height).data
-                    // console.warn("data:",data)
                     return ctx.getImageData(0, 0, this.options.width, this.options.height).data
                 };
                 GIF.prototype.getImageData = function(image) {
