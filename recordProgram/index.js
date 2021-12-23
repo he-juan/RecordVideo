@@ -2149,11 +2149,9 @@ function handleGIF(){
     });
 
     gif.on('start', function() {
-        console.warn("gif on start...")
         return startTime = new Date().getTime();
     });
     gif.on('progress', function(p) {
-        console.warn("gif on progress...")
         if(window.record.currentRecoderType === 'areaVideo'){
             return load.textContent =  "rendering: " + (Math.round(p * 100)) + "%" ;
         }else if(window.record.currentRecoderType === 'video'){
@@ -2161,7 +2159,6 @@ function handleGIF(){
         }
     });
     gif.on('finished', function(blob) {
-        console.warn("gif on finished...", blob)
         gif.abort();
         gif.frames = [];
         let delta, img
