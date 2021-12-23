@@ -1,4 +1,3 @@
-// let audio = document.createElement("audio")
 let container = document.getElementById("container")
 
 /***************************gif 动图***********************************/
@@ -121,8 +120,6 @@ areaVideoArea.addEventListener("click",function(){
     if(localStreams.slides){
         stopCategory({type:'slides'})
     }
-    handleStopGif()
-
     startRecordBtn.disabled = true
     stopRecordBtn.disabled = true
     pauseRecordBtn.disabled = true
@@ -145,6 +142,7 @@ areaVideoArea.addEventListener("click",function(){
     localVideoBtn.style.backgroundColor = "skyblue"
     muteBtn.style.backgroundColor = "skyblue"
     window.record.currentRecoderType = "areaVideo"
+    handleStopGif()
     getCategory({type: 'audio'})
 })
 videoArea.addEventListener("click",function () {
@@ -164,7 +162,6 @@ videoArea.addEventListener("click",function () {
     if(localStreams.slides){
         stopCategory({type:'slides'})
     }
-    handleStopGif()
     startRecordBtn.disabled = true
     stopRecordBtn.disabled = true
     pauseRecordBtn.disabled = true
@@ -187,6 +184,7 @@ videoArea.addEventListener("click",function () {
     localVideoBtn.style.backgroundColor = "skyblue"
     muteBtn.style.backgroundColor = "skyblue"
     window.record.currentRecoderType = "video"
+    handleStopGif()
     getCategory({type: 'audio'})
 })
 
@@ -206,7 +204,15 @@ audioArea.addEventListener("click",function () {
     if(localStreams.slides){
         stopCategory({type:'slides'})
     }
-    handleStopGif()
+
+    videoBtn.disabled = true
+    shareBtn.disabled = true
+    localVideoBtn.disabled = true
+    muteBtn.disabled = false
+    videoBtn.style.backgroundColor = "#8c818a"
+    shareBtn.style.backgroundColor = "#8c818a"
+    localVideoBtn.style.backgroundColor = "#8c818a"
+    muteBtn.style.backgroundColor = "skyblue"
 
     startRecordBtn.disabled = true
     stopRecordBtn.disabled = true
@@ -222,14 +228,7 @@ audioArea.addEventListener("click",function () {
     restartRecordBtn.style.backgroundColor = '#8c818a'
 
     window.record.currentRecoderType = "audio"
-    videoBtn.disabled = true
-    shareBtn.disabled = true
-    localVideoBtn.disabled = true
-    muteBtn.disabled = false
-    videoBtn.style.backgroundColor = "#8c818a"
-    shareBtn.style.backgroundColor = "#8c818a"
-    localVideoBtn.style.backgroundColor = "#8c818a"
-    muteBtn.style.backgroundColor = "skyblue"
+    handleStopGif()
     getCategory({type: 'audio'})
 })
 
@@ -1602,6 +1601,16 @@ function beginRecord() {
 
  function handleStopGif(){
      if(window.record.currentRecoderType === 'areaVideo' || window.record.currentRecoderType === 'video'){
+         downloadBtn.style.width = '60px'
+         downloadBtn.style.width = '70px'
+         downloadBtn.style.borderColor = 'white'
+         downloadBtn.style.borderWidth = '1px'
+         downloadBtn.style.borderStyle = 'solid'
+         downloadBtn.textContent = '下载视频'
+         downloadBtn.style.fontSize = 'small'
+         downloadGifImg.style.display = 'block'
+         downloadGifImg.style.width = '60px'
+         downloadGifImg.style.width = '70px'
          gifCtx.clearRect(0, 0, gifCanvas.width, gifCanvas.height);
          window.cancelAnimationFrame(canvasTimer)
          if(window.record.currentRecoderType === 'areaVideo'){
@@ -1627,6 +1636,13 @@ function beginRecord() {
              document.getElementById('result').src = ''
              gifContainer.style.display = "none"
          }
+     }else if(window.record.currentRecoderType === 'audio'){
+         downloadBtn.style.width = '140px'
+         downloadBtn.style.width = '80px'
+         downloadBtn.style.border = 'none'
+         downloadBtn.textContent = '下载音频'
+         downloadBtn.style.fontSize = 'medium'
+         downloadGifImg.style.display = 'none'
      }
  }
 
