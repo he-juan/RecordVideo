@@ -522,8 +522,6 @@ localVideo.onloadedmetadata = function(){
     localStreams.localVideo = localVideo.captureStream(60)
     startRecordBtn.disabled = false
     startRecordBtn.style.backgroundColor = 'skyblue'
-
-
     videoToCanvas(localVideo, vtcanvas, context, vtcanvas.width, vtcanvas.height)
 }
 
@@ -535,8 +533,7 @@ function videoToCanvas(video,canvas,ctx,rangeW,rangeH){
     })
 }
 
-
-videoInput.addEventListener('change', function(){
+videoInput.oninput = function(){
     if(isUploadVideo === true){
         console.warn('LocalVideo is sharing now.')
         let ifChange = confirm('是否要切换演示媒体文件?');
@@ -548,7 +545,10 @@ videoInput.addEventListener('change', function(){
             return
         }
     }
+    handlelocalVideo()
+}
 
+function handlelocalVideo(){
     if (videoInput.files) {
         try {
             file = videoInput.files[0];
@@ -592,7 +592,7 @@ videoInput.addEventListener('change', function(){
         }
     }
 
-})
+}
 
 
 function handleCanPlay(data){
@@ -635,6 +635,7 @@ function handleCanPlay(data){
                 }
             }
         }
+        // handlelocalVideo()
     }
 }
 
@@ -1036,7 +1037,7 @@ function stopCategory(data){
         }else if(data.type === 'localVideo'){
             if(localStreams.localVideo){
                 localVideoBtn.textContent = '上传视频'
-                shareLocalVideo.pause()
+                shareLocalVideo.src = ''
                 localStreams.localVideo = null
                 window.record.isUploadVideo = false
                 let rect = document.getElementsByClassName('rect')[0]
@@ -1070,12 +1071,16 @@ function stopCategory(data){
                    }
                }
                stopVideo(data)
-           }else if(localStreams.localVideo){
-               localVideo.pause()
-               localStreams.localVideo = null
-               localVideo.srcObject = null
-               localVideo.src = ''
-               localVideo.style.display = 'none'
+           }else if(data.type === 'localVideo'){
+               if(localStreams.localVideo){
+                   localVideo.src = ''
+                   localStreams.localVideo = null
+                   localVideo.srcObject = null
+                   localVideo.style.display = 'none'
+                   localVideoBtn.textContent = '上传视频'
+                   context.clearRect(0, 0, vtcanvas.width, vtcanvas.height)
+                   window.cancelAnimationFrame(stopTimeout)
+               }
            }
         }else if(data.type === 'slides'){
             if(localStreams.slides){
@@ -1619,16 +1624,14 @@ function beginRecord() {
 
  function handleStopGif(){
      if(window.record.currentRecoderType === 'areaVideo' || window.record.currentRecoderType === 'video'){
-         downloadBtn.style.width = '60px'
-         downloadBtn.style.width = '70px'
+         downloadBtn.style.width = '80px'
+         downloadBtn.style.height = '50px'
          downloadBtn.style.borderColor = 'white'
          downloadBtn.style.borderWidth = '1px'
          downloadBtn.style.borderStyle = 'solid'
          downloadBtn.textContent = '下载视频'
          downloadBtn.style.fontSize = 'small'
          downloadGifImg.style.display = 'block'
-         downloadGifImg.style.width = '60px'
-         downloadGifImg.style.width = '70px'
          gifCtx.clearRect(0, 0, gifCanvas.width, gifCanvas.height);
          window.cancelAnimationFrame(canvasTimer)
          if(window.record.currentRecoderType === 'areaVideo'){
@@ -1655,8 +1658,8 @@ function beginRecord() {
              gifContainer.style.display = "none"
          }
      }else if(window.record.currentRecoderType === 'audio'){
-         downloadBtn.style.width = '140px'
-         downloadBtn.style.width = '80px'
+         downloadBtn.style.width = '90px'
+         downloadBtn.style.height = '50px'
          downloadBtn.style.border = 'none'
          downloadBtn.textContent = '下载音频'
          downloadBtn.style.fontSize = 'medium'
