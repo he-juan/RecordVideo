@@ -79,6 +79,7 @@ let isUploadVideo = false
 let currentMic = null
 let currentSpeaker = null
 let currentCamera = null
+let isDrawCanvas = false
 
 
 /**************** 绘制canvas定时器********************/
@@ -693,27 +694,29 @@ function writeTextOnCanvas(ctx, lh, rw, text) {
 }
 
 shareCanvas.addEventListener("mousedown",function(e){
-    let inputHeight = e.pageX - container.offsetLeft ;
-    let inputWidth = e.pageY - container.offsetTop ;
-    console.warn("mouseDown position:", canvasX  + '  *  ' + canvasY)
+    if(isDrawCanvas){
+        let inputHeight = e.pageX - container.offsetLeft ;
+        let inputWidth = e.pageY - container.offsetTop ;
+        console.warn("mouseDown position:", canvasX  + '  *  ' + canvasY)
 
-    canvasX = e.offsetX
-    canvasY = e.offsetY
-    textContrainter.style.display = 'block'
-    input.placeholder = '请输入文字添加到canvas...'
+        canvasX = e.offsetX
+        canvasY = e.offsetY
+        textContrainter.style.display = 'block'
+        input.placeholder = '请输入文字添加到canvas...'
 
-    // textContrainter.style.position = 'absolute'
-    // textContrainter.style.zIndex = '1000';
-    // textContrainter.style.left = inputHeight + 'px';
-    // textContrainter.style.top = inputWidth + 'px';
-    // textContrainter.style.width = '300px'
-    // textContrainter.style.height = '100px';
-    // input.style.width = '300px'
-    // input.style.height = '100px';
+        // textContrainter.style.position = 'absolute'
+        // textContrainter.style.zIndex = '1000';
+        // textContrainter.style.left = inputHeight + 'px';
+        // textContrainter.style.top = inputWidth + 'px';
+        // textContrainter.style.width = '300px'
+        // textContrainter.style.height = '100px';
+        // input.style.width = '300px'
+        // input.style.height = '100px';
+    }
 })
 
 input.onkeyup = function(){
-    if(window.record.currentRecoderType === 'areaVideo'){
+    if(window.record.currentRecoderType === 'areaVideo' ){
         text = input.value
         finish()
         // playCanvas(shareVideo, shareCanvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, input.value)
@@ -984,6 +987,7 @@ function stopCategory(data){
                     if(event.codeType === 999){
                         console.warn("stop shareScreen success: " , event )
                         shareBtn.textContent = "开启共享"
+                        isDrawCanvas = false
                         if(localStreams && localStreams.slides){
                             window.record.closeStream(localStreams.slides)
                         }
@@ -1010,6 +1014,7 @@ function stopCategory(data){
                 data.callback = function(event){
                     if(event.codeType === 999){
                         console.warn(" stop video success: ", event )
+                        isDrawCanvas = false
                         if(localStreams && localStreams.main){
                             window.record.closeStream(localStreams.main)
                         }
@@ -1038,6 +1043,7 @@ function stopCategory(data){
                 if(rect){
                     rect.style.display = "none"
                 }
+                isDrawCanvas = false
                 ctx.clearRect(0, 0, shareCanvas.width, shareCanvas.height)
                 window.cancelAnimationFrame(stopTimeout)
                 shareLocalVideo.srcObject = null
@@ -1371,6 +1377,7 @@ function finish() {
     // }
 
     window.cancelAnimationFrame(stopTimeout)
+    isDrawCanvas = true
     let rangeW
     let rangeH
     let videoHeight
