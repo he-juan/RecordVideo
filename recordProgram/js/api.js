@@ -329,12 +329,12 @@ Record.prototype.openShare = function (data) {
             if (This.getBrowserDetail().browser === 'firefox') {
                 let tracks = stream.getVideoTracks();
                 tracks[0].onended = function () {
-                    stopCategory({type: 'shareScreen'})
+                    stopCategory({type: 'slides'})
                 }
             }else {
                 stream.oninactive = function () {
                     console.warn('user clicks the bottom share bar to stop sharing')
-                    stopCategory({type: 'shareScreen'})
+                    stopCategory({type: 'slides'})
                 }
             }
 
