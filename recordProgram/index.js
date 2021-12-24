@@ -2185,10 +2185,14 @@ function handleGIF(){
 function fun() {
     t--;
     if(t <= 0) {
+        let span = document.createElement("span")
+        span.id = 'span'
+        span.style.color = 'color:#7A0099 !important'
+        span.textContent = 'Generate gif animation'
         if(window.record.currentRecoderType === 'areaVideo'){
-            load.textContent = " Please click the [Generate gif animation] button "
+            load.textContent = ' Please click the '+ span.textContent + ' button '
         }else if(window.record.currentRecoderType === 'video'){
-            info.textContent = " Please click the [Generate gif animation] button "
+            info.textContent =  ' Please click the '+ span.textContent  + ' button '
         }
         recorder.stop()
         clearInterval(inter)

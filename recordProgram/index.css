@@ -262,6 +262,14 @@ body{
     width: 300px;
     magrin: 0 auto;
 }
+
+.audioContrainter span{
+    color:red;
+}
+
+#span{
+    color:#7A0099  !important;
+}
 /**************************************正文右边内容*************************************/
 
 .rightTop{
