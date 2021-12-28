@@ -44,3 +44,5 @@
   2. demo地址：[demo 截图](https://he-juan.github.io/RecordVideo/getPosition/demo4.html)  
   3. demo地址：[demo 图片获取颜色](https://he-juan.github.io/RecordVideo/getPosition/demo5.html)
   4. demo地址：[demo 截取视频图片](https://he-juan.github.io/RecordVideo/webReal/videoScreenshots/vss.html)
+  5. demo地址：[webrtc-demo](https://www.webrtc-experiment.com/RecordRTC/simple-demos/)
+  6. 扫描分辨率地址：[resolution-demo](https://udta.github.io/WCRS/)
