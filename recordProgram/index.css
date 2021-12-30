@@ -41,14 +41,14 @@ body{
     top: 100px;
     bottom: 100px;
 }
-.left-group{
-    width: 200px;
-    background-color: #cbcbcb;
-    text-align: center;
-}
+/*.left-group{*/
+    /*width: 200px;*/
+    /*background-color: #cbcbcb;*/
+    /*text-align: center;*/
+/*}*/
 
 .right-group{
-    width: 150px;
+    width: 200px;
     background-color: #cbcbcb;
     text-align: center;
 }
@@ -72,18 +72,19 @@ body{
 
 .leftContrainterButton{
     width:200px;
-    height:550px;
+    height: 200px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-between ;
     align-items: flex-start;
     align-content:space-between;
+    margin: 0 auto;
 }
 
 .leftContrainterButton  button{
-    width: 180px;
-    height: 80px;
+    width: 90px;
+    height: 50px;
     background-color: #8c818a;
     color: white;
     margin: 8px 5px;
@@ -91,7 +92,7 @@ body{
     border: 0;
     border-radius: 8px;
     transition: all 200ms;
-    font-size: medium;
+    font-size: small;
 }
 
 .leftContrainterButton .toggleShareButton, .leftContrainterButton .localVideoButton, .leftContrainterButton .toggleMuteButton, .leftContrainterButton .toggleVideoButton{
@@ -108,6 +109,8 @@ body{
     width:150px;
     height:100px;
     margin-left:20px;
+    margin-top:20px;
+    /*margin:0 auto;*/
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
@@ -273,19 +276,19 @@ body{
 /**************************************正文右边内容*************************************/
 
 .rightTop{
-    width:150px;
-    height: 700px;
+    width: 200px;
+    height: 250px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     flex-wrap: wrap;
-    justify-content:space-between;
+    justify-content: space-between;
     align-items: center;
-    align-content:space-between;
+    align-content: space-between;
 }
 
 .rightTop  button, .rightTop .textContrainter, .downloadBtn{
-    width: 140px;
-    height: 80px;
+    width: 90px;
+    height: 50px;
     background-color: #8c818a;
     color: white;
     margin: 8px 5px;
@@ -293,19 +296,22 @@ body{
     border: 0;
     border-radius: 8px;
     transition: all 200ms;
-    font-size: medium;
+    font-size: small;
 }
 .downloadBtn{
+    width: 180px;
+    height: 50px;
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
-    justify-content:center;
+    justify-content: center;
     align-items: center;
-    align-content:space-between;
+    align-content: space-between;
+    margin:0 auto;
 }
 .downloadBtn .download, .downloadBtn  .downloadImg{
-    width: 60px;
-    height: 70px;
+    width: 80px;
+    height: 50px;
     border: 1px solid white;
     border-radius: 8px;
     font-size: small;
@@ -313,8 +319,10 @@ body{
 
 .textContrainter{
     display: none;
-    width:140px;
+    width: 140px;
     height: 90px;
+    margin-left: 20px;
+    margin-top: 10px;
 }
 .input{
     /*margin: 8px 5px;*/
@@ -322,20 +330,24 @@ body{
     width:140px;
     height:90px;
 }
-.textBtn{
+.textContrainter .textBtn{
     position: relative;
-    top: -95px;
-    left: 60px;
+    top: -105px;
+    left: 66px;
     border-radius: 3px;
     border: none;
     width: 20px;
     height: 20px;
-    line-height: 20px;
-    text-align: center
+    line-height: 15px;
+    text-align: center;
 }
 .textBtn:hover{
     background-color: #8c818a;
 }
+
+
+
+
 
 /*.rightTop  button:hover{*/
     /*background-color:white;*/
