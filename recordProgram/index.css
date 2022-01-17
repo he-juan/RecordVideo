@@ -232,7 +232,7 @@ body{
 }
 
 .shareRecord, .canvasRecord, .gifVideo, .gifVideoOfAreaVideo, .shareLocalVideo{
-    object-fit: cover;
+    object-fit: inherit;
 }
 
 .shareCanvas{
