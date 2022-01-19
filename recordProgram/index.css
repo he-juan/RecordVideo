@@ -211,6 +211,9 @@ body{
     width: 640px;
     height: 298px;
     margin: 0 auto;
+}
+
+.shareRecord_container{
     display: flex;
     justify-content: center;
     align-items: center;
