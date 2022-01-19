@@ -11,7 +11,10 @@ let repeat;
 let button, capture,info, gif, sample, sampleInterval, sampleUpdate, startTime, timer, start, load, go, begin,imgBlobs;
 // let gifCanvas = document.createElement("canvas")
 let gifCanvas = document.getElementsByClassName("gifCanvas")[0]
-let gifCtx = gifCanvas .getContext("2d")
+let gifCtx = gifCanvas.getContext("2d")
+
+let mixgifCanvas = document.getElementsByClassName("gifCanvas_mix")[0]
+let mixgifCtx = mixgifCanvas.getContext("2d")
 // let gifVideo = document.createElement("video")
 let gifVideo = document.getElementsByClassName("gifVideo")[0]
 
@@ -1416,12 +1419,16 @@ function finish() {
         rangeW = videoWidth * (width / shareVideo.offsetWidth) ;
         rangeH = videoHeight * (height / shareVideo.offsetHeight);
 
+
+
         sx = window.startPositionX * 3
         sy = window.startPositionY * 3
         shareCanvas.style.display = 'inline-block'
-        // let rect = document.getElementsByClassName('rect')[0].getBoundingClientRect()
-        // shareCanvas.height = rect.height ;
-        // shareCanvas.width  = rect.width ;
+        let rect = document.getElementsByClassName('rect')[0].getBoundingClientRect()
+        shareCanvas.height = rect.height ;
+        shareCanvas.width  = rect.width ;
+        shareRecord.height = rect.height;
+        shareRecord.width = rect.width;
         // shareCanvas.style.height = rect.width + 'px';
         // shareCanvas.style.width  = rect.height + 'px';
         // shareCanvas.height = rangeH  ;
@@ -2057,6 +2064,7 @@ function restartRecord(){
             shareVideo.style.display = "none"
             shareCanvas.style.display = 'none'
             shareRecord.style.display = 'none'
+            shareRecord.src = ''
             let rect = document.getElementsByClassName('rect')[0]
             if(rect){
                 rect.style.display = "none"
@@ -2065,10 +2073,12 @@ function restartRecord(){
             window.cancelAnimationFrame(stopTimeout)
             gif_container_videoArea.style.display = 'none'
 
+
         } else if (window.record.currentRecoderType === 'video') {
             vtcanvas.style.display = 'none'
             canvasRecord.style.display = "none"
             gifContainer.style.display = 'none'
+            canvasRecord.src =''
         }
         getCategory({type: 'audio'})
     }else if(window.record.currentRecoderType === 'audio'){
@@ -2104,11 +2114,18 @@ function restartRecord(){
 
 async function gifImg(){
     if(window.record.currentRecoderType === 'areaVideo'){
+        let {width,height} = document.getElementsByClassName('rect')[0].getBoundingClientRect()
+        gifCanvas.width = width
+        gifCanvas.height = height
         gif_container_videoArea.style.display = 'block'
-        drawCanvas(shareCanvas)
+        console.warn("gifCtx:",gifCtx)
+        drawCanvas(shareCanvas, gifCtx)
     }else if(window.record.currentRecoderType === 'video'){
+        // mixgifCanvas.width = width
+        // mixgifCanvas.height = height
         gifContainer.style.display = 'block'
-        drawCanvas(vtcanvas)
+        console.warn("mixgifCtx:",mixgifCtx)
+        drawCanvas(vtcanvas,mixgifCtx)
     }
     setFormatSelect(format)
     await handleGIF()
@@ -2137,11 +2154,11 @@ function handleGIF(){
         }
         gifVideoOfAreaVideo.src = ''
         document.getElementById('imgResult').src = ''
-        drawCanvas(vtcanvas)
+        drawCanvas(shareCanvas, gifCtx)
     }else if(window.record.currentRecoderType === 'video'){
         imgWidth = canvasRecord.videoWidth
         imgHeight = canvasRecord.videoHeight
-        gifCtx.clearRect(0, 0, gifCanvas.width, gifCanvas.height);
+        mixgifCtx.clearRect(0, 0, vtcanvas.width, vtcanvas.height);
         if(gifVideo.srcObject){
             let tracks = gifVideo.srcObject.getTracks();
             tracks.forEach(track => {
@@ -2151,7 +2168,7 @@ function handleGIF(){
         }
         gifVideo.src = ''
         document.getElementById('result').src = ''
-        drawCanvas(vtcanvas)
+        drawCanvas(vtcanvas, mixgifCtx)
     }
     // if(gif){
     //     gif.abort();
@@ -2188,6 +2205,8 @@ function handleGIF(){
         downloadGifImg.style.backgroundColor = "skyblue"
         if(window.record.currentRecoderType === 'areaVideo'){
             img = document.getElementById('imgResult');
+            img.width = imgWidth;
+            img.height = imgHeight;
         }else if(window.record.currentRecoderType === 'video'){
             img = document.getElementById('result');
         }
@@ -2228,10 +2247,10 @@ function fun() {
     }
 }
 /*********************canvas 绘制 video ********************************/
-function drawCanvas(canvas){
-    gifCtx.drawImage(canvas, 0, 0, gifCanvas.width, gifCanvas.height);
+function drawCanvas(canvas,ctx){
+    ctx.drawImage(canvas, 0, 0, canvas.width, canvas.height);
     canvasTimer = window.requestAnimationFrame(() => {
-        drawCanvas(canvas)
+        drawCanvas(canvas,ctx)
     })
 }
 /********************************录制canvas*************************************/
@@ -2245,7 +2264,13 @@ function setFormatSelect(format){
 }
 
 function setRecorder(format) {
-    let canvasStream = gifCanvas.captureStream(60); // 60 FPS recording
+    let canvasStream
+    if(window.record.currentRecoderType === 'areaVideo'){
+        canvasStream = gifCanvas.captureStream(60); // 60 FPS recording
+    }else if(window.record.currentRecoderType === 'video'){
+        canvasStream = mixgifCanvas.captureStream(60); // 60 FPS recording
+    }
+
     console.warn("canvasStream:",canvasStream)
     recorder = new MediaRecorder(canvasStream, {
         mimeType: format

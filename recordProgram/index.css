@@ -211,6 +211,9 @@ body{
     width: 640px;
     height: 298px;
     margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .shareCanvas_container{
@@ -219,6 +222,9 @@ body{
     width: 640px;
     height: 298px;
     margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .p-video_recorder_canvas__container--screen_share {
@@ -226,7 +232,7 @@ body{
     height: 338px;
     border-radius: 0;
 }
-.p-video_recorder_canvas, .canvasRecord, .gifVideo, .gifCanvas, #result, /*.shareVideo, */.shareLocalVideo, .shareCanvas, .shareRecord, .gifVideoOfAreaVideo, #imgResult{
+.p-video_recorder_canvas, .canvasRecord, #result, .shareLocalVideo, .gifVideo, .gifCanvas_mix /*.shareVideo, */ /*.shareCanvas, .shareRecord, .gifVideoOfAreaVideo, #imgResult, .gifCanvas,*/{
     width: 100%;
     height: 100%;
 }
@@ -235,6 +241,16 @@ body{
     object-fit: inherit;
 }
 
+/*.shareCanvas{*/
+    /*!*--width: 100%;*!*/
+    /*!*width: var(--width);*!*/
+    /*!*height: calc(var(--width) * 0.75);*!*/
+
+    /*--height: 100%;*/
+    /*width:  calc(var(--height) * 0.75);*/
+    /*height: var(--height);*/
+/*}*/
+
 /*.shareRecord, .canvasRecord, .gifVideo, .gifVideoOfAreaVideo, .shareLocalVideo{*/    /***CSS3 calc() 流布局自动算width、height等***/
     /*margin: 0 0 20px 0;*/
     /*--width: 100%;*/
@@ -242,7 +258,7 @@ body{
     /*height: calc(var(--width) * 0.75);*/
 /*}*/
 
-.shareCanvas{
+.shareCanvas, .shareRecord{
     border-radius: 8px;
 }
 /*#result{*/
@@ -250,7 +266,7 @@ body{
     /*height: 100%;*/
 /*}*/
 
-.shareVideo, .shareLocalVideo, .canvas_gif_container, .gifContainer, .gif_container{
+.shareVideo, .shareLocalVideo, /*.canvas_gif_container,*/ .gifContainer, .gif_container{
     display:none;
 }
 
