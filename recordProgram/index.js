@@ -1475,11 +1475,23 @@ function beginRecord() {
     let data = {}
     let canvasStream
     let canvasTrack
+    let videoTrack
 
     if(window.record.currentRecoderType === 'areaVideo'){
         canvasStream = shareCanvas.captureStream(60)
     }else if(window.record.currentRecoderType === 'video'){
-        canvasStream = vtcanvas.captureStream(60)
+        // canvasStream = vtcanvas.captureStream(60)
+        if(localStreams.main && !localStreams.slides && !localStreams.localVideo){
+            videoTrack = localStreams.main.getTracks()[0]
+            canvasTrack = videoTrack
+        }else if(localStreams.slides && !localStreams.main && !localStreams.localVideo){
+            videoTrack = localStreams.slides.getTracks()[0]
+            canvasTrack = videoTrack
+        }else if(!localStreams.slides && !localStreams.main && localStreams.localVideo){
+            canvasStream = vtcanvas.captureStream(60)
+        }else if(localStreams.slides && localStreams.main && !localStreams.localVideo){
+            canvasStream = vtcanvas.captureStream(60)
+        }
     }
 
     if(canvasStream){
