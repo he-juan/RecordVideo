@@ -619,7 +619,7 @@ function handleCanPlay(data){
                         rect.style.display = "none"
                     }
                     ctx.clearRect(0, 0, shareCanvas.width, shareCanvas.height)
-                    window.cancelAnimationFrame(stopTimeout)
+                    // window.cancelAnimationFrame(stopTimeout)
                 }
         } else {
             function callback(data) {
@@ -887,6 +887,13 @@ async function getCategory(data){
                    mainVideo.onloadedmetadata = function(){
                        console.info("mainVideo: "+ mainVideo.videoWidth + " * " + mainVideo.videoHeight)
                        mainVideo.play()
+                       // if(isOpenShareScreen){
+                       //     draw({openShare:true})
+                       // }else{
+                       //     draw()
+                       // }
+                   }
+                   mainVideo.ontimeupdate = function(){
                        if(isOpenShareScreen){
                            draw({openShare:true})
                        }else{
@@ -920,6 +927,13 @@ async function getCategory(data){
                    slidesVideo.onloadedmetadata = function(){
                        console.info("slidesVideo: "+ slidesVideo.videoWidth + " * " + slidesVideo.videoHeight)
                        slidesVideo.play()
+                       // if(isOpenVideo){
+                       //     draw({openVideo:true})
+                       // }else{
+                       //     draw()
+                       // }
+                   }
+                   slidesVideo.ontimeupdate = function(){
                        if(isOpenVideo){
                            draw({openVideo:true})
                        }else{
@@ -1001,7 +1015,7 @@ function stopCategory(data){
                             rect.style.display = "none"
                         }
                         ctx.clearRect(0, 0, shareCanvas.width, shareCanvas.height)
-                        window.cancelAnimationFrame(stopTimeout)
+                        // window.cancelAnimationFrame(stopTimeout)
 
                         virtualVideo.srcObject = null
                         localStreams.slides = null
@@ -1030,7 +1044,7 @@ function stopCategory(data){
                             rect.style.display = "none"
                         }
                         context.clearRect(0, 0, shareCanvas.width, shareCanvas.height)
-                        window.cancelAnimationFrame(stopTimeout)
+                        // window.cancelAnimationFrame(stopTimeout)
                     }else{
                         console.warn(" stop video failed")
                     }
@@ -1049,7 +1063,7 @@ function stopCategory(data){
                 }
                 isDrawCanvas = false
                 ctx.clearRect(0, 0, shareCanvas.width, shareCanvas.height)
-                window.cancelAnimationFrame(stopTimeout)
+                // window.cancelAnimationFrame(stopTimeout)
                 shareLocalVideo.srcObject = null
                 shareLocalVideo.style.display = 'none'
             }
@@ -1066,7 +1080,7 @@ function stopCategory(data){
                            window.record.closeStream(localStreams.main)
                        }
                        localStreams.main = null
-                       window.cancelAnimationFrame(switchTimeout)
+                       // window.cancelAnimationFrame(switchTimeout)
                        context.clearRect(setX, setY, setWidth, setHeight)
                        draw()
                    }else{
@@ -1082,7 +1096,7 @@ function stopCategory(data){
                    localVideo.style.display = 'none'
                    localVideoBtn.textContent = '上传视频'
                    context.clearRect(0, 0, vtcanvas.width, vtcanvas.height)
-                   window.cancelAnimationFrame(stopTimeout)
+                   // window.cancelAnimationFrame(stopTimeout)
                }
            }
         }else if(data.type === 'slides'){
@@ -1096,7 +1110,7 @@ function stopCategory(data){
                             window.record.closeStream(localStreams.slides)
                         }
                         localStreams.slides = null
-                        window.cancelAnimationFrame(shareTimeout)
+                        // window.cancelAnimationFrame(shareTimeout)
                         context.clearRect(setX, setY, setWidth, setHeight)
                         draw()
                     }else{
@@ -1279,8 +1293,8 @@ function getVideoType(data){
 function draw(data){
     /*处理canvas绘制video像素模糊问题*/
     let videoType = getVideoType(data)
-    window.cancelAnimationFrame(switchTimeout)
-    window.cancelAnimationFrame(shareTimeout)
+    // window.cancelAnimationFrame(switchTimeout)
+    // window.cancelAnimationFrame(shareTimeout)
 
     rangeH = vtcanvas.height
     rangeW = vtcanvas.width
@@ -1334,9 +1348,9 @@ function shareToCanvas(type, video, sx, sy, swidth, sheight, x, y, width, height
         context.drawImage(video, sx, sy, swidth, sheight, x, y, width, height);
     }
 
-    shareTimeout = window.requestAnimationFrame(() => {
-        shareToCanvas(type,video, sx, sy, swidth, sheight, x, y, width, height);
-    })
+    // shareTimeout = window.requestAnimationFrame(() => {
+    //     shareToCanvas(type,video, sx, sy, swidth, sheight, x, y, width, height);
+    // })
 }
 
 function switchToCanvas(type, video, sx, sy, swidth, sheight, x, y, width, height) {
@@ -1350,9 +1364,9 @@ function switchToCanvas(type, video, sx, sy, swidth, sheight, x, y, width, heigh
         context.drawImage(video, x, y, width, height)
     }
 
-    switchTimeout = window.requestAnimationFrame(() => {
-        switchToCanvas(type, video, sx, sy, swidth, sheight, x, y, width, height);
-    })
+    // switchTimeout = window.requestAnimationFrame(() => {
+    //     switchToCanvas(type, video, sx, sy, swidth, sheight, x, y, width, height);
+    // })
 
 }
 
@@ -1384,7 +1398,7 @@ function finish() {
     //     muteBtn.style.backgroundColor = '#8c818a'
     // }
 
-    window.cancelAnimationFrame(stopTimeout)
+    // window.cancelAnimationFrame(stopTimeout)
     isDrawCanvas = true
     let rangeW
     let rangeH
@@ -1409,7 +1423,13 @@ function finish() {
         shareCanvas.height = rangeH ;
         shareCanvas.width  = rangeW ;
         ctx.clearRect(0, 0, videoWidth, videoHeight);
-        playCanvas(shareLocalVideo, shareCanvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
+        let rect = document.getElementsByClassName('rect')[0].getBoundingClientRect()
+        shareRecord.height = rect.height;
+        shareRecord.width = rect.width;
+        // playCanvas(shareLocalVideo, shareCanvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
+        shareLocalVideo.ontimeupdate = function(){
+            playCanvas(shareLocalVideo, shareCanvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
+        }
     }else{
         videoHeight = shareVideo.videoHeight ;
         videoWidth = shareVideo.videoWidth ;
@@ -1434,7 +1454,13 @@ function finish() {
         // shareCanvas.height = rangeH  ;
         // shareCanvas.width  = rangeW  ;
         ctx.clearRect(0, 0, videoWidth, videoHeight);
-        playCanvas(virtualVideo, shareCanvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
+        // playCanvas(virtualVideo, shareCanvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
+
+        virtualVideo.ontimeupdate = function(){
+            if(isDrawCanvas){
+                playCanvas(virtualVideo, shareCanvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
+            }
+        }
     }
 
     console.warn("rangeH:",rangeH)
@@ -1451,9 +1477,9 @@ function playCanvas(video,canvas,ctx,sx,sy,rangeW,rangeH, canvasX, canvasY, text
     if(text ){
         writeTextOnCanvas(ctx, 22,40,text)
     }
-    stopTimeout = requestAnimationFrame(() => {
-        playCanvas(video, canvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
-    })
+    // stopTimeout = requestAnimationFrame(() => {
+    //     playCanvas(video, canvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
+    // })
 }
 
 
@@ -1478,7 +1504,7 @@ function beginRecord() {
     let videoTrack
 
     if(window.record.currentRecoderType === 'areaVideo'){
-        canvasStream = shareCanvas.captureStream(60)
+        canvasStream = shareCanvas.captureStream()
     }else if(window.record.currentRecoderType === 'video'){
         // canvasStream = vtcanvas.captureStream(60)
         if(localStreams.main && !localStreams.slides && !localStreams.localVideo){
@@ -1488,9 +1514,9 @@ function beginRecord() {
             videoTrack = localStreams.slides.getTracks()[0]
             canvasTrack = videoTrack
         }else if(!localStreams.slides && !localStreams.main && localStreams.localVideo){
-            canvasStream = vtcanvas.captureStream(60)
+            canvasStream = vtcanvas.captureStream()
         }else if(localStreams.slides && localStreams.main && !localStreams.localVideo){
-            canvasStream = vtcanvas.captureStream(60)
+            canvasStream = vtcanvas.captureStream()
         }
     }
 
@@ -1652,7 +1678,7 @@ function beginRecord() {
          downloadBtn.style.fontSize = 'small'
          downloadGifImg.style.display = 'block'
          gifCtx.clearRect(0, 0, gifCanvas.width, gifCanvas.height);
-         window.cancelAnimationFrame(canvasTimer)
+         // window.cancelAnimationFrame(canvasTimer)
          if(window.record.currentRecoderType === 'areaVideo'){
              if(gifVideoOfAreaVideo.srcObject){
                  let tracks = gifVideoOfAreaVideo.srcObject.getTracks();
@@ -1716,7 +1742,7 @@ function stopRecord() {
                     rect.style.display = "none"
                 }
                 ctx.clearRect(0, 0, shareCanvas.width, shareCanvas.height)
-                window.cancelAnimationFrame(stopTimeout)
+                // window.cancelAnimationFrame(stopTimeout)
                 shareVideo.style.display = 'none'
                 shareCanvas.style.display = 'none'
                 shareVideo.style.width = '0px'
@@ -1777,8 +1803,8 @@ function stopRecord() {
                 isRecording = false
                 let buffer = event.stream.recordedBlobs
                 canvasRecord.srcObject = event.stream.stream
-                window.cancelAnimationFrame(switchTimeout)
-                window.cancelAnimationFrame(shareTimeout)
+                // window.cancelAnimationFrame(switchTimeout)
+                // window.cancelAnimationFrame(shareTimeout)
                 context.clearRect(0, 0, vtcanvas.width, vtcanvas.height)
                 vtcanvas.style.display = 'none'
 
@@ -2082,7 +2108,7 @@ function restartRecord(){
                 rect.style.display = "none"
             }
             ctx.clearRect(0, 0, shareCanvas.width, shareCanvas.height)
-            window.cancelAnimationFrame(stopTimeout)
+            // window.cancelAnimationFrame(stopTimeout)
             gif_container_videoArea.style.display = 'none'
 
 
@@ -2131,13 +2157,18 @@ async function gifImg(){
         gifCanvas.height = height
         gif_container_videoArea.style.display = 'block'
         console.warn("gifCtx:",gifCtx)
-        drawCanvas(shareCanvas, gifCtx)
+        // gifVideoOfAreaVideo.ontimeupdate = function(){
+            drawCanvas(shareCanvas, gifCtx)
+        // }
+
     }else if(window.record.currentRecoderType === 'video'){
         // mixgifCanvas.width = width
         // mixgifCanvas.height = height
         gifContainer.style.display = 'block'
         console.warn("mixgifCtx:",mixgifCtx)
-        drawCanvas(vtcanvas,mixgifCtx)
+        // gifVideo.ontimeupdate = function(){
+            drawCanvas(vtcanvas,mixgifCtx)
+        // }
     }
     setFormatSelect(format)
     await handleGIF()

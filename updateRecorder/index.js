@@ -884,6 +884,13 @@ async function getCategory(data){
                    mainVideo.onloadedmetadata = function(){
                        console.info("mainVideo: "+ mainVideo.videoWidth + " * " + mainVideo.videoHeight)
                        mainVideo.play()
+                       // if(isOpenShareScreen){
+                       //     draw({openShare:true})
+                       // }else{
+                       //     draw()
+                       // }
+                   }
+                   mainVideo.ontimeupdate = function(){
                        if(isOpenShareScreen){
                            draw({openShare:true})
                        }else{
@@ -917,6 +924,13 @@ async function getCategory(data){
                    slidesVideo.onloadedmetadata = function(){
                        console.info("slidesVideo: "+ slidesVideo.videoWidth + " * " + slidesVideo.videoHeight)
                        slidesVideo.play()
+                       // if(isOpenVideo){
+                       //     draw({openVideo:true})
+                       // }else{
+                       //     draw()
+                       // }
+                   }
+                   slidesVideo.ontimeupdate = function(){
                        if(isOpenVideo){
                            draw({openVideo:true})
                        }else{
@@ -1331,9 +1345,9 @@ function shareToCanvas(type, video, sx, sy, swidth, sheight, x, y, width, height
         context.drawImage(video, sx, sy, swidth, sheight, x, y, width, height);
     }
 
-    shareTimeout = window.requestAnimationFrame(() => {
-        shareToCanvas(type,video, sx, sy, swidth, sheight, x, y, width, height);
-    })
+    // shareTimeout = window.requestAnimationFrame(() => {
+    //     shareToCanvas(type,video, sx, sy, swidth, sheight, x, y, width, height);
+    // })
 }
 
 function switchToCanvas(type, video, sx, sy, swidth, sheight, x, y, width, height) {
@@ -1347,9 +1361,9 @@ function switchToCanvas(type, video, sx, sy, swidth, sheight, x, y, width, heigh
         context.drawImage(video, x, y, width, height)
     }
 
-    switchTimeout = window.requestAnimationFrame(() => {
-        switchToCanvas(type, video, sx, sy, swidth, sheight, x, y, width, height);
-    })
+    // switchTimeout = window.requestAnimationFrame(() => {
+    //     switchToCanvas(type, video, sx, sy, swidth, sheight, x, y, width, height);
+    // })
 
 }
 
@@ -1406,7 +1420,10 @@ function finish() {
         shareCanvas.height = rangeH ;
         shareCanvas.width  = rangeW ;
         ctx.clearRect(0, 0, videoWidth, videoHeight);
-        playCanvas(shareLocalVideo, shareCanvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
+        // playCanvas(shareLocalVideo, shareCanvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
+        shareLocalVideo.ontimeupdate = function(){
+            playCanvas(shareLocalVideo, shareCanvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
+        }
     }else{
         videoHeight = shareVideo.videoHeight ;
         videoWidth = shareVideo.videoWidth ;
@@ -1427,7 +1444,12 @@ function finish() {
         // shareCanvas.height = rangeH  ;
         // shareCanvas.width  = rangeW  ;
         ctx.clearRect(0, 0, videoWidth, videoHeight);
-        playCanvas(virtualVideo, shareCanvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
+        // playCanvas(virtualVideo, shareCanvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
+        virtualVideo.ontimeupdate = function(){
+            if(isDrawCanvas){
+                playCanvas(virtualVideo, shareCanvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
+            }
+        }
     }
 
     console.warn("rangeH:",rangeH)
@@ -1444,9 +1466,9 @@ function playCanvas(video,canvas,ctx,sx,sy,rangeW,rangeH, canvasX, canvasY, text
     if(text ){
         writeTextOnCanvas(ctx, 22,40,text)
     }
-    stopTimeout = requestAnimationFrame(() => {
-        playCanvas(video, canvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
-    })
+    // stopTimeout = requestAnimationFrame(() => {
+    //     playCanvas(video, canvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
+    // })
 }
 
 
@@ -2105,10 +2127,14 @@ function restartRecord(){
 async function gifImg(){
     if(window.record.currentRecoderType === 'areaVideo'){
         gif_container_videoArea.style.display = 'block'
-        drawCanvas(shareCanvas)
+        // gifVideoOfAreaVideo.ontimeupdate =function(){
+            drawCanvas(shareCanvas)
+        // }
     }else if(window.record.currentRecoderType === 'video'){
         gifContainer.style.display = 'block'
-        drawCanvas(vtcanvas)
+        // gifVideo.ontimeupdate = function(){
+            drawCanvas(vtcanvas)
+        // }
     }
     setFormatSelect(format)
     await handleGIF()
