@@ -1446,9 +1446,7 @@ function finish() {
         ctx.clearRect(0, 0, videoWidth, videoHeight);
         // playCanvas(virtualVideo, shareCanvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
         virtualVideo.ontimeupdate = function(){
-            if(isDrawCanvas){
-                playCanvas(virtualVideo, shareCanvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
-            }
+            playCanvas(virtualVideo, shareCanvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
         }
     }
 
