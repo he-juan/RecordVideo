@@ -1456,10 +1456,9 @@ function finish() {
         ctx.clearRect(0, 0, videoWidth, videoHeight);
         // playCanvas(virtualVideo, shareCanvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
 
+        /************切换页面时获取流******************/
         virtualVideo.ontimeupdate = function(){
-            if(isDrawCanvas){
-                playCanvas(virtualVideo, shareCanvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
-            }
+            playCanvas(virtualVideo, shareCanvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
         }
     }
 
