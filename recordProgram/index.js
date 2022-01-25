@@ -1580,7 +1580,7 @@ function beginRecord() {
                 shareRecord.srcObject = canvasStream || event.stream.stream
 
                 shareRecord.onloadedmetadata = function (e) {
-                    shareRecord.muted = true;
+                    // shareRecord.muted = true;
                     shareRecord.play();
                 };
             }else{
@@ -1633,7 +1633,7 @@ function beginRecord() {
                 canvasRecord.style.display = 'inline-block'
                 canvasRecord.srcObject = canvasStream ||event.stream.stream
                 canvasRecord.onloadedmetadata = function (e) {
-                    canvasRecord.muted = true;
+                    // canvasRecord.muted = true;
                     canvasRecord.play();
                 };
             }else{
@@ -1665,7 +1665,7 @@ function beginRecord() {
 
                 localAudio.style.display = 'block'
                 localAudio.ondataavailable = function(){
-                    localAudio.muted = true;
+                    // localAudio.muted = true;
                     localAudio.play()
                 }
             }else{

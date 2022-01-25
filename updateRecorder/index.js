@@ -1562,7 +1562,6 @@ function beginRecord() {
                 shareRecord.srcObject = canvasStream || event.stream.stream
 
                 shareRecord.onloadedmetadata = function (e) {
-                    shareRecord.muted = true;
                     shareRecord.play();
                 };
             }else{
@@ -1606,12 +1605,6 @@ function beginRecord() {
                     localVideoBtn.style.backgroundColor = '#8c818a'
                 }
 
-                // if(muteBtn.textContent === '静音'){
-                //     muteBtn.disabled = true
-                //     muteBtn.style.backgroundColor = '#8c818a'
-                // }
-
-
                 canvasRecord.style.display = 'inline-block'
                 canvasRecord.srcObject = canvasStream || event.stream.stream
                 canvasRecord.onloadedmetadata = function (e) {
@@ -1646,7 +1639,6 @@ function beginRecord() {
 
                 localAudio.style.display = 'block'
                 localAudio.ondataavailable = function(){
-                    localAudio.muted = true;
                     localAudio.play()
                 }
             }else{
