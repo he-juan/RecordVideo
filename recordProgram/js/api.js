@@ -532,13 +532,15 @@ Record.prototype.videoDownload = function(data){
     }else{
         type = {type: 'video/webm'}
     }
-    var blob = new Blob(This.videoMediaRecorder.recordedBlobs, type);
-    var url = window.URL.createObjectURL(blob);
-    var a = document.createElement('a');
+    let blob = new Blob(This.videoMediaRecorder.recordedBlobs, type);
+    let url = window.URL.createObjectURL(blob);
+    let logTime = new Date(parseInt((new Date()).getTime()))
+    logTime = beautyDate(logTime)
+    let a = document.createElement('a');
     a.target = "_blank";
     a.style.display = 'none';
     a.href = url;
-    a.download = 'test.webm';
+    a.download = '屏幕共享- '+ logTime +'.mp4';
     document.body.appendChild(a);
     a.click();
     setTimeout(function() {
@@ -561,7 +563,7 @@ Record.prototype.audioRecord = function(data){
         return
     }
     let options = {
-        mimeType: 'audio/webm;codecs=opus;',
+        mimeType: 'audio/webm',
         audioBitsPerSecond : 128000,  // 音频码率
         videoBitsPerSecond : 500000,  // 视频码率
         ignoreMutedMedia: true
@@ -633,13 +635,16 @@ Record.prototype.stopAudioRecord = function(data){
 
 Record.prototype.audioDownload = function(data){
     let This = this
-    var blob = new Blob(This.videoMediaRecorder.recordedBlobs, {type: 'audio/ogg'});
-    var url = window.URL.createObjectURL(blob);
-    var a = document.createElement('a');
+    let blob = new Blob(This.videoMediaRecorder.recordedBlobs, {type: 'audio/webm'});
+    let url = window.URL.createObjectURL(blob);
+
+    let logTime = new Date(parseInt((new Date()).getTime()))
+    logTime = beautyDate(logTime)
+    let a = document.createElement('a');
     a.target = "_blank";
     a.style.display = 'none';
     a.href = url;
-    a.download = 'audio.ogg';
+    a.download = '音频- '+ logTime +'.mp4';
     document.body.appendChild(a);
     a.click();
     setTimeout(function() {
@@ -648,4 +653,25 @@ Record.prototype.audioDownload = function(data){
     }, 100);
 
     data.callback && data.callback({ codeType: 999, file: a})
+}
+
+
+/***********************时间处理*************************/
+function beautyDate(date) {
+    var yyyy = date.getFullYear();
+    var m = date.getMonth() + 1; // getMonth() is zero-based
+    var d = date.getDate();
+    var h = date.getHours();
+    var mi = date.getMinutes();
+    var sec = date.getSeconds();
+    var msec = date.getMilliseconds();
+
+    var mm  = m < 10 ? "0" + m : m;
+    var dd  = d < 10 ? "0" + d : d;
+    var hh  = h < 10 ? "0" + h : h;
+    var min = mi < 10 ? "0" + mi : mi;
+    var ss  = sec < 10 ? "0" + sec : sec;
+    var mss = msec < 10 ? "00" + msec : ( msec < 100 ? "0" + msec : msec );
+
+    return "".concat(yyyy).concat("-").concat(mm).concat("-").concat(dd).concat("@").concat(hh).concat(":").concat(min).concat(":").concat(ss).concat(".").concat(mss);
 }
