@@ -572,11 +572,11 @@ function handlelocalVideo(){
                 try {
                     if(window.record.currentRecoderType === 'areaVideo'){
                         isUploadVideo = true
-                        window.record.isUploadVideo = true
+                        window.record.isUploadVideo = true;
                         shareLocalVideo.play();
                     }else if(window.record.currentRecoderType === 'video'){
                         isUploadVideo = true
-                        window.record.isUploadVideo = true
+                        window.record.isUploadVideo = true;
                         localVideo.play();
                     }
                     localVideoBtn.textContent = '关闭上传视频'
@@ -801,6 +801,7 @@ async function getCategory(data){
                    localStreams.slides = event.stream
                    shareVideo.srcObject = localStreams.slides
                    shareVideo.onloadedmetadata = function(){
+                       shareVideo.muted = true;
                        shareVideo.play()
                        shareVideo.controls = true
 
@@ -810,6 +811,7 @@ async function getCategory(data){
 
                    virtualVideo.srcObject = localStreams.slides
                    virtualVideo.onloadedmetadata = function(){
+                       virtualVideo.muted = true;
                        virtualVideo.play()
                        virtualVideo.controls = true
 
@@ -838,6 +840,7 @@ async function getCategory(data){
                    localStreams.main = event.stream
                    shareVideo.srcObject = localStreams.main
                    shareVideo.onloadedmetadata = function(){
+                       shareVideo.muted = true;
                        shareVideo.play()
                        shareVideo.controls = true
 
@@ -847,6 +850,7 @@ async function getCategory(data){
 
                    virtualVideo.srcObject = localStreams.main
                    virtualVideo.onloadedmetadata = function(){
+                       virtualVideo.muted = true;
                        virtualVideo.play()
                        virtualVideo.controls = true
 
@@ -882,7 +886,8 @@ async function getCategory(data){
                    localStreams.main = event.stream
                    mainVideo.srcObject = localStreams.main
                    mainVideo.onloadedmetadata = function(){
-                       console.info("mainVideo: "+ mainVideo.videoWidth + " * " + mainVideo.videoHeight)
+                       console.info("mainVideo: "+ mainVideo.videoWidth + " * " + mainVideo.videoHeight);
+                       mainVideo.muted = true;
                        mainVideo.play()
                        // if(isOpenShareScreen){
                        //     draw({openShare:true})
@@ -922,7 +927,8 @@ async function getCategory(data){
                    localStreams.slides = event.stream
                    slidesVideo.srcObject = localStreams.slides
                    slidesVideo.onloadedmetadata = function(){
-                       console.info("slidesVideo: "+ slidesVideo.videoWidth + " * " + slidesVideo.videoHeight)
+                       console.info("slidesVideo: "+ slidesVideo.videoWidth + " * " + slidesVideo.videoHeight);
+                       slidesVideo.muted = true;
                        slidesVideo.play()
                        // if(isOpenVideo){
                        //     draw({openVideo:true})
@@ -1190,6 +1196,7 @@ function switchLcoalCamera(){
                 localStreams.main = event.stream
                 shareVideo.srcObject = localStreams.main
                 shareVideo.onloadedmetadata = function(){
+                    shareVideo.muted = true;
                     shareVideo.play()
                     shareVideo.controls = true
 
@@ -1199,6 +1206,7 @@ function switchLcoalCamera(){
 
                 virtualVideo.srcObject = localStreams.main
                 virtualVideo.onloadedmetadata = function(){
+                    virtualVideo.muted = true;
                     virtualVideo.play()
                     virtualVideo.controls = true
 
@@ -1234,7 +1242,7 @@ function switchLcoalCamera(){
                 mainVideo.srcObject = localStreams.main
                 mainVideo.onloadedmetadata = function(){
                     console.info("mainVideo: "+ mainVideo.videoWidth + " * " + mainVideo.videoHeight)
-
+                    mainVideo.muted = true;
                     mainVideo.play()
                     if(isOpenShareScreen){
                         draw({openShare:true})
@@ -1554,6 +1562,7 @@ function beginRecord() {
                 shareRecord.srcObject = canvasStream || event.stream.stream
 
                 shareRecord.onloadedmetadata = function (e) {
+                    shareRecord.muted = true;
                     shareRecord.play();
                 };
             }else{
@@ -1637,6 +1646,7 @@ function beginRecord() {
 
                 localAudio.style.display = 'block'
                 localAudio.ondataavailable = function(){
+                    localAudio.muted = true;
                     localAudio.play()
                 }
             }else{
