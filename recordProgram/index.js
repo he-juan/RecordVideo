@@ -1427,16 +1427,20 @@ function finish() {
         shareLocalVideo.width = videoWidth
         shareLocalVideo.height = videoHeight
         shareCanvas.style.display = 'inline-block'
-        shareCanvas.height = rangeH ;
-        shareCanvas.width  = rangeW ;
-        shareRecord.height = rangeH;
-        shareRecord.width = rangeW;
+        // shareCanvas.height = rangeH ;
+        // shareCanvas.width  = rangeW ;
+        // shareRecord.height = rangeH;
+        // shareRecord.width = rangeW;
         ctx.clearRect(0, 0, videoWidth, videoHeight);
-        // if(document.getElementsByClassName('rect')[0]){
-        //     let rect = document.getElementsByClassName('rect')[0].getBoundingClientRect()
-        //     shareRecord.height = rect.height;
-        //     shareRecord.width = rect.width;
-        // }
+        if(document.getElementsByClassName('rect')[0]){
+            let rect = document.getElementsByClassName('rect')[0].getBoundingClientRect()
+            // shareRecord.height = rect.height;
+            // shareRecord.width = rect.width;
+            shareCanvas.style.height = rect.height + 'px';
+            shareCanvas.style.width  = rect.width + 'px';
+            shareRecord.style.height = rect.height+ 'px';
+            shareRecord.style.width = rect.width + 'px';
+        }
         // playCanvas(shareLocalVideo, shareCanvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
         shareLocalVideo.ontimeupdate = function(){
             playCanvas(shareLocalVideo, shareCanvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
@@ -1457,15 +1461,11 @@ function finish() {
         shareCanvas.style.display = 'inline-block'
         if(document.getElementsByClassName('rect')[0]){
             let rect = document.getElementsByClassName('rect')[0].getBoundingClientRect()
-            shareCanvas.height = rect.height ;
-            shareCanvas.width  = rect.width ;
-            shareRecord.height = rect.height;
-            shareRecord.width = rect.width;
+            shareCanvas.style.height = rect.height + 'px';
+            shareCanvas.style.width  = rect.width + 'px';
+            shareRecord.style.height = rect.height + 'px';
+            shareRecord.style.width = rect.width + 'px';
         }
-        // shareCanvas.style.height = rect.width + 'px';
-        // shareCanvas.style.width  = rect.height + 'px';
-        // shareCanvas.height = rangeH  ;
-        // shareCanvas.width  = rangeW  ;
         ctx.clearRect(0, 0, videoWidth, videoHeight);
         playCanvas(virtualVideo, shareCanvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
 
@@ -2169,16 +2169,6 @@ function restartRecord(){
 
 async function gifImg(){
     if(window.record.currentRecoderType === 'areaVideo'){
-        // let {width,height} = document.getElementsByClassName('rect')[0].getBoundingClientRect()
-        // gifCanvas.width = width
-        // gifCanvas.height = height
-        // gif_container_videoArea.style.display = 'block'
-        // console.warn("gifCtx:",gifCtx)
-        // // gifVideoOfAreaVideo.ontimeupdate = function(){
-        //     drawCanvas(shareCanvas, gifCtx)
-        // // }
-
-
         var recorder; // globally accessible
         function stopRecordingCallback() {
             document.querySelector('#load').innerHTML = 'Gif recording stopped: ' + bytesToSize(recorder.getBlob().size);
@@ -2195,35 +2185,37 @@ async function gifImg(){
                 console.error(error);
             });
         }
+        if(document.getElementsByClassName('rect')[0]){
+            let rect = document.getElementsByClassName('rect')[0].getBoundingClientRect()
+            document.querySelector('#imgResult').style.height = rect.height + 'px';
+            document.querySelector('#imgResult').style.width  = rect.width + 'px';
+        }
+
         if(document.querySelector('.gifImg').textContent === 'gif动图'){
             document.querySelector('.gifImg').disabled = true;
             document.querySelector('.gif_container').style.display = "block"
-            document.querySelector('#imgResult').style.width = shareRecord.width
-            document.querySelector('#imgResult').style.height = shareRecord.height
-            console.warn("shareRecord: ",shareRecord.width + " * "+ shareRecord.height)
+
             document.querySelector('#load').innerHTML = 'Waiting for Gif Recorder to start...';
-            let stream = shareCanvas.captureStream(60)
+            let stream = shareRecord.captureStream(60)
 
-            // captureCamera(function(stream){
-                recorder = RecordRTC(stream, {
-                    type: 'gif',
-                    frameRate: 1,
-                    quality: 10,
-                    width: shareCanvas.width,
-                    height: shareCanvas.height,
-                    onGifRecordingStarted: function() {
-                        document.querySelector('#load').innerHTML = 'Gif recording started.';
-                    },
-                    onGifPreview: function(gifURL) {
-                        document.querySelector('#imgResult').src = gifURL;
-                    }
-                });
+            recorder = RecordRTC(stream, {
+                type: 'gif',
+                frameRate: 1,
+                quality: 10,
+                width: shareCanvas.width,
+                height: shareCanvas.height,
+                onGifRecordingStarted: function() {
+                    document.querySelector('#load').innerHTML = 'Gif recording started.';
+                },
+                onGifPreview: function(gifURL) {
+                    document.querySelector('#imgResult').src = gifURL;
+                }
+            });
 
-                recorder.startRecording();
+            recorder.startRecording();
 
-                // release camera on stopRecording
-                recorder.camera = stream;
-            // })
+            // release camera on stopRecording
+            recorder.camera = stream;
 
         }
 

@@ -235,7 +235,7 @@ body{
     height: 338px;
     border-radius: 0;
 }
-.p-video_recorder_canvas, .canvasRecord, #result, .shareLocalVideo, .gifVideo, .gifCanvas_mix /*.shareVideo, */ /*.shareCanvas, .shareRecord, .gifVideoOfAreaVideo, #imgResult, .gifCanvas,*/{
+.p-video_recorder_canvas, .canvasRecord, #result, .shareLocalVideo, .gifVideo, .gifCanvas_mix, .shareCanvas, .shareRecord, #imgResult /*.shareVideo, */ /* .gifVideoOfAreaVideo, .gifCanvas,*/{
     width: 100%;
     height: 100%;
 }
