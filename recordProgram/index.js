@@ -10,8 +10,8 @@ let format = 'video/webm;codecs=vp9';
 let repeat;
 let button, capture,info, gif, sample, sampleInterval, sampleUpdate, startTime, timer, start, load, go, begin,imgBlobs;
 // let gifCanvas = document.createElement("canvas")
-let gifCanvas = document.getElementsByClassName("gifCanvas")[0]
-let gifCtx = gifCanvas.getContext("2d")
+// let gifCanvas = document.getElementsByClassName("gifCanvas")[0]
+// let gifCtx = gifCanvas.getContext("2d")
 
 let mixgifCanvas = document.getElementsByClassName("gifCanvas_mix")[0]
 let mixgifCtx = mixgifCanvas.getContext("2d")
@@ -146,7 +146,7 @@ areaVideoArea.addEventListener("click",function(){
     localVideoBtn.style.backgroundColor = "skyblue"
     muteBtn.style.backgroundColor = "skyblue"
     window.record.currentRecoderType = "areaVideo"
-    handleStopGif()
+    // handleStopGif()
     getCategory({type: 'audio'})
 })
 videoArea.addEventListener("click",function () {
@@ -188,7 +188,7 @@ videoArea.addEventListener("click",function () {
     localVideoBtn.style.backgroundColor = "skyblue"
     muteBtn.style.backgroundColor = "skyblue"
     window.record.currentRecoderType = "video"
-    handleStopGif()
+    // handleStopGif()
     getCategory({type: 'audio'})
 })
 
@@ -232,7 +232,7 @@ audioArea.addEventListener("click",function () {
     restartRecordBtn.style.backgroundColor = '#8c818a'
 
     window.record.currentRecoderType = "audio"
-    handleStopGif()
+    // handleStopGif()
     getCategory({type: 'audio'})
 })
 
@@ -1429,10 +1429,14 @@ function finish() {
         shareCanvas.style.display = 'inline-block'
         shareCanvas.height = rangeH ;
         shareCanvas.width  = rangeW ;
+        shareRecord.height = rangeH;
+        shareRecord.width = rangeW;
         ctx.clearRect(0, 0, videoWidth, videoHeight);
-        let rect = document.getElementsByClassName('rect')[0].getBoundingClientRect()
-        shareRecord.height = rect.height;
-        shareRecord.width = rect.width;
+        // if(document.getElementsByClassName('rect')[0]){
+        //     let rect = document.getElementsByClassName('rect')[0].getBoundingClientRect()
+        //     shareRecord.height = rect.height;
+        //     shareRecord.width = rect.width;
+        // }
         // playCanvas(shareLocalVideo, shareCanvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
         shareLocalVideo.ontimeupdate = function(){
             playCanvas(shareLocalVideo, shareCanvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
@@ -1451,11 +1455,13 @@ function finish() {
         sx = window.startPositionX * 3
         sy = window.startPositionY * 3
         shareCanvas.style.display = 'inline-block'
-        let rect = document.getElementsByClassName('rect')[0].getBoundingClientRect()
-        shareCanvas.height = rect.height ;
-        shareCanvas.width  = rect.width ;
-        shareRecord.height = rect.height;
-        shareRecord.width = rect.width;
+        if(document.getElementsByClassName('rect')[0]){
+            let rect = document.getElementsByClassName('rect')[0].getBoundingClientRect()
+            shareCanvas.height = rect.height ;
+            shareCanvas.width  = rect.width ;
+            shareRecord.height = rect.height;
+            shareRecord.width = rect.width;
+        }
         // shareCanvas.style.height = rect.width + 'px';
         // shareCanvas.style.width  = rect.height + 'px';
         // shareCanvas.height = rangeH  ;
@@ -1510,7 +1516,7 @@ function beginRecord() {
     let videoTrack
 
     if(window.record.currentRecoderType === 'areaVideo'){
-        canvasStream = shareCanvas.captureStream(60)
+        canvasStream = shareCanvas.captureStream(25)
     }else if(window.record.currentRecoderType === 'video'){
         // canvasStream = vtcanvas.captureStream(60)
         if(localStreams.main && !localStreams.slides && !localStreams.localVideo){
@@ -1520,9 +1526,9 @@ function beginRecord() {
             videoTrack = localStreams.slides.getVideoTracks()[0]
             canvasTrack = videoTrack
         }else if(!localStreams.slides && !localStreams.main && localStreams.localVideo){
-            canvasStream = vtcanvas.captureStream(60)
+            canvasStream = vtcanvas.captureStream(25)
         }else if(localStreams.slides && localStreams.main && !localStreams.localVideo){
-            canvasStream = vtcanvas.captureStream(60)
+            canvasStream = vtcanvas.captureStream(25)
         }
     }
 
@@ -1677,7 +1683,11 @@ function beginRecord() {
 }
 
  function handleStopGif(){
-     if(window.record.currentRecoderType === 'areaVideo' || window.record.currentRecoderType === 'video'){
+     if(window.record.currentRecoderType === 'areaVideo'){
+        console.warn("do not handlestopgif")
+        return
+     }
+     if(/*window.record.currentRecoderType === 'areaVideo' ||*/ window.record.currentRecoderType === 'video'){
          downloadBtn.style.width = '80px'
          downloadBtn.style.height = '50px'
          downloadBtn.style.borderColor = 'white'
@@ -1686,7 +1696,7 @@ function beginRecord() {
          downloadBtn.textContent = '下载视频'
          downloadBtn.style.fontSize = 'small'
          downloadGifImg.style.display = 'block'
-         gifCtx.clearRect(0, 0, gifCanvas.width, gifCanvas.height);
+         // gifCtx.clearRect(0, 0, gifCanvas.width, gifCanvas.height);
          window.cancelAnimationFrame(canvasTimer)
          if(window.record.currentRecoderType === 'areaVideo'){
              if(gifVideoOfAreaVideo.srcObject){
@@ -1743,8 +1753,6 @@ function stopRecord() {
                 isRecording = false
                 virtualVideo.srcObject = null
                 let buffer = event.stream.recordedBlobs
-                shareRecord.srcObject = event.stream.stream
-
                 ctx.clearRect(0, 0, shareCanvas.width, shareCanvas.height)
                 let rect = document.getElementsByClassName('rect')[0]
                 if(rect){
@@ -2161,14 +2169,70 @@ function restartRecord(){
 
 async function gifImg(){
     if(window.record.currentRecoderType === 'areaVideo'){
-        let {width,height} = document.getElementsByClassName('rect')[0].getBoundingClientRect()
-        gifCanvas.width = width
-        gifCanvas.height = height
-        gif_container_videoArea.style.display = 'block'
-        console.warn("gifCtx:",gifCtx)
-        // gifVideoOfAreaVideo.ontimeupdate = function(){
-            drawCanvas(shareCanvas, gifCtx)
-        // }
+        // let {width,height} = document.getElementsByClassName('rect')[0].getBoundingClientRect()
+        // gifCanvas.width = width
+        // gifCanvas.height = height
+        // gif_container_videoArea.style.display = 'block'
+        // console.warn("gifCtx:",gifCtx)
+        // // gifVideoOfAreaVideo.ontimeupdate = function(){
+        //     drawCanvas(shareCanvas, gifCtx)
+        // // }
+
+
+        var recorder; // globally accessible
+        function stopRecordingCallback() {
+            document.querySelector('#load').innerHTML = 'Gif recording stopped: ' + bytesToSize(recorder.getBlob().size);
+            document.querySelector('#imgResult').src = URL.createObjectURL(recorder.getBlob());
+            recorder.camera.stop();
+            recorder.destroy();
+            recorder = null;
+        }
+        function captureCamera(callback) {
+            navigator.mediaDevices.getDisplayMedia({ video: true }).then(function(camera) {
+                callback(camera);
+            }).catch(function(error) {
+                alert('Unable to capture your camera. Please check console logs.');
+                console.error(error);
+            });
+        }
+        if(document.querySelector('.gifImg').textContent === 'gif动图'){
+            document.querySelector('.gifImg').disabled = true;
+            document.querySelector('.gif_container').style.display = "block"
+            document.querySelector('#imgResult').style.width = shareRecord.width
+            document.querySelector('#imgResult').style.height = shareRecord.height
+            console.warn("shareRecord: ",shareRecord.width + " * "+ shareRecord.height)
+            document.querySelector('#load').innerHTML = 'Waiting for Gif Recorder to start...';
+            let stream = shareCanvas.captureStream(60)
+
+            // captureCamera(function(stream){
+                recorder = RecordRTC(stream, {
+                    type: 'gif',
+                    frameRate: 1,
+                    quality: 10,
+                    width: shareCanvas.width,
+                    height: shareCanvas.height,
+                    onGifRecordingStarted: function() {
+                        document.querySelector('#load').innerHTML = 'Gif recording started.';
+                    },
+                    onGifPreview: function(gifURL) {
+                        document.querySelector('#imgResult').src = gifURL;
+                    }
+                });
+
+                recorder.startRecording();
+
+                // release camera on stopRecording
+                recorder.camera = stream;
+            // })
+
+        }
+
+        document.getElementById("stopGIFrecording").onclick = function () {
+            this.disabled = true;
+            if(recorder){
+                recorder.stopRecording(stopRecordingCallback);
+            }
+        }
 
     }else if(window.record.currentRecoderType === 'video'){
         // mixgifCanvas.width = width
@@ -2178,9 +2242,11 @@ async function gifImg(){
         // gifVideo.ontimeupdate = function(){
             drawCanvas(vtcanvas,mixgifCtx)
         // }
+        setFormatSelect(format)
+        await handleGIF()
     }
-    setFormatSelect(format)
-    await handleGIF()
+    // setFormatSelect(format)
+    // await handleGIF()
 }
 
 function handleGIF(){
@@ -2396,10 +2462,10 @@ timer = null;
 
 
 
-gifVideoOfAreaVideo.addEventListener('canplay', listenCanPlayofGif);
-go.addEventListener('click', listenClickofAreaVideoGif);
-gifVideoOfAreaVideo.addEventListener('play', listenPlayofAreaVideoGif);
-gifVideoOfAreaVideo.addEventListener('ended', listenVideoEnded);
+// gifVideoOfAreaVideo.addEventListener('canplay', listenCanPlayofGif);
+// go.addEventListener('click', listenClickofAreaVideoGif);
+// gifVideoOfAreaVideo.addEventListener('play', listenPlayofAreaVideoGif);
+// gifVideoOfAreaVideo.addEventListener('ended', listenVideoEnded);
 
 /***************************************更新代码**********************************************/
 function listenCanPlayofGif(){

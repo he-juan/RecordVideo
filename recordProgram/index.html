@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <title>录制</title>
     <link rel="stylesheet" type="text/css" href="index.css" />
-    <script src = "https://cdn.bootcss.com/jquery/3.2.1/jquery.js"></script>
-    <script type = "text/javascript"  src="js/videoArea.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.js"></script>
+    <script type="text/javascript"  src="js/videoArea.js"></script>
+    <script type="text/javascript"  src="js/RecordRTC.js"></script>
 </head>
 <body>
 
@@ -52,22 +53,23 @@
                     <div class="gif_container">
                         <p>
                             <!--<input disabled id="sample" type="range" step="1" min="20" max="500" value="400">-->
-                            <button id="goes" disabled>Generate gif animation</button>
-                            <button id="begin" onclick="handleGIF()">change screen</button>
-                        <p id="load">Loading...</p>
+                            <!--<button id="goes" disabled>Generate gif animation</button>-->
+                            <!--<button id="begin" onclick="handleGIF()">change screen</button>-->
+                            <button id="stopGIFrecording">停止gif动图</button>
+                            <p id="load">Loading...</p>
                         </p>
 
-                        <div class="canvas_gif_container">
-                            <canvas class="gifCanvas" ></canvas>
-                            <!--<canvas class="gifCanvas" style="transform: scale(1)" width="1920" height="1080"></canvas>-->
-                        </div>
+                        <!--<div class="canvas_gif_container">-->
+                            <!--<canvas class="gifCanvas" ></canvas>-->
+                            <!--&lt;!&ndash;<canvas class="gifCanvas" style="transform: scale(1)" width="1920" height="1080"></canvas>&ndash;&gt;-->
+                        <!--</div>-->
 
-                        <br />
+                        <!--<br />-->
 
-                        <div class="p-video_recorder_canvas__container video_container">
-                            <video class="gifVideoOfAreaVideo" ></video>
-                            <!--<video class="gifVideoOfAreaVideo" style="transform: scale(1)" width="1920" height="1080"></video>-->
-                        </div>
+                        <!--<div class="p-video_recorder_canvas__container video_container">-->
+                            <!--<video class="gifVideoOfAreaVideo" ></video>-->
+                            <!--&lt;!&ndash;<video class="gifVideoOfAreaVideo" style="transform: scale(1)" width="1920" height="1080"></video>&ndash;&gt;-->
+                        <!--</div>-->
 
                         <br/>
 
@@ -151,7 +153,7 @@
             <div class="right-group">
                 <div class="rightTop">
                     <button class="startRecord"  onclick="beginRecord()" disabled>开始录制</button>
-                    <button class="gifImg" onclick ="gifImg()" >gif 动图</button>
+                    <button class="gifImg" onclick ="gifImg()" >gif动图</button>
                     <button class="pauseRecord"  onclick="pauseRecord()" disabled>暂停录制</button>
                     <button class="resumeRecord"  onclick="resumeRecord()" disabled>恢复录制</button>
                     <button class="stopRecord"  onclick="stopRecord()" disabled>停止录制</button>
