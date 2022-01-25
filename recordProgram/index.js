@@ -2196,7 +2196,7 @@ async function gifImg(){
             document.querySelector('.gif_container').style.display = "block"
 
             document.querySelector('#load').innerHTML = 'Waiting for Gif Recorder to start...';
-            let stream = shareRecord.captureStream(60)
+            let stream = shareCanvas.captureStream(60)
 
             recorder = RecordRTC(stream, {
                 type: 'gif',
