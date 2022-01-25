@@ -239,7 +239,7 @@
         const fullBlob = new Blob(allChunks);
         const downloadUrl = window.URL.createObjectURL(fullBlob);
         link.href = downloadUrl;
-        link.download = 'media - '+format+'.mp4';
+        link.download = 'media - '+format+'.webm';
         document.body.appendChild(link);
         link.click();
         link.remove();

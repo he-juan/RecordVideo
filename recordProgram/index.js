@@ -467,8 +467,8 @@ function toggleMuteButton(data){
 function localVideoButton(){
     /**开始上传视频**/
     if(localVideoBtn.textContent === '上传视频'){
-         // window.cancelAnimationFrame(switchTimeout)
-         // window.cancelAnimationFrame(shareTimeout)
+         window.cancelAnimationFrame(switchTimeout)
+         window.cancelAnimationFrame(shareTimeout)
 
         if(localStreams.slides){
             stopCategory({type: 'slides'})
@@ -619,7 +619,7 @@ function handleCanPlay(data){
                         rect.style.display = "none"
                     }
                     ctx.clearRect(0, 0, shareCanvas.width, shareCanvas.height)
-                    // window.cancelAnimationFrame(stopTimeout)
+                    window.cancelAnimationFrame(stopTimeout)
                 }
         } else {
             function callback(data) {
@@ -819,7 +819,6 @@ async function getCategory(data){
                        virtualVideo.style.width = shareVideo.videoWidth  + 'px'
                        virtualVideo.style.height = shareVideo.videoHeight  + 'px'
                        console.warn("virtualVideo: " + virtualVideo.videoWidth + "  *  " + virtualVideo.videoHeight)
-                       console.warn("stream: " + virtualVideo.srcObject.id)
                    }
                }else{
                    console.warn("open shareScreen failed")
@@ -1015,7 +1014,7 @@ function stopCategory(data){
                             rect.style.display = "none"
                         }
                         ctx.clearRect(0, 0, shareCanvas.width, shareCanvas.height)
-                        // window.cancelAnimationFrame(stopTimeout)
+                        window.cancelAnimationFrame(stopTimeout)
 
                         virtualVideo.srcObject = null
                         localStreams.slides = null
@@ -1044,7 +1043,7 @@ function stopCategory(data){
                             rect.style.display = "none"
                         }
                         context.clearRect(0, 0, shareCanvas.width, shareCanvas.height)
-                        // window.cancelAnimationFrame(stopTimeout)
+                        window.cancelAnimationFrame(stopTimeout)
                     }else{
                         console.warn(" stop video failed")
                     }
@@ -1063,7 +1062,7 @@ function stopCategory(data){
                 }
                 isDrawCanvas = false
                 ctx.clearRect(0, 0, shareCanvas.width, shareCanvas.height)
-                // window.cancelAnimationFrame(stopTimeout)
+                window.cancelAnimationFrame(stopTimeout)
                 shareLocalVideo.srcObject = null
                 shareLocalVideo.style.display = 'none'
             }
@@ -1080,7 +1079,7 @@ function stopCategory(data){
                            window.record.closeStream(localStreams.main)
                        }
                        localStreams.main = null
-                       // window.cancelAnimationFrame(switchTimeout)
+                       window.cancelAnimationFrame(switchTimeout)
                        context.clearRect(setX, setY, setWidth, setHeight)
                        draw()
                    }else{
@@ -1096,7 +1095,7 @@ function stopCategory(data){
                    localVideo.style.display = 'none'
                    localVideoBtn.textContent = '上传视频'
                    context.clearRect(0, 0, vtcanvas.width, vtcanvas.height)
-                   // window.cancelAnimationFrame(stopTimeout)
+                   window.cancelAnimationFrame(stopTimeout)
                }
            }
         }else if(data.type === 'slides'){
@@ -1110,7 +1109,7 @@ function stopCategory(data){
                             window.record.closeStream(localStreams.slides)
                         }
                         localStreams.slides = null
-                        // window.cancelAnimationFrame(shareTimeout)
+                        window.cancelAnimationFrame(shareTimeout)
                         context.clearRect(setX, setY, setWidth, setHeight)
                         draw()
                     }else{
@@ -1293,8 +1292,8 @@ function getVideoType(data){
 function draw(data){
     /*处理canvas绘制video像素模糊问题*/
     let videoType = getVideoType(data)
-    // window.cancelAnimationFrame(switchTimeout)
-    // window.cancelAnimationFrame(shareTimeout)
+    window.cancelAnimationFrame(switchTimeout)
+    window.cancelAnimationFrame(shareTimeout)
 
     rangeH = vtcanvas.height
     rangeW = vtcanvas.width
@@ -1348,9 +1347,9 @@ function shareToCanvas(type, video, sx, sy, swidth, sheight, x, y, width, height
         context.drawImage(video, sx, sy, swidth, sheight, x, y, width, height);
     }
 
-    // shareTimeout = window.requestAnimationFrame(() => {
-    //     shareToCanvas(type,video, sx, sy, swidth, sheight, x, y, width, height);
-    // })
+    shareTimeout = window.requestAnimationFrame(() => {
+        shareToCanvas(type,video, sx, sy, swidth, sheight, x, y, width, height);
+    })
 }
 
 function switchToCanvas(type, video, sx, sy, swidth, sheight, x, y, width, height) {
@@ -1364,9 +1363,9 @@ function switchToCanvas(type, video, sx, sy, swidth, sheight, x, y, width, heigh
         context.drawImage(video, x, y, width, height)
     }
 
-    // switchTimeout = window.requestAnimationFrame(() => {
-    //     switchToCanvas(type, video, sx, sy, swidth, sheight, x, y, width, height);
-    // })
+    switchTimeout = window.requestAnimationFrame(() => {
+        switchToCanvas(type, video, sx, sy, swidth, sheight, x, y, width, height);
+    })
 
 }
 
@@ -1398,7 +1397,7 @@ function finish() {
     //     muteBtn.style.backgroundColor = '#8c818a'
     // }
 
-    // window.cancelAnimationFrame(stopTimeout)
+    window.cancelAnimationFrame(stopTimeout)
     isDrawCanvas = true
     let rangeW
     let rangeH
@@ -1454,7 +1453,7 @@ function finish() {
         // shareCanvas.height = rangeH  ;
         // shareCanvas.width  = rangeW  ;
         ctx.clearRect(0, 0, videoWidth, videoHeight);
-        // playCanvas(virtualVideo, shareCanvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
+        playCanvas(virtualVideo, shareCanvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
 
         /************切换页面时获取流******************/
         virtualVideo.ontimeupdate = function(){
@@ -1476,9 +1475,9 @@ function playCanvas(video,canvas,ctx,sx,sy,rangeW,rangeH, canvasX, canvasY, text
     if(text ){
         writeTextOnCanvas(ctx, 22,40,text)
     }
-    // stopTimeout = requestAnimationFrame(() => {
-    //     playCanvas(video, canvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
-    // })
+    stopTimeout = requestAnimationFrame(() => {
+        playCanvas(video, canvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
+    })
 }
 
 
@@ -1503,7 +1502,7 @@ function beginRecord() {
     let videoTrack
 
     if(window.record.currentRecoderType === 'areaVideo'){
-        canvasStream = shareCanvas.captureStream()
+        canvasStream = shareCanvas.captureStream(60)
     }else if(window.record.currentRecoderType === 'video'){
         // canvasStream = vtcanvas.captureStream(60)
         if(localStreams.main && !localStreams.slides && !localStreams.localVideo){
@@ -1513,9 +1512,9 @@ function beginRecord() {
             videoTrack = localStreams.slides.getTracks()[0]
             canvasTrack = videoTrack
         }else if(!localStreams.slides && !localStreams.main && localStreams.localVideo){
-            canvasStream = vtcanvas.captureStream()
+            canvasStream = vtcanvas.captureStream(60)
         }else if(localStreams.slides && localStreams.main && !localStreams.localVideo){
-            canvasStream = vtcanvas.captureStream()
+            canvasStream = vtcanvas.captureStream(60)
         }
     }
 
@@ -1677,7 +1676,7 @@ function beginRecord() {
          downloadBtn.style.fontSize = 'small'
          downloadGifImg.style.display = 'block'
          gifCtx.clearRect(0, 0, gifCanvas.width, gifCanvas.height);
-         // window.cancelAnimationFrame(canvasTimer)
+         window.cancelAnimationFrame(canvasTimer)
          if(window.record.currentRecoderType === 'areaVideo'){
              if(gifVideoOfAreaVideo.srcObject){
                  let tracks = gifVideoOfAreaVideo.srcObject.getTracks();
@@ -1802,8 +1801,8 @@ function stopRecord() {
                 isRecording = false
                 let buffer = event.stream.recordedBlobs
                 canvasRecord.srcObject = event.stream.stream
-                // window.cancelAnimationFrame(switchTimeout)
-                // window.cancelAnimationFrame(shareTimeout)
+                window.cancelAnimationFrame(switchTimeout)
+                window.cancelAnimationFrame(shareTimeout)
                 context.clearRect(0, 0, vtcanvas.width, vtcanvas.height)
                 vtcanvas.style.display = 'none'
 
@@ -2107,7 +2106,7 @@ function restartRecord(){
                 rect.style.display = "none"
             }
             ctx.clearRect(0, 0, shareCanvas.width, shareCanvas.height)
-            // window.cancelAnimationFrame(stopTimeout)
+            window.cancelAnimationFrame(stopTimeout)
             gif_container_videoArea.style.display = 'none'
 
 

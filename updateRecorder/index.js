@@ -464,8 +464,8 @@ function toggleMuteButton(data){
 function localVideoButton(){
     /**开始上传视频**/
     if(localVideoBtn.textContent === '上传视频'){
-         // window.cancelAnimationFrame(switchTimeout)
-         // window.cancelAnimationFrame(shareTimeout)
+         window.cancelAnimationFrame(switchTimeout)
+         window.cancelAnimationFrame(shareTimeout)
 
         if(localStreams.slides){
             stopCategory({type: 'slides'})
@@ -1345,9 +1345,9 @@ function shareToCanvas(type, video, sx, sy, swidth, sheight, x, y, width, height
         context.drawImage(video, sx, sy, swidth, sheight, x, y, width, height);
     }
 
-    // shareTimeout = window.requestAnimationFrame(() => {
-    //     shareToCanvas(type,video, sx, sy, swidth, sheight, x, y, width, height);
-    // })
+    shareTimeout = window.requestAnimationFrame(() => {
+        shareToCanvas(type,video, sx, sy, swidth, sheight, x, y, width, height);
+    })
 }
 
 function switchToCanvas(type, video, sx, sy, swidth, sheight, x, y, width, height) {
@@ -1361,9 +1361,9 @@ function switchToCanvas(type, video, sx, sy, swidth, sheight, x, y, width, heigh
         context.drawImage(video, x, y, width, height)
     }
 
-    // switchTimeout = window.requestAnimationFrame(() => {
-    //     switchToCanvas(type, video, sx, sy, swidth, sheight, x, y, width, height);
-    // })
+    switchTimeout = window.requestAnimationFrame(() => {
+        switchToCanvas(type, video, sx, sy, swidth, sheight, x, y, width, height);
+    })
 
 }
 
@@ -1419,6 +1419,9 @@ function finish() {
         shareCanvas.style.display = 'inline-block'
         shareCanvas.height = rangeH ;
         shareCanvas.width  = rangeW ;
+        let rect = document.getElementsByClassName('rect')[0].getBoundingClientRect()
+        shareRecord.height = rect.height;
+        shareRecord.width = rect.width;
         ctx.clearRect(0, 0, videoWidth, videoHeight);
         // playCanvas(shareLocalVideo, shareCanvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
         shareLocalVideo.ontimeupdate = function(){
@@ -1444,7 +1447,9 @@ function finish() {
         // shareCanvas.height = rangeH  ;
         // shareCanvas.width  = rangeW  ;
         ctx.clearRect(0, 0, videoWidth, videoHeight);
-        // playCanvas(virtualVideo, shareCanvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
+        playCanvas(virtualVideo, shareCanvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
+
+        /************切换页面时获取流******************/
         virtualVideo.ontimeupdate = function(){
             playCanvas(virtualVideo, shareCanvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
         }
@@ -1464,9 +1469,9 @@ function playCanvas(video,canvas,ctx,sx,sy,rangeW,rangeH, canvasX, canvasY, text
     if(text ){
         writeTextOnCanvas(ctx, 22,40,text)
     }
-    // stopTimeout = requestAnimationFrame(() => {
-    //     playCanvas(video, canvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
-    // })
+    stopTimeout = requestAnimationFrame(() => {
+        playCanvas(video, canvas, ctx, sx, sy, rangeW, rangeH, canvasX, canvasY, text);
+    })
 }
 
 
