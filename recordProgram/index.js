@@ -2050,6 +2050,7 @@ function downloadImg(){
         logTime = beautyDate(logTime)
         let element = document.createElement('a');
         element.href = URL.createObjectURL(imgBlobs);
+        element.download = 'img_'+ logTime + ".gif";
         //设置下载文件名称
         document.body.appendChild(element);
         let evt = document.createEvent("MouseEvents");
@@ -2057,10 +2058,8 @@ function downloadImg(){
         element.dispatchEvent(evt);
         // document.body.removeChild(element);
         let img = document.createElement('img')
-        // img.style.width = shareRecord.width + "px";
-        // img.style.height = shareRecord.height + "px";
         img.src = URL.createObjectURL(imgBlobs);
-        element.download = 'img_'+ logTime + ".gif";
+
 
     }
 }
@@ -2159,7 +2158,8 @@ function restartRecord(){
 
 async function gifImg(){
     if(window.record.currentRecoderType === 'areaVideo'){
-        var recorder; // globally accessible
+        let recorder; // globally accessible
+        let rect
         function stopRecordingCallback() {
             document.querySelector('#load').innerHTML = 'Gif recording stopped: ' + bytesToSize(recorder.getBlob().size);
             document.querySelector('#imgResult').src = URL.createObjectURL(recorder.getBlob());
@@ -2191,13 +2191,17 @@ async function gifImg(){
             document.querySelector('#load').innerHTML = 'Waiting for Gif Recorder to start...';
             console.warn("shareRecorder:" + shareRecord.videoWidth + " * " + shareRecord.videoHeight)
             let stream = shareCanvas.captureStream(60)
+            if(document.getElementsByClassName('rect')[0]){
+                rect = document.getElementsByClassName('rect')[0].getBoundingClientRect()
+
+            }
 
             recorder = RecordRTC(stream, {
                 type: 'gif',
                 frameRate: 1,
                 quality: 10,
-                width: shareRecord.videoWidth,
-                height: shareRecord.videoHeight,
+                width: rect.width,
+                height: rect.height,
                 onGifRecordingStarted: function() {
                     document.querySelector('#load').innerHTML = 'Gif recording started.';
                 },
