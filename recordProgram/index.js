@@ -2186,7 +2186,7 @@ async function gifImg(){
 
         if(document.querySelector('.gifImg').textContent === 'gif动图'){
             document.querySelector('.gifImg').disabled = true;
-            document.querySelector("#stopGIFrecording").disabled = true
+            document.querySelector("#stopGIFrecording").disabled = false
             document.querySelector('.gifImg').style.backgroundColor = "#8c818a"
             document.querySelector('.gif_container').style.display = "block"
             document.querySelector('#load').innerHTML = 'Waiting for Gif Recorder to start...';
