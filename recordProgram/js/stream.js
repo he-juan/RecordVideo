@@ -261,12 +261,17 @@ Record.prototype.getStreamFromDevice = function (data){
             }else {
                 constraints = {
                     audio: Record.prototype.isSystemAudioShareSupport(),
-                    // video: data.constraints.video.mediaSource,
                     video: {
-                        width: { max: data.constraints.video.width ? data.constraints.video.width : 1920 },
-                        height: { max: data.constraints.video.height ? data.constraints.video.height : 1080 },
-                        frameRate: { max: data.constraints.video.frameRate ? data.constraints.video.frameRate : 15 }
+                        displaySurface: 'monitor', // monitor, window, application, browser
+                        logicalSurface: true,
+                        cursor: 'always' // never, always, motion
                     }
+                    // video: {
+                    //     width: { max: data.constraints.video.width ? data.constraints.video.width : 1920 },
+                    //     height: { max: data.constraints.video.height ? data.constraints.video.height : 1080 },
+                    //     frameRate: { max: data.constraints.video.frameRate ? data.constraints.video.frameRate : 15 }
+                    // }
+
                 }
             }
             break
