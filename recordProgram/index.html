@@ -63,9 +63,6 @@
 
             <div class="midContent ">
                 <div class="videoContrainter">
-                    <!--<video class="mainVideo"></video>-->
-                    <!--<video class="slidesVideo"></video>-->
-                    <!--<h1>录制内容</h1>-->
                     <div class="p-video_recorder_canvas__container">
                         <canvas class="p-video_recorder_canvas" style="transform: scale(1)" width="1920" height="1080"></canvas>
                     </div>
@@ -80,22 +77,23 @@
 
                     <div class="gifContainer">
                         <p>
-                            <button id="go" disabled onclick="listenClickofGif()">Generate gif animation </button>
-                            <button id="start" onclick="handleGIF()">change screen</button>
+                            <!--<button id="go" disabled onclick="listenClickofGif()">Generate gif animation </button>-->
+                            <!--<button id="start" onclick="handleGIF()">change screen</button>-->
+                            <button id="stopgif">停止gif动图</button>
                             <p id="info">Loading...</p>
                         </p>
 
-                        <div class="canvas_gif_container">
-                            <canvas class="gifCanvas_mix" style="transform: scale(1)" width="1920" height="1080" ></canvas>
-                        </div>
+                        <!--<div class="canvas_gif_container">-->
+                            <!--<canvas class="gifCanvas_mix" style="transform: scale(1)" width="1920" height="1080" ></canvas>-->
+                        <!--</div>-->
 
-                        <br />
+                        <!--<br />-->
 
-                        <div class="p-video_recorder_canvas__container video_container">
-                            <video class="gifVideo" style="transform: scale(1)" width="1920" height="1080" oncanplay="listenCanPlayofGif()"  onended="listenVideoEnded()" onplay="listenPlayofGif()"></video>
-                        </div>
+                        <!--<div class="p-video_recorder_canvas__container video_container">-->
+                            <!--<video class="gifVideo" style="transform: scale(1)" width="1920" height="1080" oncanplay="listenCanPlayofGif()"  onended="listenVideoEnded()" onplay="listenPlayofGif()"></video>-->
+                        <!--</div>-->
 
-                        <br/>
+                        <!--<br/>-->
 
                         <div class="p-video_recorder_canvas__container video_container">
                             <img id="result"  style="transform: scale(1)" width="1920" height="1080" />

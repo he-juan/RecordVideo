@@ -13,8 +13,8 @@ let button, capture,info, gif, sample, sampleInterval, sampleUpdate, startTime, 
 // let gifCanvas = document.getElementsByClassName("gifCanvas")[0]
 // let gifCtx = gifCanvas.getContext("2d")
 
-let mixgifCanvas = document.getElementsByClassName("gifCanvas_mix")[0]
-let mixgifCtx = mixgifCanvas.getContext("2d")
+// let mixgifCanvas = document.getElementsByClassName("gifCanvas_mix")[0]
+// let mixgifCtx = mixgifCanvas.getContext("2d")
 // let gifVideo = document.createElement("video")
 let gifVideo = document.getElementsByClassName("gifVideo")[0]
 
@@ -1286,11 +1286,6 @@ function getVideoType(data){
             videoType = 'openShareStopVideo'
         }
     }
-    if(videoType){
-        console.warn("videoType is " , videoType)
-    }else{
-        console.warn("videoType is null")
-    }
     return videoType
 }
 
@@ -1310,29 +1305,24 @@ function draw(data){
 
     context.clearRect(0, 0, vtcanvas.width ,vtcanvas.height)
     if(videoType === 'openVideoStopShare'){
-        console.warn("只有视频  只有视频openVideoStopShare")
         switchToCanvas(videoType, mainVideo, 0, 0, 0, 0, 0, 0, rangeW, rangeH,)
     }
 
     if(videoType === 'openVideoOpenShare'){
-        console.warn("两者皆有openVideoOpenShare")
         shareToCanvas(videoType, slidesVideo,0, 0, 0, 0, 0, 0, vtcanvas.width, vtcanvas.height)
         switchToCanvas(videoType, mainVideo, 0, 0, mainVideo.videoWidth, mainVideo.videoHeight, setX, setY, setWidth, setHeight)
     }
 
     if(videoType === 'openShareOpenVideo'){
-        console.warn("两者都有openShareOpenVideo")
         shareToCanvas(videoType, slidesVideo,0, 0, 0, 0, 0, 0, vtcanvas.width, vtcanvas.height)
         switchToCanvas(videoType, mainVideo, 0, 0, mainVideo.videoWidth, mainVideo.videoHeight, setX, setY, setWidth, setHeight)
     }
 
     if(videoType === 'openShareStopVideo'){
-        console.warn("只有共享openShareStopVideo")
         shareToCanvas(videoType, slidesVideo,0, 0, 0, 0, 0, 0, vtcanvas.width, vtcanvas.height)
     }
 
     if(!videoType){
-        console.warn("清除canvas")
         context.fillStyle = "white"
         context.clearRect(0, 0, vtcanvas.width, vtcanvas.height)
     }
@@ -1396,11 +1386,6 @@ function finish() {
         localVideoBtn.disabled = true
         localVideoBtn.style.backgroundColor = '#8c818a'
     }
-
-    // if(muteBtn.textContent === '静音'){
-    //     muteBtn.disabled = true
-    //     muteBtn.style.backgroundColor = '#8c818a'
-    // }
 
     window.cancelAnimationFrame(stopTimeout)
     isDrawCanvas = true
@@ -1730,7 +1715,7 @@ function stopRecord() {
 
     let data = {}
 
-    handleStopGif()
+    // handleStopGif()
 
     if (window.record.currentRecoderType === 'areaVideo') {
         data.callback = function (event) {
@@ -2179,7 +2164,7 @@ async function gifImg(){
             });
         }
         if(document.getElementsByClassName('rect')[0]){
-            let rect = document.getElementsByClassName('rect')[0].getBoundingClientRect()
+            rect = document.getElementsByClassName('rect')[0].getBoundingClientRect()
             document.querySelector('#imgResult').style.height = rect.height + 'px';
             document.querySelector('#imgResult').style.width  = rect.width + 'px';
         }
@@ -2192,9 +2177,6 @@ async function gifImg(){
             document.querySelector('#load').innerHTML = 'Waiting for Gif Recorder to start...';
             console.warn("shareRecorder:" + shareRecord.videoWidth + " * " + shareRecord.videoHeight)
             let stream = shareCanvas.captureStream(60)
-            if(document.getElementsByClassName('rect')[0]){
-                rect = document.getElementsByClassName('rect')[0].getBoundingClientRect()
-            }
 
             recorder = RecordRTC(stream, {
                 type: 'gif',
@@ -2211,10 +2193,8 @@ async function gifImg(){
             });
 
             recorder.startRecording();
-
             // release camera on stopRecording
             recorder.camera = stream;
-
         }
 
         document.getElementById("stopGIFrecording").onclick = function () {
@@ -2225,18 +2205,67 @@ async function gifImg(){
         }
 
     }else if(window.record.currentRecoderType === 'video'){
-        // mixgifCanvas.width = width
-        // mixgifCanvas.height = height
-        gifContainer.style.display = 'block'
-        console.warn("mixgifCtx:",mixgifCtx)
-        // gifVideo.ontimeupdate = function(){
-            drawCanvas(vtcanvas,mixgifCtx)
-        // }
-        setFormatSelect(format)
-        await handleGIF()
+        // // mixgifCanvas.width = width
+        // // mixgifCanvas.height = height
+        // gifContainer.style.display = 'block'
+        // console.warn("mixgifCtx:",mixgifCtx)
+        // // gifVideo.ontimeupdate = function(){
+        //     drawCanvas(vtcanvas,mixgifCtx)
+        // // }
+        // setFormatSelect(format)
+        // await handleGIF()
+
+        let recorder;
+        function stopRecordingCallback() {
+            document.querySelector('#info').innerHTML = 'Gif recording stopped: ' + bytesToSize(recorder.getBlob().size);
+            document.querySelector('#result').src = URL.createObjectURL(recorder.getBlob());
+            imgBlobs = recorder.getBlob()
+            recorder.camera.stop();
+            recorder.destroy();
+            recorder = null;
+            downloadGifImg.style.backgroundColor = "skyblue";
+            downloadGifImg.disabled = false;
+        }
+        // document.querySelector('#result').style.height = canvasRecord.height + 'px';
+        // document.querySelector('#result').style.width  = canvasRecord.width + 'px';
+
+        if(document.querySelector('.gifImg').textContent === 'gif动图'){
+            document.querySelector('.gifImg').disabled = true;
+            document.querySelector("#stopgif").disabled = false
+            document.querySelector('.gifImg').style.backgroundColor = "#8c818a"
+            document.querySelector('.gifContainer').style.display = "block"
+            document.querySelector('#info').innerHTML = 'Waiting for Gif Recorder to start...';
+            console.warn("canvasRecorder:" + canvasRecord.videoWidth + " * " + canvasRecord.videoHeight)
+            let stream = vtcanvas.captureStream(60)
+
+            recorder = RecordRTC(stream, {
+                type: 'gif',
+                frameRate: 1,
+                quality: 10,
+                width: 640,
+                height: 298,
+                onGifRecordingStarted: function() {
+                    document.querySelector('#info').innerHTML = 'Gif recording started.';
+                },
+                onGifPreview: function(gifURL) {
+                    document.querySelector('#result').src = gifURL;
+                }
+            });
+
+            recorder.startRecording();
+
+            // release camera on stopRecording
+            recorder.camera = stream;
+
+        }
+
+        document.getElementById("stopgif").onclick = function () {
+            this.disabled = true;
+            if(recorder){
+                recorder.stopRecording(stopRecordingCallback);
+            }
+        }
     }
-    // setFormatSelect(format)
-    // await handleGIF()
 }
 
 function handleGIF(){
