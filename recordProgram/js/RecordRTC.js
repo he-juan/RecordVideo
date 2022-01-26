@@ -4579,7 +4579,7 @@ if (typeof RecordRTC !== 'undefined') {
 function GifRecorder(mediaStream, config) {
     if (typeof GIFEncoder === 'undefined') {
         var script = document.createElement('script');
-        script.src = 'https://www.webrtc-experiment.com/gif-recorder.js';
+        script.src =  'https://www.webrtc-experiment.com/gif-recorder.js'  || 'js/gif-recorder.js' ;
         (document.body || document.documentElement).appendChild(script);
     }
 

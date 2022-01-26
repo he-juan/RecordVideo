@@ -42,7 +42,7 @@
  
  # 参考：
   1. gif：https://github.com/imgss/gif_rain_code
-  2. gif：http://jnordberg.github.io/gif.js/
+  2. gif：http://jnordberg.github.io/gif-recorder.js/
   3. gif: https://npmmirror.com/package/gif.jsify
   4. gif: https://yahoo.github.io/gifshot/demo.html
   

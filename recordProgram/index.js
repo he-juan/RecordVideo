@@ -806,7 +806,6 @@ async function getCategory(data){
                    shareVideo.onloadedmetadata = function(){
                        shareVideo.muted = true
                        shareVideo.play()
-                       shareVideo.controls = true
 
                        shareVideo.style.width = shareVideo.videoWidth / 3 + 'px'
                        shareVideo.style.height = shareVideo.videoHeight / 3  + 'px'
@@ -844,7 +843,6 @@ async function getCategory(data){
                    shareVideo.onloadedmetadata = function(){
                        shareVideo.muted = true;
                        shareVideo.play()
-                       shareVideo.controls = true
 
                        shareVideo.style.width = shareVideo.videoWidth / 3 + 'px'
                        shareVideo.style.height = shareVideo.videoHeight / 3  + 'px'
@@ -1200,7 +1198,6 @@ function switchLcoalCamera(){
                 shareVideo.onloadedmetadata = function(){
                     shareVideo.muted = true;
                     shareVideo.play()
-                    shareVideo.controls = true
 
                     shareVideo.style.width = shareVideo.videoWidth / 3 + 'px'
                     shareVideo.style.height = shareVideo.videoHeight / 3  + 'px'
@@ -1454,8 +1451,6 @@ function finish() {
         rangeW = videoWidth * (width / shareVideo.offsetWidth) ;
         rangeH = videoHeight * (height / shareVideo.offsetHeight);
 
-
-
         sx = window.startPositionX * 3
         sy = window.startPositionY * 3
         shareCanvas.style.display = 'inline-block'
@@ -1586,7 +1581,6 @@ function beginRecord() {
                 shareRecord.srcObject = canvasStream || event.stream.stream
 
                 shareRecord.onloadedmetadata = function (e) {
-                    // shareRecord.muted = true;
                     shareRecord.play();
                 };
             }else{
@@ -1630,16 +1624,9 @@ function beginRecord() {
                     localVideoBtn.style.backgroundColor = '#8c818a'
                 }
 
-                // if(muteBtn.textContent === '静音'){
-                //     muteBtn.disabled = true
-                //     muteBtn.style.backgroundColor = '#8c818a'
-                // }
-
-
                 canvasRecord.style.display = 'inline-block'
                 canvasRecord.srcObject = canvasStream ||event.stream.stream
                 canvasRecord.onloadedmetadata = function (e) {
-                    // canvasRecord.muted = true;
                     canvasRecord.play();
                 };
             }else{
@@ -1671,7 +1658,6 @@ function beginRecord() {
 
                 localAudio.style.display = 'block'
                 localAudio.ondataavailable = function(){
-                    // localAudio.muted = true;
                     localAudio.play()
                 }
             }else{
@@ -2060,18 +2046,22 @@ function downloadImg(){
         }
     }
     if (window.record.currentRecoderType === 'areaVideo' || window.record.currentRecoderType === 'video') {
-        // window.record.videoDownload(data)
+        let logTime = new Date(parseInt((new Date()).getTime()))
+        logTime = beautyDate(logTime)
         let element = document.createElement('a');
         element.href = URL.createObjectURL(imgBlobs);
-        element.download = 'demo-name';
         //设置下载文件名称
         document.body.appendChild(element);
         let evt = document.createEvent("MouseEvents");
         evt.initEvent("click", false, false);
         element.dispatchEvent(evt);
-        document.body.removeChild(element);
+        // document.body.removeChild(element);
         let img = document.createElement('img')
+        // img.style.width = shareRecord.width + "px";
+        // img.style.height = shareRecord.height + "px";
         img.src = URL.createObjectURL(imgBlobs);
+        element.download = 'img_'+ logTime + ".gif";
+
     }
 }
 
@@ -2173,9 +2163,12 @@ async function gifImg(){
         function stopRecordingCallback() {
             document.querySelector('#load').innerHTML = 'Gif recording stopped: ' + bytesToSize(recorder.getBlob().size);
             document.querySelector('#imgResult').src = URL.createObjectURL(recorder.getBlob());
+            imgBlobs = recorder.getBlob()
             recorder.camera.stop();
             recorder.destroy();
             recorder = null;
+            downloadGifImg.style.backgroundColor = "skyblue";
+            downloadGifImg.disabled = false;
         }
         function captureCamera(callback) {
             navigator.mediaDevices.getDisplayMedia({ video: true }).then(function(camera) {
@@ -2193,17 +2186,18 @@ async function gifImg(){
 
         if(document.querySelector('.gifImg').textContent === 'gif动图'){
             document.querySelector('.gifImg').disabled = true;
+            document.querySelector('.gifImg').style.backgroundColor = "#8c818a"
             document.querySelector('.gif_container').style.display = "block"
-
             document.querySelector('#load').innerHTML = 'Waiting for Gif Recorder to start...';
+            console.warn("shareRecorder:" + shareRecord.videoWidth + " * " + shareRecord.videoHeight)
             let stream = shareCanvas.captureStream(60)
 
             recorder = RecordRTC(stream, {
                 type: 'gif',
                 frameRate: 1,
                 quality: 10,
-                width: shareCanvas.width,
-                height: shareCanvas.height,
+                width: shareRecord.videoWidth,
+                height: shareRecord.videoHeight,
                 onGifRecordingStarted: function() {
                     document.querySelector('#load').innerHTML = 'Gif recording started.';
                 },
