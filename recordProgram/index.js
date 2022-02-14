@@ -1612,6 +1612,7 @@ function beginRecord() {
                 canvasRecord.style.display = 'inline-block'
                 canvasRecord.srcObject = canvasStream ||event.stream.stream
                 canvasRecord.onloadedmetadata = function (e) {
+                    canvasRecord.muted = true
                     canvasRecord.play();
                 };
             }else{
