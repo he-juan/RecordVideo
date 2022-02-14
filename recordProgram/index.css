@@ -197,7 +197,7 @@ body{
     border-radius: 8px;
     overflow: hidden;
     width: 640px;
-    height: 298px;
+    height: 360px;
     margin: 0 auto;
     display: flex;
     justify-content: center;
@@ -209,7 +209,7 @@ body{
     border-radius: 8px;
     overflow: hidden;
     width: 640px;
-    height: 298px;
+    height: 360px;
     margin: 0 auto;
 }
 
@@ -223,7 +223,7 @@ body{
     background: rgba(var(--sk_foreground_min,29,28,29),.04);
     border-radius: 8px;
     width: 640px;
-    height: 298px;
+    height: 360px;
     margin: 0 auto;
     display: flex;
     justify-content: center;
@@ -232,7 +232,7 @@ body{
 
 .p-video_recorder_canvas__container--screen_share {
     width: 600px;
-    height: 338px;
+    height: 360px;
     border-radius: 0;
 }
 .p-video_recorder_canvas, .canvasRecord, #result, .shareLocalVideo, .gifVideo, .gifCanvas_mix, .shareCanvas, .shareRecord, #imgResult /*.shareVideo, */ /* .gifVideoOfAreaVideo, .gifCanvas,*/{
